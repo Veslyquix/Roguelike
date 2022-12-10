@@ -1,0 +1,113 @@
+PUSH 
+
+//Fix top-right tiles in statscreen
+    ORG $5D20
+    BYTE 5
+	
+
+ORG $2E300 // bugfix RemoveTrap at 2E2FC 
+SHORT $E003 $6881 $68C2 $C006 $7883 $2B00 
+//mov r3, r0 
+//b Check
+//Start: 
+//ldr r1, [r0, #8] 
+//ldr r2, [r0, #0x0C] 
+//stmia r0, {r1, r2} 
+//ldrb r3, [r0, #2] 
+//Check: 
+//cmp r3, #0 
+//bne Start 
+
+  //Bypass Ch5x Hardcoded Stuff
+  ORG $24DF2 //show gold in ch5x
+  SHORT 0
+  ORG $3164F //allow Supply on prep screen in ch5x
+  BYTE 0xE0
+  ORG $3327B
+  BYTE 0xE0
+  
+
+// Fix ASMC2 during scene-skipping 
+// By 7743 
+ORG 0xDB26 
+BYTE 0x00 0x00 
+
+
+//AUTHOR=7743
+//Prevent Freeze For Camera Event 0x26.
+ORG 0xF25C 
+BYTE 0x00 0x20
+
+//Prevent Freeze For Get Unit State Event 0x33.
+ORG 0x1027C
+BYTE 0x00 0x20 0x02 0xE0
+
+//Prevent Freeze For Unit State Event 0x34.
+ORG 0x102D4
+BYTE 0x00 0x20 
+
+//Prevent Freeze For Event 0x38.
+ORG 0x1063C
+BYTE 0x00
+
+//Prevent Freeze For Event 0x3B.
+ORG 0x10804
+BYTE 0x00 0x20 
+
+// Allow MOVEONTO and MOVENEXTTO to work for / on active units 
+ORG 0xFE06 
+BYTE 0xC0 0x88 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+
+
+
+// SMS fix for classes past 0x7F 
+// By Icecube, Snakey1 
+
+ORG 0x26706 
+BYTE 0xFF
+
+ORG 0x2678A 
+BYTE 0xFF
+
+ORG 0x2680C 
+BYTE 0xFF
+
+ORG 0x26C68 
+BYTE 0xFF
+
+ORG 0x27250 
+BYTE 0xFF
+
+ORG 0x27B96 
+BYTE 0xFF
+
+ORG 0x27C82 
+BYTE 0xFF
+
+ORG 0x27D30 
+BYTE 0xFF
+
+ORG 0x27DF0 
+BYTE 0xFF
+
+ORG 0x27E84 
+BYTE 0xFF
+
+ORG 0x27F5A 
+BYTE 0xFF
+
+ORG 0x2804C 
+BYTE 0xFF
+
+ORG 0x26A52 
+BYTE 0x00 0x20
+
+ORG 0x268E4 
+BYTE 0x00 0x20	//
+
+ORG 0x26B42 
+BYTE 0x00 0x20	//
+
+POP 
+
+

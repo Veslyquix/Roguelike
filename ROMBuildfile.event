@@ -1,0 +1,35 @@
+#ifdef _FE8_
+    #include "EAstdlib.event"
+    #include "CustomDefinitions.event"
+	
+	ORG FreeSpace
+	
+	#include "repointedTextTable.event"
+    #include "Text/InstallTextData.event"
+    MESSAGE Used text space ends at currentOffset
+
+    //CSV tables
+    #include "Tables/TableInstaller.event"
+    MESSAGE Used table space ends at currentOffset
+	
+	// hacks 
+	#include "Patches/Installer.event" 
+
+	//Graphics
+	#include "Graphics/Installer.event"
+
+
+
+    //Events
+	//#include "Events/EventsInstaller.event"
+
+
+ALIGN 4
+WORD 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 // Prevent NUPS from cutting off the last 6 bytes
+
+
+	
+    MESSAGE Used free space ends at currentOffset
+#else
+    ERROR "You are not assembling FE8 events!"
+#endif

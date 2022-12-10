@@ -1,0 +1,18 @@
+PUSH 
+ORG $AB932 // Remove support viewer 
+BYTE 0x00 0x00 0x00 0x20
+ORG $AB90E // Remove link arena 
+BYTE 0x00 0x00 0x00 0x20
+ORG $AB944 // Remove creature campaign 
+BYTE 0x00 0x00 0x00 0x20
+// Disable monsters from appearing on map 
+ORG 0x0C18F8
+BYTE 0 0 0 0
+
+ORG $A8A22 //remove r-text from save screen because why not
+SHORT 0xE025
+
+
+POP 
+
+
