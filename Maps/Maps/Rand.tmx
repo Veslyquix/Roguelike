@@ -6,9 +6,9 @@
  <layer id="1" name="Tile Layer 1" width="60" height="60">
   <properties>
    <property name="Anims1" value="UpdatedVillageAnimations"/>
-   <property name="ChapterID" value="Debug2Ch"/>
+   <property name="ChapterID" value="RandCh"/>
    <property name="Main" value=""/>
-   <property name="MapID" value="Debug2Map"/>
+   <property name="MapID" value="RandMap"/>
    <property name="ObjectType" value="UpdatedVillageObj"/>
    <property name="PaletteID" value="UpdatedVillagePal"/>
    <property name="TileConfig" value="UpdatedVillageConf"/>

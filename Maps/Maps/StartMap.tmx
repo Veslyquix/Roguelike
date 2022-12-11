@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="20" height="22" tilewidth="16" tileheight="16">
  <tileset firstgid="1" name="01000203" tilewidth="16" tileheight="16">
-  <image source="01000203.png" trans="ffffff"/>
+  <image source="../TilesetPreviews/01000203.png" trans="ffffff"/>
  </tileset>
  <layer name="Tile Layer 1" width="20" height="22">
   <properties>
    <property name="Anims1" value="0x05"/>
    <property name="Anims2" value="0x00"/>
-   <property name="ChapterID" value="0x04"/>
+   <property name="ChapterID" value="StartMapCh"/>
    <property name="Main" value=""/>
-   <property name="MapID" value="0x04"/>
-   <property name="ObjectType" value="0x01"/>
-   <property name="PaletteID" value="0x02"/>
-   <property name="TileConfig" value="0x03"/>
+   <property name="MapID" value="StartMapMap"/>
+   <property name="ObjectType" value="FieldsObjType"/>
+   <property name="PaletteID" value="FieldsPalette1"/>
+   <property name="TileConfig" value="FieldsTileConfig"/>
   </properties>
   <data>
   <tile gid="550"/>

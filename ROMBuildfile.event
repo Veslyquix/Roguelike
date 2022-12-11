@@ -12,6 +12,9 @@
     #include "Tables/TableInstaller.event"
     MESSAGE Used table space ends at currentOffset
 	
+	// Maps 
+	#include "Maps/SplitPList.event" 
+	
 	// hacks 
 	#include "Patches/Installer.event" 
 

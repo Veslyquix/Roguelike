@@ -1,0 +1,2 @@
+#define RandCh 0x1
+#define StartMapCh 0x2
