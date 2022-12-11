@@ -1,2 +1,2 @@
-StartMapCh
-RandCh
+PrologueCh 0
+Ch1Ch

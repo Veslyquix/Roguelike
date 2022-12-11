@@ -2,6 +2,8 @@
 //Avoid specific values for vanilla tileset compatibility
 .avoid 0
 .avoid 1
+.avoid 234
+.avoid 230
 .avoid 14
 .avoid 24
 .avoid 46

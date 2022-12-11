@@ -22,3 +22,5 @@
 
 
 #include "Defs/MapDefinitions.enu.event" 
+#include "Defs/TileChangeDefinitions.enu.event" 
+

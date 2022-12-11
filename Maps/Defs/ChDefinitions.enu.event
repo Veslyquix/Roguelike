@@ -1,2 +1,2 @@
-#define StartMapCh 0x1
-#define RandCh 0x2
+#define PrologueCh 0x0
+#define Ch1Ch 0x1
