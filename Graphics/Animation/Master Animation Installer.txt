@@ -24,4 +24,6 @@
 
 //////////////Installed animations go here:
 
-  #include "SalvCav\Sword Installer.event"
+  //#include "SalvCav\Sword Installer.event"
+  #include "AnimationPointers.event" 
+  #include "AnimationInstaller.event" 

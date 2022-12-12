@@ -6,13 +6,80 @@
  
 /* 
 //First free SMS is 107
-#define Cavalier_M_Sword_SALVAGEDstand 107 
-#define Soldier_F_Echoes_Lance_FireEmblemier_flasubanstand 108 
+#define AcolyteFStanding 107 
+#define AxeArmorStanding 108 
+#define AxeCavalierFStanding 109 
+#define AxeCavalierStanding 110 
+#define AxePaladinFStanding 111 
+#define AxePaladinStanding 112 
+#define BowKnightFStanding 113 
+#define BowKnightStanding 114 
+#define DeserterStanding 115 
+#define DragoonMoving 116 
+#define DragoonStanding 117 
+#define DruidFStanding 118 
+#define DukeStanding 119 
+#define FighterStanding 120 
+#define LanceArmorStanding 121 
+#define LanceCavalierFStanding 122 
+#define LanceCavalierStanding 123 
+#define LancePaladinFStanding 124 
+#define LancePaladinStanding 125 
+#define LightMageStanding 126 
+#define MageFStanding 127 
+#define MageStanding 128 
+#define OracleFStanding 129 
+#define PaladinFStanding 130 
+#define ShamanFStanding 131 
+#define SwordArmorStanding 132 
+#define SwordCavalierFStanding 133 
+#define SwordCavalierStanding 134 
+#define SwordPaladinFStanding 135 
+#define SwordPaladinStanding 136 
+#define TorchStanding 137 
+#define WagonStanding 138 
+#define WildWyvern 139 
+#define WyvernKnightFStanding 140 
+#define WyvernKnightStanding 141 
+#define WyvernRiderFStanding 142 
+#define WyvernRiderStanding 143 
  
  
 //First free MMS is 127 and will show up if you've expanded classes.
-#define Cavalier_M_Sword_SALVAGEDwalk 127 
-#define Soldier_F_Echoes_Lance_FireEmblemier_flasubanwalk 128 
+#define AcolyteFMoving 127 
+#define AxeArmorMoving 128 
+#define AxeCavalierFMoving 129 
+#define AxeCavalierMoving 130 
+#define AxePaladinFMoving 131 
+#define AxePaladinMoving 132 
+#define BowKnightFMoving 133 
+#define BowKnightMoving 134 
+#define DeserterMoving 135 
+#define DruidFMoving 136 
+#define DukeMoving 137 
+#define FighterMoving 138 
+#define LanceArmorMoving 139 
+#define LanceCavalierFMoving 140 
+#define LanceCavalierMoving 141 
+#define LancePaladinFMoving 142 
+#define LancePaladinMoving 143 
+#define LightMageMoving 144 
+#define MageMoving 145 
+#define OracleFMoving 146 
+#define PaladinFMoving 147 
+#define ShamanFMoving 148 
+#define SwordArmorMoving 149 
+#define SwordCavalierFMoving 150 
+#define SwordCavalierMoving 151 
+#define SwordPaladinFMoving 152 
+#define SwordPaladinMoving 153 
+#define TorchMoving 154 
+#define WagonMoving 155 
+#define WildWyvernMoving 156 
+#define WyvernKnightFMoving 157 
+#define WyvernKnightMoving 158 
+#define WyvernRiderFMoving 159 
+#define WyvernRiderMoving 160 
  
 */ 
  
@@ -22,12 +89,79 @@
 //Copy from here 
 PUSH 
  
-SetSMS(Cavalier_M_Sword_SALVAGEDstand, 1, Cavalier_M_Sword_SALVAGEDstand_Data) 
-SetSMS(Soldier_F_Echoes_Lance_FireEmblemier_flasubanstand, 1, Soldier_F_Echoes_Lance_FireEmblemier_flasubanstand_Data) 
+SetSMS(AcolyteFStanding, 1, AcolyteFStanding_Data) 
+SetSMS(AxeArmorStanding, 1, AxeArmorStanding_Data) 
+SetSMS(AxeCavalierFStanding, 1, AxeCavalierFStanding_Data) 
+SetSMS(AxeCavalierStanding, 1, AxeCavalierStanding_Data) 
+SetSMS(AxePaladinFStanding, 1, AxePaladinFStanding_Data) 
+SetSMS(AxePaladinStanding, 1, AxePaladinStanding_Data) 
+SetSMS(BowKnightFStanding, 1, BowKnightFStanding_Data) 
+SetSMS(BowKnightStanding, 1, BowKnightStanding_Data) 
+SetSMS(DeserterStanding, 1, DeserterStanding_Data) 
+SetSMS(DragoonMoving, 1, DragoonMoving_Data) 
+SetSMS(DragoonStanding, 1, DragoonStanding_Data) 
+SetSMS(DruidFStanding, 1, DruidFStanding_Data) 
+SetSMS(DukeStanding, 1, DukeStanding_Data) 
+SetSMS(FighterStanding, 1, FighterStanding_Data) 
+SetSMS(LanceArmorStanding, 1, LanceArmorStanding_Data) 
+SetSMS(LanceCavalierFStanding, 1, LanceCavalierFStanding_Data) 
+SetSMS(LanceCavalierStanding, 1, LanceCavalierStanding_Data) 
+SetSMS(LancePaladinFStanding, 1, LancePaladinFStanding_Data) 
+SetSMS(LancePaladinStanding, 1, LancePaladinStanding_Data) 
+SetSMS(LightMageStanding, 1, LightMageStanding_Data) 
+SetSMS(MageFStanding, 1, MageFStanding_Data) 
+SetSMS(MageStanding, 1, MageStanding_Data) 
+SetSMS(OracleFStanding, 1, OracleFStanding_Data) 
+SetSMS(PaladinFStanding, 1, PaladinFStanding_Data) 
+SetSMS(ShamanFStanding, 1, ShamanFStanding_Data) 
+SetSMS(SwordArmorStanding, 1, SwordArmorStanding_Data) 
+SetSMS(SwordCavalierFStanding, 1, SwordCavalierFStanding_Data) 
+SetSMS(SwordCavalierStanding, 1, SwordCavalierStanding_Data) 
+SetSMS(SwordPaladinFStanding, 1, SwordPaladinFStanding_Data) 
+SetSMS(SwordPaladinStanding, 1, SwordPaladinStanding_Data) 
+SetSMS(TorchStanding, 1, TorchStanding_Data) 
+SetSMS(WagonStanding, 1, WagonStanding_Data) 
+SetSMS(WildWyvern, 1, WildWyvern_Data) 
+SetSMS(WyvernKnightFStanding, 1, WyvernKnightFStanding_Data) 
+SetSMS(WyvernKnightStanding, 1, WyvernKnightStanding_Data) 
+SetSMS(WyvernRiderFStanding, 1, WyvernRiderFStanding_Data) 
+SetSMS(WyvernRiderStanding, 1, WyvernRiderStanding_Data) 
  
  
-SetMMS(Cavalier_M_Sword_SALVAGEDwalk, Cavalier_M_Sword_SALVAGEDwalk_Data, DemonKingAP) 
-SetMMS(Soldier_F_Echoes_Lance_FireEmblemier_flasubanwalk, Soldier_F_Echoes_Lance_FireEmblemier_flasubanwalk_Data, DemonKingAP) 
+SetMMS(AcolyteFMoving, AcolyteFMoving_Data, DemonKingAP) 
+SetMMS(AxeArmorMoving, AxeArmorMoving_Data, DemonKingAP) 
+SetMMS(AxeCavalierFMoving, AxeCavalierFMoving_Data, DemonKingAP) 
+SetMMS(AxeCavalierMoving, AxeCavalierMoving_Data, DemonKingAP) 
+SetMMS(AxePaladinFMoving, AxePaladinFMoving_Data, DemonKingAP) 
+SetMMS(AxePaladinMoving, AxePaladinMoving_Data, DemonKingAP) 
+SetMMS(BowKnightFMoving, BowKnightFMoving_Data, DemonKingAP) 
+SetMMS(BowKnightMoving, BowKnightMoving_Data, DemonKingAP) 
+SetMMS(DeserterMoving, DeserterMoving_Data, DemonKingAP) 
+SetMMS(DruidFMoving, DruidFMoving_Data, DemonKingAP) 
+SetMMS(DukeMoving, DukeMoving_Data, DemonKingAP) 
+SetMMS(FighterMoving, FighterMoving_Data, DemonKingAP) 
+SetMMS(LanceArmorMoving, LanceArmorMoving_Data, DemonKingAP) 
+SetMMS(LanceCavalierFMoving, LanceCavalierFMoving_Data, DemonKingAP) 
+SetMMS(LanceCavalierMoving, LanceCavalierMoving_Data, DemonKingAP) 
+SetMMS(LancePaladinFMoving, LancePaladinFMoving_Data, DemonKingAP) 
+SetMMS(LancePaladinMoving, LancePaladinMoving_Data, DemonKingAP) 
+SetMMS(LightMageMoving, LightMageMoving_Data, DemonKingAP) 
+SetMMS(MageMoving, MageMoving_Data, DemonKingAP) 
+SetMMS(OracleFMoving, OracleFMoving_Data, DemonKingAP) 
+SetMMS(PaladinFMoving, PaladinFMoving_Data, DemonKingAP) 
+SetMMS(ShamanFMoving, ShamanFMoving_Data, DemonKingAP) 
+SetMMS(SwordArmorMoving, SwordArmorMoving_Data, DemonKingAP) 
+SetMMS(SwordCavalierFMoving, SwordCavalierFMoving_Data, DemonKingAP) 
+SetMMS(SwordCavalierMoving, SwordCavalierMoving_Data, DemonKingAP) 
+SetMMS(SwordPaladinFMoving, SwordPaladinFMoving_Data, DemonKingAP) 
+SetMMS(SwordPaladinMoving, SwordPaladinMoving_Data, DemonKingAP) 
+SetMMS(TorchMoving, TorchMoving_Data, DemonKingAP) 
+SetMMS(WagonMoving, WagonMoving_Data, DemonKingAP) 
+SetMMS(WildWyvernMoving, WildWyvernMoving_Data, DemonKingAP) 
+SetMMS(WyvernKnightFMoving, WyvernKnightFMoving_Data, DemonKingAP) 
+SetMMS(WyvernKnightMoving, WyvernKnightMoving_Data, DemonKingAP) 
+SetMMS(WyvernRiderFMoving, WyvernRiderFMoving_Data, DemonKingAP) 
+SetMMS(WyvernRiderMoving, WyvernRiderMoving_Data, DemonKingAP) 
  
 POP 
 //Copy until here 
@@ -37,12 +171,152 @@ POP
 //SMS Image Data 
  
 ALIGN 4 
-Cavalier_M_Sword_SALVAGEDstand_Data: 
-#incbin "dmp/Cavalier_M_Sword_SALVAGEDstand.dmp" 
+AcolyteFStanding_Data: 
+#incbin "dmp/AcolyteFStanding.dmp" 
  
 ALIGN 4 
-Soldier_F_Echoes_Lance_FireEmblemier_flasubanstand_Data: 
-#incbin "dmp/Soldier_F_Echoes_Lance_FireEmblemier_flasubanstand.dmp" 
+AxeArmorStanding_Data: 
+#incbin "dmp/AxeArmorStanding.dmp" 
+ 
+ALIGN 4 
+AxeCavalierFStanding_Data: 
+#incbin "dmp/AxeCavalierFStanding.dmp" 
+ 
+ALIGN 4 
+AxeCavalierStanding_Data: 
+#incbin "dmp/AxeCavalierStanding.dmp" 
+ 
+ALIGN 4 
+AxePaladinFStanding_Data: 
+#incbin "dmp/AxePaladinFStanding.dmp" 
+ 
+ALIGN 4 
+AxePaladinStanding_Data: 
+#incbin "dmp/AxePaladinStanding.dmp" 
+ 
+ALIGN 4 
+BowKnightFStanding_Data: 
+#incbin "dmp/BowKnightFStanding.dmp" 
+ 
+ALIGN 4 
+BowKnightStanding_Data: 
+#incbin "dmp/BowKnightStanding.dmp" 
+ 
+ALIGN 4 
+DeserterStanding_Data: 
+#incbin "dmp/DeserterStanding.dmp" 
+ 
+ALIGN 4 
+DragoonMoving_Data: 
+#incbin "dmp/DragoonMoving.dmp" 
+ 
+ALIGN 4 
+DragoonStanding_Data: 
+#incbin "dmp/DragoonStanding.dmp" 
+ 
+ALIGN 4 
+DruidFStanding_Data: 
+#incbin "dmp/DruidFStanding.dmp" 
+ 
+ALIGN 4 
+DukeStanding_Data: 
+#incbin "dmp/DukeStanding.dmp" 
+ 
+ALIGN 4 
+FighterStanding_Data: 
+#incbin "dmp/FighterStanding.dmp" 
+ 
+ALIGN 4 
+LanceArmorStanding_Data: 
+#incbin "dmp/LanceArmorStanding.dmp" 
+ 
+ALIGN 4 
+LanceCavalierFStanding_Data: 
+#incbin "dmp/LanceCavalierFStanding.dmp" 
+ 
+ALIGN 4 
+LanceCavalierStanding_Data: 
+#incbin "dmp/LanceCavalierStanding.dmp" 
+ 
+ALIGN 4 
+LancePaladinFStanding_Data: 
+#incbin "dmp/LancePaladinFStanding.dmp" 
+ 
+ALIGN 4 
+LancePaladinStanding_Data: 
+#incbin "dmp/LancePaladinStanding.dmp" 
+ 
+ALIGN 4 
+LightMageStanding_Data: 
+#incbin "dmp/LightMageStanding.dmp" 
+ 
+ALIGN 4 
+MageFStanding_Data: 
+#incbin "dmp/MageFStanding.dmp" 
+ 
+ALIGN 4 
+MageStanding_Data: 
+#incbin "dmp/MageStanding.dmp" 
+ 
+ALIGN 4 
+OracleFStanding_Data: 
+#incbin "dmp/OracleFStanding.dmp" 
+ 
+ALIGN 4 
+PaladinFStanding_Data: 
+#incbin "dmp/PaladinFStanding.dmp" 
+ 
+ALIGN 4 
+ShamanFStanding_Data: 
+#incbin "dmp/ShamanFStanding.dmp" 
+ 
+ALIGN 4 
+SwordArmorStanding_Data: 
+#incbin "dmp/SwordArmorStanding.dmp" 
+ 
+ALIGN 4 
+SwordCavalierFStanding_Data: 
+#incbin "dmp/SwordCavalierFStanding.dmp" 
+ 
+ALIGN 4 
+SwordCavalierStanding_Data: 
+#incbin "dmp/SwordCavalierStanding.dmp" 
+ 
+ALIGN 4 
+SwordPaladinFStanding_Data: 
+#incbin "dmp/SwordPaladinFStanding.dmp" 
+ 
+ALIGN 4 
+SwordPaladinStanding_Data: 
+#incbin "dmp/SwordPaladinStanding.dmp" 
+ 
+ALIGN 4 
+TorchStanding_Data: 
+#incbin "dmp/TorchStanding.dmp" 
+ 
+ALIGN 4 
+WagonStanding_Data: 
+#incbin "dmp/WagonStanding.dmp" 
+ 
+ALIGN 4 
+WildWyvern_Data: 
+#incbin "dmp/WildWyvern.dmp" 
+ 
+ALIGN 4 
+WyvernKnightFStanding_Data: 
+#incbin "dmp/WyvernKnightFStanding.dmp" 
+ 
+ALIGN 4 
+WyvernKnightStanding_Data: 
+#incbin "dmp/WyvernKnightStanding.dmp" 
+ 
+ALIGN 4 
+WyvernRiderFStanding_Data: 
+#incbin "dmp/WyvernRiderFStanding.dmp" 
+ 
+ALIGN 4 
+WyvernRiderStanding_Data: 
+#incbin "dmp/WyvernRiderStanding.dmp" 
  
  
  
@@ -50,10 +324,138 @@ Soldier_F_Echoes_Lance_FireEmblemier_flasubanstand_Data:
 //MMS Image Data 
  
 ALIGN 4 
-Cavalier_M_Sword_SALVAGEDwalk_Data: 
-#incbin "dmp/Cavalier_M_Sword_SALVAGEDwalk.dmp" 
+AcolyteFMoving_Data: 
+#incbin "dmp/AcolyteFMoving.dmp" 
  
 ALIGN 4 
-Soldier_F_Echoes_Lance_FireEmblemier_flasubanwalk_Data: 
-#incbin "dmp/Soldier_F_Echoes_Lance_FireEmblemier_flasubanwalk.dmp" 
+AxeArmorMoving_Data: 
+#incbin "dmp/AxeArmorMoving.dmp" 
+ 
+ALIGN 4 
+AxeCavalierFMoving_Data: 
+#incbin "dmp/AxeCavalierFMoving.dmp" 
+ 
+ALIGN 4 
+AxeCavalierMoving_Data: 
+#incbin "dmp/AxeCavalierMoving.dmp" 
+ 
+ALIGN 4 
+AxePaladinFMoving_Data: 
+#incbin "dmp/AxePaladinFMoving.dmp" 
+ 
+ALIGN 4 
+AxePaladinMoving_Data: 
+#incbin "dmp/AxePaladinMoving.dmp" 
+ 
+ALIGN 4 
+BowKnightFMoving_Data: 
+#incbin "dmp/BowKnightFMoving.dmp" 
+ 
+ALIGN 4 
+BowKnightMoving_Data: 
+#incbin "dmp/BowKnightMoving.dmp" 
+ 
+ALIGN 4 
+DeserterMoving_Data: 
+#incbin "dmp/DeserterMoving.dmp" 
+ 
+ALIGN 4 
+DruidFMoving_Data: 
+#incbin "dmp/DruidFMoving.dmp" 
+ 
+ALIGN 4 
+DukeMoving_Data: 
+#incbin "dmp/DukeMoving.dmp" 
+ 
+ALIGN 4 
+FighterMoving_Data: 
+#incbin "dmp/FighterMoving.dmp" 
+ 
+ALIGN 4 
+LanceArmorMoving_Data: 
+#incbin "dmp/LanceArmorMoving.dmp" 
+ 
+ALIGN 4 
+LanceCavalierFMoving_Data: 
+#incbin "dmp/LanceCavalierFMoving.dmp" 
+ 
+ALIGN 4 
+LanceCavalierMoving_Data: 
+#incbin "dmp/LanceCavalierMoving.dmp" 
+ 
+ALIGN 4 
+LancePaladinFMoving_Data: 
+#incbin "dmp/LancePaladinFMoving.dmp" 
+ 
+ALIGN 4 
+LancePaladinMoving_Data: 
+#incbin "dmp/LancePaladinMoving.dmp" 
+ 
+ALIGN 4 
+LightMageMoving_Data: 
+#incbin "dmp/LightMageMoving.dmp" 
+ 
+ALIGN 4 
+MageMoving_Data: 
+#incbin "dmp/MageMoving.dmp" 
+ 
+ALIGN 4 
+OracleFMoving_Data: 
+#incbin "dmp/OracleFMoving.dmp" 
+ 
+ALIGN 4 
+PaladinFMoving_Data: 
+#incbin "dmp/PaladinFMoving.dmp" 
+ 
+ALIGN 4 
+ShamanFMoving_Data: 
+#incbin "dmp/ShamanFMoving.dmp" 
+ 
+ALIGN 4 
+SwordArmorMoving_Data: 
+#incbin "dmp/SwordArmorMoving.dmp" 
+ 
+ALIGN 4 
+SwordCavalierFMoving_Data: 
+#incbin "dmp/SwordCavalierFMoving.dmp" 
+ 
+ALIGN 4 
+SwordCavalierMoving_Data: 
+#incbin "dmp/SwordCavalierMoving.dmp" 
+ 
+ALIGN 4 
+SwordPaladinFMoving_Data: 
+#incbin "dmp/SwordPaladinFMoving.dmp" 
+ 
+ALIGN 4 
+SwordPaladinMoving_Data: 
+#incbin "dmp/SwordPaladinMoving.dmp" 
+ 
+ALIGN 4 
+TorchMoving_Data: 
+#incbin "dmp/TorchMoving.dmp" 
+ 
+ALIGN 4 
+WagonMoving_Data: 
+#incbin "dmp/WagonMoving.dmp" 
+ 
+ALIGN 4 
+WildWyvernMoving_Data: 
+#incbin "dmp/WildWyvernMoving.dmp" 
+ 
+ALIGN 4 
+WyvernKnightFMoving_Data: 
+#incbin "dmp/WyvernKnightFMoving.dmp" 
+ 
+ALIGN 4 
+WyvernKnightMoving_Data: 
+#incbin "dmp/WyvernKnightMoving.dmp" 
+ 
+ALIGN 4 
+WyvernRiderFMoving_Data: 
+#incbin "dmp/WyvernRiderFMoving.dmp" 
+ 
+ALIGN 4 
+WyvernRiderMoving_Data: 
+#incbin "dmp/WyvernRiderMoving.dmp" 
  
