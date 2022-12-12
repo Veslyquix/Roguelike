@@ -1,8 +1,9 @@
 #include "Tools/Tool Helpers.txt"
 #define SetSMS(index, size, graphics) "ORG NewStandingMapSpriteTable + (index)*8 + 2; BYTE size 0; POIN graphics"
 #define SetMMS(index, graphics, another_ptr) "ORG NewMovingMapSpriteTable + (index)*8; POIN graphics another_ptr"
-#define DemonKingAP 0x81fd028
-
+#ifndef DemonKingAP 
+	#define DemonKingAP 0x81fd028
+#endif 
 
 
 
