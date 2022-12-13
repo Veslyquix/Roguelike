@@ -1,3 +1,6 @@
+#include "Handaxe/Installer.event" 
+#include "_FE8EssentialFixes.event" 
+
 PUSH 
 
 //Fix top-right tiles in statscreen

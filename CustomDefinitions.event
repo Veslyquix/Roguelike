@@ -6,7 +6,8 @@
 #include "Defs/Installer.event" 
 
 
-
+#define StartTimeSeedRam 0x30017C4 // - c7 used in RandomizeClass 
+// originally from valni records 
 
 
 

@@ -1,11 +1,17 @@
 
 #include "ExtendWeaponDescBox/Installer.event" 
 
+// randomize map(s) 
+#include "GenerateMap/Installer.event" 
+
+// for randomizing classes 
+#include "Randomize/Installer.event" // for now, only save the game seed 
+
+
+#include "FillAIRangeMapFix/Installer.event" 
 #include "Fixes/QoL_Testing.event" 
 #include "Fixes/BugFixes.event" 
 #include "Fixes/MechanicChanges.event" 
-
-//#include "Rand/Installer.event" 
 
 
 

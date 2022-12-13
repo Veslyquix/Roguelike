@@ -9,7 +9,7 @@
 set "source_rom=%~dp0anim.gba"
 set "main_event=%~dp0ROMBuildfile.event"
 set "target_rom=%~dp0RL.gba"
-set "target_ups=%~dp0DungeonCrawl.ups"
+set "target_ups=%~dp0Roguelike.ups"
 set "target_sym=%~dp0RL.sym"
 
 @rem defining tools

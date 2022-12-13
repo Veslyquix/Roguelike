@@ -1,7 +1,7 @@
 #ifdef _FE8_
     #include "EAstdlib.event"
     #include "CustomDefinitions.event"
-
+	#include "Extensions/Hack Installation.txt" 
 	//ORG FreeSpaceGFX
 	//Graphics is prepared with MAKE_HACK_gfx 
 	// this is because gfx are slow to install 
@@ -23,12 +23,13 @@
 	// hacks 
 	#include "Patches/Installer.event" 
 
+	// gfx 
 	#include "Graphics/Installer.event"
 
 
 
     //Events
-	//#include "Events/EventsInstaller.event"
+	#include "Events/Installer.event"
 
 
 ALIGN 4
