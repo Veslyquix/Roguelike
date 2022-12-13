@@ -1,9 +1,14 @@
 #ifdef _FE8_
     #include "EAstdlib.event"
     #include "CustomDefinitions.event"
+
+	//ORG FreeSpaceGFX
+	//Graphics is prepared with MAKE_HACK_gfx 
+	// this is because gfx are slow to install 
+	
 	
 	ORG FreeSpace
-	
+
 	#include "repointedTextTable.event"
     #include "Text/InstallTextData.event"
     MESSAGE Used text space ends at currentOffset
@@ -18,7 +23,6 @@
 	// hacks 
 	#include "Patches/Installer.event" 
 
-	//Graphics
 	#include "Graphics/Installer.event"
 
 

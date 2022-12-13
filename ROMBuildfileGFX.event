@@ -1,0 +1,12 @@
+#ifdef _FE8_
+    #include "EAstdlib.event"
+    #include "CustomDefinitions.event"
+
+	ORG FreeSpaceGFX
+	//Graphics
+	//#include "Graphics/Animation/AnimationPointers.event" 
+	#include "Graphics/Animation/AnimationInstaller.event"
+    MESSAGE Used animation space ends at currentOffset
+#else
+    ERROR "You are not assembling FE8 events!"
+#endif

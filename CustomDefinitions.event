@@ -1,4 +1,6 @@
-#define FreeSpace 0x1000000 
+#define FreeSpaceGFX 0x1000000 
+// currently ends at 0x138----
+#define 	FreeSpace 0x1400000 
 
 #include "Maps/Definitions.event" 
 #include "Defs/Installer.event" 
