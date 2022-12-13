@@ -47,25 +47,58 @@ struct Map_Struct
 };
 void GenerateMap(struct Map_Struct* dst);
 
+static char* const TacticianName = (char* const) (0x202bd10); //8 bytes long
+extern u32* StartTimeSeedRamLabel; 
 
-int hashCode(const char *str) {
-    int hash = 0;
+u8 HashByte(u8 number, int max){
+  if (max==0) return 0;
+  u32 hash = 5381;
+  hash = ((hash << 5) + hash) ^ number;
+  hash = ((hash << 5) + hash) ^ gChapterData.chapterIndex;
+  hash = ((hash << 5) + hash) ^ *StartTimeSeedRamLabel;
+  for (int i = 0; i < 9; ++i){
+    if (TacticianName[i]==0) break;
+    hash = ((hash << 5) + hash) ^ TacticianName[i];
+  };
+  return Mod((u16)hash, max);
+};
 
-    for (int i = 0; i < strlen(str); i++) {
-        hash = 31 * hash + str[i];
-    }
+u16 HashShort(u8 number, int max){
+  if (max==0) return 0;
+  u32 hash = 5381;
+  hash = ((hash << 5) + hash) ^ number;
+  hash = ((hash << 5) + hash) ^ gChapterData.chapterIndex;
+  hash = ((hash << 5) + hash) ^ *StartTimeSeedRamLabel;
+  for (int i = 0; i < 9; ++i){
+    if (TacticianName[i]==0) break;
+    hash = ((hash << 5) + hash) ^ TacticianName[i];
+  };
+  return Mod((u16)hash, max);
+};
 
-    return hash;
-}
+
+int HashInt(int number, int max){
+  if (max==0) return 0;
+  u32 hash = 5381;
+  hash = ((hash << 5) + hash) ^ number;
+  hash = ((hash << 5) + hash) ^ gChapterData.chapterIndex;
+  hash = ((hash << 5) + hash) ^ *StartTimeSeedRamLabel;
+  for (int i = 0; i < 9; ++i){
+    if (TacticianName[i]==0) break;
+    hash = ((hash << 5) + hash) ^ TacticianName[i];
+  };
+  return Mod((u32)hash, max);
+};
 
 // game time initialized -> chapter start events -> when map needs to be displayed, then it is loaded (so if you are faded in, events occur first) 
-
+extern struct ChapterState gChapterData; 
+	
 void GenerateMap(struct Map_Struct* dst)
 {
 	// 2 bytes are the map's XX / YY size
 	// then it's just SHORTs of the different tileset IDs in a row as YY << 7 | XX << 2
 	// uncompressed size is 0x512 / #1298
-	extern struct ChapterState gChapterData; 
+
 
 	// hooked InitChapterMap to update gChapterData._u04 right before LoadChapterMap instead of right after 
 	
@@ -75,13 +108,16 @@ void GenerateMap(struct Map_Struct* dst)
 	u16 saveRandState[3]; 
 	//GetRandState(saveRandState);
 	//int clock = GetGameClock(); 
-	int t_start = gChapterData._u04;
+	//int t_start = gChapterData._u04;
 	//asm("mov r11, r11"); 
 	//if (t_start != clock) { 
 	u16 var[3]; 
-	var[0] = ((t_start-0xF0F0F0F0) & 0xFFFF); // clock at start of chapter 
-	var[1] = (((t_start-0x0F0F0F0F) & 0xFFFF0000)>>16); 
-	var[2] = hashCode(&gChapterData.playerName[0]);
+	u8 x; 
+	
+	for (u8 c=0; c<3; c++) { 
+		x = HashShort(c, 255); 
+		var[c] = HashShort(x, 255); 
+	} 
 	SetRandState(var); //! FE8U = (0x08000C4C+1)
 	//} 
 	

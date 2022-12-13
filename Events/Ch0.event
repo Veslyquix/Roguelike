@@ -5,6 +5,7 @@ NewChName:
 String("Prologue")
 BYTE 0
 
+// This chapter is only used for setting up the rng seed and loading a party 
 
 
 ALIGN 4
@@ -26,7 +27,7 @@ REMOVEPORTRAITS
 ASMC 0x48281
 //ASMC2 0x48281
 CLEAN
-ASMC SaveGameSeed
+ASMC SaveGameSeed // records frames it took to get here from start of the game 
 //FADU 44 
 LOAD1 1 StartingUnits 
 ENUN 

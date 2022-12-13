@@ -21,11 +21,11 @@ POIN $0 $0 $0
 POIN BeginningScene EndingScene
 
 BeginningScene: 
-FADU 44 
 LOAD1 1 StartingUnits 
 ENUN 
 LOAD1 1 EnemyUnits 
 ENUN 
+FADU 44 
 NoFade 
 ENDA 
 
@@ -50,7 +50,8 @@ END_MAIN
 
 MiscBasedEvents:
 CauseGameOverIfLordDies
-AFEV 0x3 EndingScene 0x6 // Defeat boss / all enemies 
+AFEV 0x3 EndingScene 0x6 // Defeat all enemies 
+AFEV 0x3 EndingScene 0x2 // Defeat boss  
 //AFEV flagID eventOffset activationFlag
 //AREA flagID eventOffset [corner1x, corner1y] [corner2x, corner2y]
 END_MAIN
@@ -61,10 +62,13 @@ ALIGN 4
 
 
 EndingScene: 
-EndMMS 
+//EndMMS 
 _MUSICSOMETHING 0x7FFF 
+//MNC2 2 
+ASMC 0x8085C71
 FADI 10 
-MNC2 2 
+MNTS 0 
+
 NoFade 
 ENDA 
 
@@ -73,8 +77,10 @@ UNIT Eirika Lord 0x1 Level(5,Ally,True)   [5,5] 0b 0x0 0x1 REDA5R5 [Rapier] [0x0
 UNIT Seth Paladin 0x1 Level(5,Ally,True)   [5,6] 0b 0x0 0x1 REDA5R6 [SilverLance] [0x0]
 UNIT 
 
+// give enemy bosses death quotes to set flag 2 
 EnemyUnits: 
-UNIT 0x50 Fighter 0x1 Level(5,Enemy,True)   [8,6] 0b 0x0 0x1 REDA8R6 [SilverLance] [0x0]
+UNIT Breguet Fighter 0x1 Level(5,Enemy,True)   [8,6] 0b 0x0 0x1 REDA8R6 [IronAxe] [0x0]
+UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [8,6] 0b 0x0 0x1 REDA8R7 [IronAxe] [0x0]
 UNIT 
 
 PrepUnits: 

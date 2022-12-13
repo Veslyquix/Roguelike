@@ -7,9 +7,10 @@
 // for randomizing classes 
 #include "Randomize/Installer.event" // for now, only save the game seed 
 
-
+#include "Date/Installer.event" 
 #include "FillAIRangeMapFix/Installer.event" 
 #include "Fixes/QoL_Testing.event" 
+#include "SkipChIntro/Installer.event" 
 #include "Fixes/BugFixes.event" 
 #include "Fixes/MechanicChanges.event" 
 
