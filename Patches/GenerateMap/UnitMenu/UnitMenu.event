@@ -1,0 +1,401 @@
+#ifndef UNIT_MENU
+#define UNIT_MENU
+
+#define AlwaysUsable 0x804f449
+#define NeverUsable  0x804f451 
+
+#include "Extensions/Hack Installation.txt"
+#include "_UnitMenuDefs.event"
+
+
+#define UnitMenuWidth 9 
+#define ChMenuWidth 9
+#define UnitMenuLeft 2 // submenu ignores this 
+#define UnitMenuRight 21 
+#define ChMenuRight 21
+
+#include "SubMenu/Installer.event"
+
+PUSH
+  // Repoint Unit Menu
+  ORG $59D1F8
+    POIN UnitMenuTable
+
+// Make all menus that are too far to the right to start at this x coord 
+ORG $4EBB6 
+//BYTE GeneralMenusLeft 
+
+// Make the chapter menu wider 
+ORG $59D216 
+BYTE ChMenuWidth 
+ORG $1CA86 
+BYTE ChMenuRight // 0x17 default 
+
+
+
+
+
+  // Make the unit menu wider (to fit longer words)
+  ORG $59d1f2 
+    BYTE UnitMenuWidth
+
+  ORG $1d4fa
+    BYTE UnitMenuLeft // left x coord (open 1)
+
+  ORG $1d4fc
+    BYTE UnitMenuRight // right x coord (open 1)
+
+  ORG $1D44E
+    BYTE UnitMenuLeft // left x coord (open 2)
+
+  ORG $1D450
+    BYTE UnitMenuRight // right x coord (open 2)
+
+  /*
+
+  Goddammit Teq (capture hooks here too)
+
+  ORG $22882
+    BYTE $01 // left x coord (go back 1)
+  */
+ORG $22884 // Capture returns here 
+BYTE UnitMenuRight // Capture 
+
+  ORG $22818
+    BYTE UnitMenuLeft // left x coord (go back 2)
+
+  ORG $2281A
+    BYTE UnitMenuRight // right x coord (go back 2)
+
+  ORG $22772
+    BYTE UnitMenuLeft // left x coord (go back 3)
+
+  ORG $22774
+    BYTE UnitMenuRight // right x coord (go back 3)
+
+  ORG $23660
+    BYTE UnitMenuLeft // left x coord (go back 4)
+
+  ORG $23662
+    BYTE UnitMenuRight // right x coord (go back 4)
+
+POP
+
+ALIGN 4         //Insert new commands where you want them to appear in the menu
+UnitMenuTable:
+  //Use the macro MenuCommand(name,description,colour,usability,effect)
+  //Color options: NormalText, GrayText, BlueText, OrangeText, GreenText (flashes), BlackText
+  //MenuCommand(DualAtkTxtID,DualAtkDescId,0,DualAtkCheck,DualAtkSelected) 
+  
+      //MenuCommand(UM_EditSkill, UM_EditSkillDesc, OrangeText, $04F449, SkillDebugCommand_OnSelect)
+
+
+// Modular Summon 
+  //MenuCommand(0x693,0x6DD,NormalText,ModularSummonUsability,ModularSummonEffect)
+	
+  UM_Visit
+  
+  MenuCommand(0x67A, 0x6CC, BlueText, $22FDC, $23020)
+  // UM_Seize
+  #ifdef ESCAPE_ARRIVE
+    MenuCommand(ArriveName, ArriveDesc, BlueText, ArriveCommandUsability, ArriveCommandEffect)
+    MenuCommand(EscapeName, EscapeDesc, BlueText, EscapeCommandUsability, EscapeCommandEffect)
+  #endif // ESCAPE_ARIVE
+  
+  #ifdef DRAGON_VEINS
+  MenuCommand(UMText_DV, UMText_DVDesc, GreenText, VeinUsability, VeinEffect)
+  #endif // DRAGON_VEINS
+#ifdef GAIDEN_MAGIC
+
+  #ifdef DEBUG_MODE
+	//MenuCommand(UM_Promote, UM_PromoteDesc, GreenText, PromoteUsability, PromoteEffect) 
+	//MenuCommand(UM_Promote, UM_PromoteDesc, GreenText, BreakPointUsability, DebugCommandEffect) // Debug Command
+#endif 
+MenuCommand(UM_GaidenBlackMagic,UM_GaidenMagicDesc,NormalText,GaidenBlackMagicUMUsability,GaidenBlackMagicUMEffect,GaidenBlackMagicUMHover,GaidenMagicUMUnhover)
+#ifdef DEBUG_MODE
+	//MenuCommand(UM_Promote, UM_PromoteDesc, GreenText, PromoteUsability, PromoteEffect) 
+	//MenuCommand(UM_Promote, UM_PromoteDesc, GreenText, BreakPointUsability, DebugCommandEffect) // Debug Command
+#endif 
+
+
+// Capture uses GaidenMagic stuff 
+MenuCommand(UM_Capture, UM_CaptureDesc,NormalText,CaptureGaidenBlackMagicUMUsability,CaptureGaidenBlackMagicUMEffect,GaidenBlackMagicUMHover,GaidenMagicUMUnhover)
+//MenuCommand(UM_GaidenWhiteMagic,UM_GaidenMagicDesc,NormalText,GaidenWhiteMagicUMUsability,GaidenWhiteMagicUMEffect,GaidenWhiteMagicUMHover,GaidenMagicUMUnhover)
+#endif // GAIDEN_MAGIC
+
+#ifdef DEBUG_MODE
+	//MenuCommand(UM_Promote, UM_PromoteDesc, GreenText, PromoteUsability, PromoteEffect) 
+	//MenuCommand(UM_Promote, UM_PromoteDesc, GreenText, BreakPointUsability, DebugCommandEffect) // Debug Command
+#endif 
+
+
+  MenuCommand(UM_Save, UM_SaveDesc, GreenText, GenericTrapUsability0x3A, GenericTrapEffect) //Save
+  MenuCommand(UM_Save, UM_SaveDesc, GreenText, GenericTrapUsability0x3B, GenericTrapEffect) //Save
+
+  MenuCommand(UM_Enter, UM_EnterDesc, GreenText, EnterTextUsability0x5A, EnterTextEffect0x5A) //Enter  
+  MenuCommand(UM_Enter, UM_EnterDesc, GreenText, EnterTextUsability0x5B, EnterTextEffect0x5B) //Enter  
+  MenuCommand(UM_Enter, UM_EnterDesc, GreenText, EnterTextUsability0x5C, EnterTextEffect0x5C) //Enter  
+  MenuCommand(UM_Enter, UM_EnterDesc, GreenText, EnterTextUsability0x5D, EnterTextEffect0x5D) //Enter  
+  UM_Vendor
+  
+  //UM_Strength
+  MenuCommand(UM_Strength,UM_StrengthDesc,BlueText, GenericTrapDisappearUsability0x22, StrengthBoulderEffect) 
+
+
+  
+//Disappear after use
+  //UM_Cut
+  MenuCommand(UM_Cut,UM_CutDesc,BlueText, GenericTrapDisappearUsability0x20, GenericTrapDisappearEffect)
+  //UM_RockSmash
+  MenuCommand(UM_RockSmash,UM_RockSmashDesc,BlueText, GenericTrapDisappearUsability0x21, GenericTrapDisappearEffect)
+
+
+
+  //UM_Step-on
+  MenuCommand(UM_StepOn,UM_StepOnDesc,BlueText, GenericTrapDisappearUsability0x23, GenericTrapDisappearEffect)
+
+  //UM_Jump
+  //MenuCommand(UM_Jump,UM_JumpDesc,BlueText, GenericTrapDisappearUsability0x24, GenericTrapDisappearEffect)
+  //UM_Eat
+  MenuCommand(UM_Eat, UM_EatDesc,BlueText, GenericTrapDisappearUsability0x25, GenericTrapDisappearEffect)
+
+  //UM_Interact_Disappear
+  MenuCommand(UM_Interact,UM_InteractDesc,BlueText, GenericTrapDisappearUsability0x26, GenericTrapDisappearEffect)
+
+  //UM_Jump
+  MenuCommand(UM_Jump,UM_JumpDesc,BlueText, GenericTrapDisappearUsability0x27, GenericTrapDisappearEffect)
+  //UM_Eat
+  MenuCommand(UM_Eat, UM_EatDesc,BlueText, GenericTrapDisappearUsability0x28, GenericTrapDisappearEffect)
+
+  //UM_Interact_Disappear
+  MenuCommand(UM_Take2,UM_Take2Desc,BlueText, GenericTrapDisappearCompletionUsability0x29, GenericTrapDisappearCompletionEffect)
+
+  MenuCommand(UM_Take2, UM_Take2Desc, BlueText, ObtainSkillUsability0x6A, ObtainSkillEffect) //Take
+  MenuCommand(UM_Take2, UM_Take2Desc, BlueText, ObtainSpellUsability0x6B, ObtainSpellEffect) //Take (Gold pokeball) 
+  
+
+
+
+//Does not disappear
+
+
+
+  MenuCommand(UM_Take2, UM_Take2Desc, BlueText, ObtainStatAccessoryUsability0x13, ObtainStatAccessoryEffect) //take accessory  
+  MenuCommand(UM_Take2, UM_Take2Desc, BlueText, ObtainSkillAccessoryUsability0x14, ObtainSkillAccessoryEffect) //take accessory 
+  
+  MenuCommand(UM_HealTile, UM_HealTileDesc, GreenText, HealTileUsability, HealTileEffect) //Enter  
+  MenuCommand(UM_PickBerry, UM_PickBerryDesc, BlueText, BerryTreeUsability, PickBerryTreeEffect) //Enter  
+//  ## UM_EatBerry
+// Eat[X]
+//## UM_EatBerryDesc
+//Eat from the tree.[X]
+  //Obtain Item
+
+  MenuCommand(UM_Take2, UM_Take2Desc, BlueText, ObtainItemUsability0x10, ObtainItemEffect) //Take
+  MenuCommand(UM_Take2, UM_Take2Desc, BlueText, ObtainItemUsability0x11, ObtainItemEffect) //Take (Gold pokeball) 
+  MenuCommand(UM_Take2, UM_Take2Desc, BlueText, ObtainCoinsUsability0x15, ObtainCoinsEffect) //Take 
+  
+  
+  MenuCommand(UM_AoEName, UM_AoEDesc, NormalText, AoE_AreAnyUsable, AoE_Effect)
+
+  
+  
+  MenuCommand(UM_Examine,UM_ExamineDesc,BlueText, GenericTrapDisappearCompletionUsability0x2A, GenericTrapDisappearCompletionEffect)
+
+  MenuCommand(UM_Examine, UM_ExamineDesc, BlueText, TeleportSignAUsability0x60, TeleportSignAEffect) //Examine
+  MenuCommand(UM_Examine, UM_ExamineDesc, BlueText, TeleportSignBUsability0x61, TeleportSignBEffect) //Examine
+  
+  
+  MenuCommand(UM_Enter, UM_EnterDesc, BlueText, GenericTrapUsability0x35, GenericTrapEffect) //Enter
+  MenuCommand(UM_Exit2, UM_Exit2Desc, BlueText, GenericTrapUsability0x36, GenericTrapEffect) //Exit
+  MenuCommand(UM_Confirm, UM_ConfirmDesc, BlueText, GenericTrapUsability0x37, GenericTrapEffect) //Confirm
+  
+
+  MenuCommand(UM_Examine, UM_ExamineDesc, GreenText, DisplayTextUsability0x50, DisplayTextEffect) //Examine 
+  MenuCommand(UM_Examine, UM_ExamineDesc, GreenText, DisplayTextUsability0x51, DisplayTextEffect) //Examine 
+  MenuCommand(UM_Examine, UM_ExamineDesc, GreenText, DisplayTextUsability0x52, DisplayTextEffect) //Read 
+  MenuCommand(UM_Talk2, UM_Talk2Desc, GreenText, DisplayTextUsability0x53, DisplayTextEffect) //Talk 
+
+  MenuCommand(UM_Examine, UM_ExamineDesc, BlueText, GenericTrapUsability0x30, GenericTrapEffect) //Wait
+  MenuCommand(UM_Interact, UM_InteractDesc, BlueText, GenericTrapUsability0x31, GenericTrapEffect) //Interact
+  MenuCommand(UM_Talk2, UM_Talk2Desc, GreenText, GenericTrapUsability0x32, GenericTrapEffect) //GreenTalk
+  MenuCommand(UM_Talk2, UM_Talk2Desc, GreenText, GenericTrapUsability0x33, TalkTextEffect0x33) //Talk
+
+  MenuCommand(UM_Read, UM_ReadDesc, NormalText, GenericTrapUsability0x38, GenericTrapEffect) //Read
+  MenuCommand(UM_Examine, UM_ExamineDesc, BlueText, GenericTrapUsability0x39, GenericTrapEffect) //Examine
+  //MenuCommand(UM_Use, UM_UseDesc, GreenText, GenericTrapUsability0x3A, GenericTrapEffect) //Use
+  MenuCommand(UM_Enter, UM_EnterDesc, GreenText, GenericTrapUsability0x3C, GenericTrapEffect) //Enter
+  MenuCommand(UM_Exit2, UM_Exit2Desc, GreenText, GenericTrapUsability0x3D, GenericTrapEffect) //Exit
+
+
+  MenuCommand(UM_Examine, UM_ExamineDesc, GreenText, ObtainItemUsability0x12, ObtainItemEffect) //Examine
+//dummy ones 
+
+
+  //Pickup 11ED 11EE 
+  //Examine 11EF 11F0 
+  
+  
+
+  #ifdef DEBUG_MODE
+  UM_Attack
+  #endif 
+  //MenuCommand(0x67b, 0x6c0, NormalText, $249ac, AttackEffect, $22c31, $22c99) //to clear flags
+  // UM_Attack_Ballista 
+  MenuCommand(0x67b, 0x6c0, NormalText, $24a28, AttackEffect, $22c31, $22c99)
+  MenuCommand(UM_Attack2, UM_Attack2Desc, NormalText, GenericTrapUsability0x34, GenericTrapEffect) //Attack
+
+  
+
+
+  #ifdef COMBAT_ARTS
+	MenuCommand(UM_CombatArts, UM_CombatArtsDesc, NormalText, CombatArtsUsability, CombatArtsEffect, $22c31, $22c99)
+  #else // COMBAT_ARTS
+	//Lunge
+	MenuCommand(UM_Lunge, UM_LungeDesc, NormalText, LungeUsability, LungeEffect, $22c31, $22c99)
+
+	//Mercy
+	MenuCommand(UM_Mercy, UM_MercyDesc, NormalText, MercyUsability, MercyEffect, $22c31, $22c99)
+
+	//Gamble
+	MenuCommand(UM_Gamble, UM_GambleDesc, NormalText, GambleUsability, GambleEffect, $22c31, $22c99)
+  #endif // COMBAT_ARTS
+
+
+  UM_Staff
+  UM_Ride
+  UM_Exit
+  UM_Play
+  
+  //UM_Dance
+  MenuCommand(0x67E,0x6C2,NormalText,NewDanceUsability,0x231D0)
+
+  // UM_Talk
+  MenuCommand(0x680, 0x6c9, GreenText, 0x23c81, 0x23cc5)
+  UM_Chest
+  UM_Door
+  UM_Armory
+
+  UM_Secret
+  UM_Arena
+
+
+#ifdef INSTALL_AoE
+#define MenuCommand_BPress(name,description,colour,usability,effect, unknown2) "WORD $80d7d94; SHORT name description; BYTE colour $4e; SHORT 0; POIN usability|1; WORD 0; POIN effect|1; POIN 0 0 unknown2|1"
+  MenuCommand_BPress(UM_AoEName, UM_AoEDesc, NormalText, AoE_AreAnyUsable, AoE_Effect, AoE_ClearGraphics)
+#endif 
+
+
+
+  UM_Steal
+  
+  //UM_Summon
+  MenuCommand(0x693,0x6DD,NormalText,NewSummonUsability,0x244B8)
+  
+  UM_Summon_DK
+  UM_Pick
+
+#ifndef COMBAT_ARTS
+
+#ifdef HAX_RALLIES
+  // Rally preview conflicts with window semitransparency changes
+  // So we only add that in if it is disabled
+#ifdef SEMITRANSPARENCY_CHANGES
+  MenuCommand(UM_Rally, UM_RallyDesc, NormalText, RallyCommandUsability, RallyCommandEffect)
+#else
+  MenuCommand(UM_Rally, UM_RallyDesc, NormalText, RallyCommandUsability, RallyCommandEffect, RallyCommandSwitchIn, RallyCommandSwitchOut)
+#endif
+
+#endif // HAX_RALLIES
+
+#endif // COMBAT_ARTS
+
+
+  // UM_Support
+  MenuCommand(0x681, 0x6ca, GreenText, 0x23d15, 0x23d65)
+
+  
+  #ifdef RAID
+    MenuCommand(RaidNameText,RaidDescText,NormalText,RaidUsability,RaidEffect)
+  #endif // RAID
+  
+  #ifdef STAIRS_ASM
+	MenuCommand(StairsNameText,StairsDescText,GreenText,StairsUsability,StairsEffect)
+  #endif // STAIRS_ASM
+  
+
+  	
+  #ifndef COMBAT_ARTS
+	// Shove & cie
+	MenuCommand(UM_Shove,      UM_ShoveDesc,      NormalText, prShoveCommand_Usability,      prShoveCommand_Effect)
+	MenuCommand(UM_Smite,      UM_SmiteDesc,      NormalText, prSmiteCommand_Usability,      prSmiteCommand_Effect)
+	MenuCommand(UM_Pivot,      UM_PivotDesc,      NormalText, prPivotCommand_Usability,      prPivotCommand_Effect)
+	MenuCommand(UM_Reposition, UM_RepositionDesc, NormalText, prRepositionCommand_Usability, prRepositionCommand_Effect)
+	MenuCommand(UM_Swap,       UM_SwapDesc,       NormalText, prSwapCommand_Usability,       prSwapCommand_Effect)
+	MenuCommand(UM_Swarp,      UM_SwarpDesc,      NormalText, prSwarpCommand_Usability,      prSwarpCommand_Effect)
+  #endif // COMBAT_ARTS
+  
+    	//Capture
+	//MenuCommand(UM_Capture, UM_CaptureDesc, NormalText, Capture_Usability, Capture_Effect_Func, $22c31, $22c99)
+
+  
+  
+  // MenuCommand(0x689, 0x6c5, 0, 0x228a4, RescueEffect) //rescue
+  // MenuCommand(UMText_Transfer,UMText_TransferDesc,GreenText,TransferUsability,TransferTarget) //transfer
+  // MenuCommand(UMText_Switch,UMText_SwitchDesc,GreenText,SwitchUsability,SwitchCommand)   //switch
+
+
+
+	
+  #ifdef __DEBUG__
+    MenuCommand(UM_EditSkill, UM_EditSkillDesc, OrangeText, $04F449, SkillDebugCommand_OnSelect)
+  #endif
+
+#ifndef MagikarpOnly
+MenuCommand(UM_SplashName, UM_SplashDesc, GreenText, SplashCommandUsability, SplashCommandEffect)
+#endif 
+#ifdef MagikarpOnly
+MenuCommand(UM_SplashName, UM_SplashDesc, GreenText, AlwaysUsable, SplashCommandEffect)
+#endif 
+
+  
+MenuCommand(UM_RecoverName, UM_RecoverDesc, BlueText, RecoverCommandUsability, RecoverCommandEffect)
+MenuCommand(UM_GuardName, UM_GuardDesc, BlueText, GuardCommandUsability, GuardCommandEffect)
+MenuCommand(UM_GrowthName, UM_GrowthDesc, BlueText, GrowthCommandUsability, GrowthCommandEffect)
+MenuCommand(UM_HardenName, UM_HardenDesc, BlueText, HardenCommandUsability, HardenCommandEffect)
+MenuCommand(UM_AgilityName, UM_AgilityDesc, BlueText, AgilityCommandUsability, AgilityCommandEffect)
+MenuCommand(UM_AmnesiaName, UM_AmnesiaDesc, BlueText, AmnesiaCommandUsability, AmnesiaCommandEffect)
+MenuCommand(UM_SwordsDanceName, UM_SwordsDanceDesc, BlueText, SwordsDanceCommandUsability, SwordsDanceCommandEffect)
+MenuCommand(UM_BulkUpName, UM_BulkUpDesc, BlueText, BulkUpCommandUsability, BulkUpCommandEffect)
+MenuCommand(UM_CalmMindName, UM_CalmMindDesc, BlueText, CalmMindCommandUsability, CalmMindCommandEffect)
+MenuCommand(UM_HoneClawsName, UM_HoneClawsDesc, BlueText, HoneClawsCommandUsability, HoneClawsCommandEffect)
+MenuCommand(UM_FocusEnergyName, UM_FocusEnergyDesc, BlueText, FocusEnergyCommandUsability, FocusEnergyCommandEffect)
+
+  UM_Item
+
+    //UM_Call, UM_CallDesc 
+    MenuCommand(UM_Call, UM_CallDesc, GreenText, CallCommandUsability, CallCommandEffect)
+  //UM_Rest, UM_RestDesc 
+  
+  UM_Trade
+  
+
+  
+  //UM_Supply
+  MenuCommand(0x68F,0x6D5,GreenText,NewSupplyUsability,0x23FB8)
+MenuCommand(UM_Promote, UM_PromoteDesc, GreenText, PromoteUsability, PromoteEffect) 
+
+
+
+// Wait (edited to show an arrow) 
+BYTE 0x94 0x7D 0xD 0x8 0x95 0x6 0xBF 0x6 0x0 0x6B 0x0 0x0 0x49 0xF4 0x4 0x8; POIN DisplayedWaitmarkIfSubMenu+1; BYTE 0x39 0x27 0x2 0x8 0 0 0 0 0 0 0 0 0 0 0 0	//	待機 wait
+
+  
+  //UM_Wait
+
+  UM_Separator 
+
+#endif // UNIT_MENU
+
+
+

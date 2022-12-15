@@ -14,8 +14,8 @@
 #include "Fixes/BugFixes.event" 
 #include "Fixes/MechanicChanges.event" 
 
-
-
+#include "UnitMenu/UnitMenu.event" 
+#include "TrapRework/TrapRework.event" 
 
 
 

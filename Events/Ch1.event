@@ -57,6 +57,7 @@ AFEV 0x3 EndingScene 0x2 // Defeat boss
 END_MAIN
 
 Traps:
+ShopTrap(5,5,0) // xx, yy, shop list ID 
 ENDTRAP
 ALIGN 4
 
