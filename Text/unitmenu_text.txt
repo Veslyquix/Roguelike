@@ -214,13 +214,16 @@ Select an area to Heal. Press L/R to Rotate.[X]
  
 ## UM_Shop
  Vendor[X]
- 
 ## UM_ShopDesc
- Visit the vendor.[X]
+Visit the vendor.[X]
+
 ## UM_Armoury
  Armoury[X]
- 
 ## UM_ArmouryDesc
- Visit the armoury.[X]
+Visit the armoury.[X]
 
- 
+## UM_Chest2
+ Loot[X]
+## UM_ChestDesc2
+Loot the chest.[X]
+

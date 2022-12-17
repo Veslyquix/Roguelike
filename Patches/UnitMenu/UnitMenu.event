@@ -108,6 +108,7 @@ POIN 0x0D7E20;SHORT 0x0683 0x06CE;BYTE 0x00 0x5D 0x00 0x00;POIN 0x023E1D 0x00 0x
 POIN 0x0D7E18;SHORT 0x0684 0x06CD;BYTE 0x00 0x5E 0x00 0x00;POIN 0x023DB5 0x00 0x023DF5 0x00 0x00 0x00 //10  Door
 
  MenuCommand(UM_Shop, UM_ShopDesc, NormalText, ShopTrapUsability, ShopTrapEffect) //Attack
+ MenuCommand(UM_Chest2, UM_ChestDesc2, NormalText, ChestTrapUsability, ChestTrapEffect) //Attack
  MenuCommand(UM_Armoury, UM_ArmouryDesc, NormalText, ArmouryTrapUsability, ArmouryTrapEffect) //Attack
  MenuCommand(UM_Shop, UM_ShopDesc, NormalText, SecretShopTrapUsability, SecretShopTrapEffect) //Attack
 

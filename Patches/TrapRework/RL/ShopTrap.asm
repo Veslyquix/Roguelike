@@ -27,6 +27,50 @@ pop {r1}
 bx r1 
 .ltorg 
 
+.type ChestTrapUsability, %function 
+.global ChestTrapUsability 
+ChestTrapUsability: 
+push {lr} 
+ldr r0, =ChestTrapID 
+mov r1, #0 @ on tile 
+bl TrapUsabilityCompletionFlag 
+pop {r1} 
+bx r1 
+.ltorg 
+
+.global ChestTrapEffect 
+.type ChestTrapEffect, %function 
+ChestTrapEffect: 
+push {r4-r5, lr} 
+
+ldr r0, =CurrentUnit 
+ldr r0, [r0] 
+ldr r1, =ChestTrapID 
+bl GetTrapAtUnit 
+cmp r0, #0 
+beq Exit 
+mov r4, r0  @&The DV
+blh RemoveTrap 
+
+ldr r3, =MemorySlot 
+mov r0, #0x6C 
+str r0, [r3, #4*0x03] @ s3 as item 
+
+ldr r0, =GiveSomeItem 
+mov r1, #1 @ wait 
+blh EventEngine 
+
+Exit: 
+ldr r1, =CurrentUnitFateData	@these four lines copied from wait routine
+mov r0, #0x10
+strb r0, [r1,#0x11]
+@mov r0, #0x17	@makes the unit wait?? makes the menu disappear after command is selected??
+mov r0,#0x94		@play beep sound & end menu on next frame & clear menu graphics
+pop {r4-r5} 
+pop {r3} 
+bx r3 
+.ltorg 
+
 .type ShopTrapUsability, %function 
 .type ArmouryTrapUsability, %function 
 .type SecretShopTrapUsability, %function 

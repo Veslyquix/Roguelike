@@ -5,6 +5,14 @@
   .short 0xf800
 .endm
 
+.macro blh_free to, reg=r3
+  push {r3} 
+  ldr \reg, =\to
+  mov lr, \reg
+  pop {r3} 
+  .short 0xf800
+.endm
+
 .equ MemorySlot,0x30004B8
 .equ GetTrapAt,0x802e1f0
 .equ gTerrainMap, 0x202E4DC
@@ -30,6 +38,17 @@
 .global UpdateShopTraps
 UpdateShopTraps: 
 push {r4-r7, lr} 
+mov r4, r8 
+mov r5, r9 
+mov r6, r10 
+push {r4-r6} 
+mov r0, #7 
+blh CheckEventId 
+cmp r0, #1 
+beq Break 
+mov r0, #7 
+blh SetFlag 
+
 ldr r6, =gTerrainMap 
 ldr r6, [r6] 
 ldr r4, =MapSize 
@@ -58,45 +77,46 @@ cmp r1, #6 @ is this a shop?
 beq FoundArmoury
 cmp r1, #7 
 beq FoundShop 
+cmp r1, #0x20 
+beq FoundChest 
 b XLoop 
 FoundShop: 
-
-push {r2-r3} 
-mov r0, r2 
-mov r1, r3 
-blh GetTrapAt
-pop {r2-r3} 
-cmp r0, #0 
-bne XLoop 
-mov r0, r2 @ xx 
-push {r2-r4}
-ldr r2, =ShopTrapID 
-b CreateShop 
+ldr r0, =ShopTrapID 
+mov r8, r0 
+b CreateTrap
 
 FoundArmoury: 
-push {r2-r3} 
+ldr r0, =ArmouryTrapID 
+mov r8, r0 
+b CreateTrap
+
+FoundChest: 
+ldr r0, =ChestTrapID 
+mov r8, r0 
+b CreateTrap
+
+CreateTrap: 
+
+mov r9, r2 @ xx 
+mov r10, r3 @ yy 
 mov r0, r2 
 mov r1, r3 
 blh GetTrapAt
-pop {r2-r3} 
+mov r2, r9 @ xx 
+mov r3, r10 @ yy  
 cmp r0, #0 
 bne XLoop 
-mov r0, r2 @ xx
-push {r2-r4} 
-ldr r2, =ArmouryTrapID 
-b CreateShop 
+mov r0, r9 @ xx 
 
-
-CreateShop: 
-mov r1, r3 @ yy 
+mov r1, r10 @ yy 
  
-
+mov r2, r8 
 lsl r2, #24 
 lsr r2, #24 
 mov r3, #0 
-blh AddTrap, r4 
-pop {r2-r4}  
-
+blh_free SpawnTrap
+mov r2, r9 @ xx 
+mov r3, r10 @ yy  
 b XLoop 
 
 Break: 
@@ -105,6 +125,10 @@ blh GetTrap
 mov r3, r0 
 ldrb r0, [r3, #2] 
 
+pop {r4-r6} 
+mov r8, r4 
+mov r9, r5 
+mov r10, r6 
 pop {r4-r7} 
 pop {r1} 
 ldr r1, =0x801A1B1 
