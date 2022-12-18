@@ -1,3 +1,7 @@
+#include "Handaxe/Installer.event" 
+#include "_FE8EssentialFixes.event" 
+#include "TrapSMS_Size/Installer.event" 
+
 PUSH 
 
 //Fix top-right tiles in statscreen

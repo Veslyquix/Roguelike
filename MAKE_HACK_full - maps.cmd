@@ -6,11 +6,11 @@
 
 @rem defining buildfile config
 
-set "source_rom=%~dp0FE8_clean.gba"
+set "source_rom=%~dp0anim.gba"
 set "main_event=%~dp0ROMBuildfile.event"
-set "target_rom=%~dp0DC.gba"
-set "target_ups=%~dp0DungeonCrawl.ups"
-set "target_sym=%~dp0FE8Hack.sym"
+set "target_rom=%~dp0RL.gba"
+set "target_ups=%~dp0Roguelike.ups"
+set "target_sym=%~dp0RL.sym"
 
 @rem defining tools
 
@@ -58,10 +58,10 @@ echo:
 echo Assembling
 
 cd "%base_dir%EventAssembler"
-ColorzCore A FE8 "-output:%target_rom%" "-input:%main_event%" "--nocash-sym:%~dp0FE8Hack.sym" "--build-times"
-@rem type "%~dp0FE8_clean.sym" >> "%~dp0DC.sym"
-SET destDir="C:\Users\David\Desktop\FEBuilderGBA\config\etc\DC"
-copy /y "%~dp0DC.sym" %destDir%\comment_.txt
+ColorzCore A FE8 "-output:%target_rom%" "-input:%main_event%" "--nocash-sym:%~dp0RL.sym" "--build-times"
+@rem type "%~dp0FE8_clean.sym" >> "%~dp0RL.sym"
+SET destDir="C:\Users\David\Desktop\FEBuilderGBA\config\etc\RL"
+copy /y "%~dp0RL.sym" %destDir%\comment_.txt
 
 
 
@@ -74,7 +74,7 @@ cd "%base_dir%"
 echo:
 echo Generating sym file
 
-echo: | ( "%symcombo%" "%target_sym%" "%target_sym%" "%base_dir%\Tools\sym\VanillaOffsets.sym" )
+@rem echo: | ( "%symcombo%" "%target_sym%" "%target_sym%" "%base_dir%anim.sym" )
 
 
 echo:

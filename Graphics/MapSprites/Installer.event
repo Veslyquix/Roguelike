@@ -3,92 +3,19 @@
 #include "Internals.event"
 #include "GeneratedInstaller.event"
 
+PUSH 
+ORG $59EEC0 // light rune palette 
+BYTE $00 $00 $3A $2B $D1 $21 $DB $00 $8C $25 $75 $36 $DE $63 $B7 $32 $4F $53 $BC $77 $CC $62 $0E $1A $6D $3E $94 $4E $D4 $53 $7C $3F
+POP 
 
-//First free SMS is 107
-#define AcolyteFStanding 107 
-#define AxeArmorStanding 108 
-#define AxeCavalierFStanding 109 
-#define AxeCavalierStanding 110 
-#define AxePaladinFStanding 111 
-#define AxePaladinStanding 112 
-#define BowKnightFStanding 113 
-#define BowKnightStanding 114 
-#define DeserterStanding 115 
-#define DragoonMoving 116 
-#define DragoonStanding 117 
-#define DruidFStanding 118 
-#define DukeStanding 119 
-#define FighterStanding 120 
-#define LanceArmorStanding 121 
-#define LanceCavalierFStanding 122 
-#define LanceCavalierStanding 123 
-#define LancePaladinFStanding 124 
-#define LancePaladinStanding 125 
-#define LightMageStanding 126 
-#define MageFStanding 127 
-#define MageStanding 128 
-#define OracleFStanding 129 
-#define PaladinFStanding 130 
-#define ShamanFStanding 131 
-#define SwordArmorStanding 132 
-#define SwordCavalierFStanding 133 
-#define SwordCavalierStanding 134 
-#define SwordPaladinFStanding 135 
-#define SwordPaladinStanding 136 
-#define TorchStanding 137 
-#define WagonStanding 138 
-#define WildWyvern 139 
-#define WyvernKnightFStanding 140 
-#define WyvernKnightStanding 141 
-#define WyvernRiderFStanding 142 
-#define WyvernRiderStanding 143 
- 
- 
-//First free MMS is 127 and will show up if you've expanded classes.
-#define AcolyteFMoving 127 
-#define AxeArmorMoving 128 
-#define AxeCavalierFMoving 129 
-#define AxeCavalierMoving 130 
-#define AxePaladinFMoving 131 
-#define AxePaladinMoving 132 
-#define BowKnightFMoving 133 
-#define BowKnightMoving 134 
-#define DeserterMoving 135 
-#define DruidFMoving 136 
-#define DukeMoving 137 
-#define FighterMoving 138 
-#define LanceArmorMoving 139 
-#define LanceCavalierFMoving 140 
-#define LanceCavalierMoving 141 
-#define LancePaladinFMoving 142 
-#define LancePaladinMoving 143 
-#define LightMageMoving 144 
-#define MageMoving 145 
-#define OracleFMoving 146 
-#define PaladinFMoving 147 
-#define ShamanFMoving 148 
-#define SwordArmorMoving 149 
-#define SwordCavalierFMoving 150 
-#define SwordCavalierMoving 151 
-#define SwordPaladinFMoving 152 
-#define SwordPaladinMoving 153 
-#define TorchMoving 154 
-#define WagonMoving 155 
-#define WildWyvernMoving 156 
-#define WyvernKnightFMoving 157 
-#define WyvernKnightMoving 158 
-#define WyvernRiderFMoving 159 
-#define WyvernRiderMoving 160 
- 
 
  
  
  
-
 //Copy from here 
 PUSH 
  
-SetSMS(AcolyteFStanding, 1, AcolyteFStanding_Data) 
+SetSMS(AcolyteFStanding, 0, AcolyteFStanding_Data) 
 SetSMS(AxeArmorStanding, 1, AxeArmorStanding_Data) 
 SetSMS(AxeCavalierFStanding, 1, AxeCavalierFStanding_Data) 
 SetSMS(AxeCavalierStanding, 1, AxeCavalierStanding_Data) 
@@ -96,10 +23,15 @@ SetSMS(AxePaladinFStanding, 1, AxePaladinFStanding_Data)
 SetSMS(AxePaladinStanding, 1, AxePaladinStanding_Data) 
 SetSMS(BowKnightFStanding, 1, BowKnightFStanding_Data) 
 SetSMS(BowKnightStanding, 1, BowKnightStanding_Data) 
-SetSMS(DeserterStanding, 1, DeserterStanding_Data) 
+SetSMS(ChestStanding, 0, ChestStanding_Data) 
+SetSMS(ClosedVillageStanding,0, ClosedVillageStanding_Data) 
+SetSMS(DeserterStanding, 0, DeserterStanding_Data) 
+SetSMS(DoorLeftStanding, 0, DoorLeftStanding_Data) 
+SetSMS(DoorRightStanding, 0, DoorRightStanding_Data) 
+SetSMS(DoorStanding, 0, DoorStanding_Data) 
 SetSMS(DragoonMoving, 1, DragoonMoving_Data) 
 SetSMS(DragoonStanding, 1, DragoonStanding_Data) 
-SetSMS(DruidFStanding, 1, DruidFStanding_Data) 
+SetSMS(DruidFStanding, 0, DruidFStanding_Data) 
 SetSMS(DukeStanding, 1, DukeStanding_Data) 
 SetSMS(FighterStanding, 1, FighterStanding_Data) 
 SetSMS(LanceArmorStanding, 1, LanceArmorStanding_Data) 
@@ -112,17 +44,29 @@ SetSMS(MageFStanding, 1, MageFStanding_Data)
 SetSMS(MageStanding, 1, MageStanding_Data) 
 SetSMS(OracleFStanding, 1, OracleFStanding_Data) 
 SetSMS(PaladinFStanding, 1, PaladinFStanding_Data) 
-SetSMS(ShamanFStanding, 1, ShamanFStanding_Data) 
+SetSMS(ShamanFStanding, 0, ShamanFStanding_Data) 
+SetSMS(SnagBridgeHorizontalStanding, 0, SnagBridgeHorizontalStanding_Data) 
+SetSMS(SnagBridgeVerticalStanding, 0, SnagBridgeVerticalStanding_Data) 
+SetSMS(SnagStanding, 0, SnagStanding_Data) 
 SetSMS(SwordArmorStanding, 1, SwordArmorStanding_Data) 
 SetSMS(SwordCavalierFStanding, 1, SwordCavalierFStanding_Data) 
 SetSMS(SwordCavalierStanding, 1, SwordCavalierStanding_Data) 
 SetSMS(SwordPaladinFStanding, 1, SwordPaladinFStanding_Data) 
 SetSMS(SwordPaladinStanding, 1, SwordPaladinStanding_Data) 
-SetSMS(TorchStanding, 1, TorchStanding_Data) 
+SetSMS(TorchStanding, 0, TorchStanding_Data) 
+SetSMS(Village_A1_Standing, 1, Village_A1_Standing_Data) 
+SetSMS(Village_A2_Standing, 1, Village_A2_Standing_Data) 
+SetSMS(Village_A3_Standing, 1, Village_A3_Standing_Data) 
+SetSMS(Village_A4_Standing, 1, Village_A4_Standing_Data) 
+SetSMS(Village_B1_Standing, 1, Village_B1_Standing_Data) 
+SetSMS(Village_B2_Standing, 1, Village_B2_Standing_Data) 
+SetSMS(Village_B3_Standing, 1, Village_B3_Standing_Data) 
 SetSMS(WagonStanding, 1, WagonStanding_Data) 
+SetSMS(WallStanding, 0, WallStanding_Data) 
+SetSMS(WallVerticalStanding, 0, WallVerticalStanding_Data) 
 SetSMS(WildWyvern, 1, WildWyvern_Data) 
-SetSMS(WyvernKnightFStanding, 1, WyvernKnightFStanding_Data) 
-SetSMS(WyvernKnightStanding, 1, WyvernKnightStanding_Data) 
+SetSMS(WyvernKnightFStanding, 2, WyvernKnightFStanding_Data) 
+SetSMS(WyvernKnightStanding, 2, WyvernKnightStanding_Data) 
 SetSMS(WyvernRiderFStanding, 1, WyvernRiderFStanding_Data) 
 SetSMS(WyvernRiderStanding, 1, WyvernRiderStanding_Data) 
  
@@ -135,6 +79,7 @@ SetMMS(AxePaladinFMoving, AxePaladinFMoving_Data, DemonKingAP)
 SetMMS(AxePaladinMoving, AxePaladinMoving_Data, DemonKingAP) 
 SetMMS(BowKnightFMoving, BowKnightFMoving_Data, DemonKingAP) 
 SetMMS(BowKnightMoving, BowKnightMoving_Data, DemonKingAP) 
+SetMMS(ChestMoving, ChestMoving_Data, DemonKingAP) 
 SetMMS(DeserterMoving, DeserterMoving_Data, DemonKingAP) 
 SetMMS(DruidFMoving, DruidFMoving_Data, DemonKingAP) 
 SetMMS(DukeMoving, DukeMoving_Data, DemonKingAP) 
@@ -164,6 +109,3 @@ SetMMS(WyvernRiderMoving, WyvernRiderMoving_Data, DemonKingAP)
  
 POP 
 //Copy until here 
-
-
-

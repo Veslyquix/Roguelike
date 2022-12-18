@@ -56,7 +56,7 @@ str r0, [r4]
 @add r0, #0x20 @ tact 
 @str r0, [r4] 
 mov r0, r4 
-blh hashCode @ returns hash'd int in r0 
+blh HashInt @ returns hash'd int in r0 
 
 add sp, #12
 @mov r11, r11 

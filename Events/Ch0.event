@@ -1,0 +1,97 @@
+EventPointerTable(PrologueCh,ThisChapter)
+setText(0x160, NewChName)
+ALIGN 4
+NewChName:
+String("Prologue")
+BYTE 0
+
+// This chapter is only used for setting up the rng seed and loading a party 
+
+
+ALIGN 4
+ThisChapter:
+POIN TurnBasedEvents
+POIN CharacterBasedEvents
+POIN LocationBasedEvents
+POIN MiscBasedEvents
+POIN OnSelect OnMove OnReach Tutorial
+POIN Traps TrapsHard
+POIN PrepUnits SkirUnits  
+POIN $0 $0 $0
+POIN $0 $0 $0
+POIN BeginningScene EndingScene
+
+BeginningScene: 
+// Name input screen 
+REMOVEPORTRAITS
+ASMC 0x48281
+//ASMC2 0x48281
+CLEAN
+ASMC SaveGameSeed // records frames it took to get here from start of the game 
+//FADU 44 
+LOAD1 1 StartingUnits 
+ENUN 
+MNC2 Ch1Ch
+NoFade 
+ENDA 
+
+TurnBasedEvents:
+//TurnEventPlayer(Flag,SomeEvent,0,255)
+END_MAIN
+
+CharacterBasedEvents:
+//CharacterEventBothWays(Flag,SomeEventLabel, Unit1, Unit2)
+END_MAIN
+
+
+LocationBasedEvents: // Probably cannot use these 
+/*
+Vendor(ShopItems,2,7)
+Armory(ArmoryItems,10,26)
+Village(0x8,VillageEvent,18,27)
+House(0,HouseEvent,6,24)
+Seize(10,2)
+*/
+END_MAIN
+
+MiscBasedEvents:
+CauseGameOverIfLordDies
+AFEV 0x3 EndingScene 0x6 // Defeat boss / all enemies 
+//AFEV flagID eventOffset activationFlag
+//AREA flagID eventOffset [corner1x, corner1y] [corner2x, corner2y]
+END_MAIN
+
+Traps:
+ENDTRAP
+ALIGN 4
+
+
+EndingScene: 
+EndMMS 
+_MUSICSOMETHING 0x7FFF 
+FADI 10 
+MNC2 1 
+NoFade 
+ENDA 
+
+StartingUnits: 
+UNIT Eirika Lord 0x1 Level(5,Ally,True)   [5,5] 0b 0x0 0x0 0x0 [Rapier] [0x0]
+UNIT Seth Paladin 0x1 Level(5,Ally,True)   [5,6] 0b 0x0 0x0 0x0 [SilverLance] [0x0]
+UNIT 
+
+PrepUnits: 
+SkirUnits: // Skirmish preparation 
+UNIT Seth Paladin 0x1 Level(5,Ally,True)   [5,5] 0b 0x0 0x0 0x0 [0x0] [0x0]
+UNIT 
+
+OnSelect:
+END_MAIN
+OnMove:
+END_MAIN
+OnReach:
+END_MAIN
+Tutorial:
+END_MAIN
+TrapsHard:
+ENDTRAP
+ALIGN 4

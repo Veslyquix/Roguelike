@@ -1,5 +1,10 @@
-#define FreeSpace 0x1000000 
-#define FreeSpaceBLRange 0x1c1ec0
+PUSH; ORG $D74D0	//{U}
+String("V0.01                 Dec 2022") ; BYTE 0; POP // this overflows into the date but I don't use the date so whatever 
+
+#define FreeSpaceGFX 0x1000000 
+// currently ends at 0x138----
+#define 	FreeSpace 0x1400000
+#define   FreeSpaceBLRange 0x1c1ec0
 
 #ifndef DebuffTable
   #define DebuffTable     0x0203FA58
@@ -19,9 +24,103 @@
 #include "Patches/SkillSystem/SkillSystem/skill_definitions.event"
 
 
+#define StartTimeSeedRam 0x30017b0 // - b3 used in RandomizeClass 
+// originally from valni records 
 
 
-
+//First free SMS is 107
+#define AcolyteFStanding 107 
+#define AxeArmorStanding 108 
+#define AxeCavalierFStanding 109 
+#define AxeCavalierStanding 110 
+#define AxePaladinFStanding 111 
+#define AxePaladinStanding 112 
+#define BowKnightFStanding 113 
+#define BowKnightStanding 114 
+#define ChestStanding 115 
+#define ClosedVillageStanding 116 
+#define DeserterStanding 117 
+#define DoorLeftStanding 118 
+#define DoorRightStanding 119 
+#define DoorStanding 120 
+#define DragoonMoving 121 
+#define DragoonStanding 122 
+#define DruidFStanding 123 
+#define DukeStanding 124 
+#define FighterStanding 125 
+#define LanceArmorStanding 126 
+#define LanceCavalierFStanding 127 
+#define LanceCavalierStanding 128 
+#define LancePaladinFStanding 129 
+#define LancePaladinStanding 130 
+#define LightMageStanding 131 
+#define MageFStanding 132 
+#define MageStanding 133 
+#define OracleFStanding 134 
+#define PaladinFStanding 135 
+#define ShamanFStanding 136 
+#define SnagBridgeHorizontalStanding 137 
+#define SnagBridgeVerticalStanding 138 
+#define SnagStanding 139 
+#define SwordArmorStanding 140 
+#define SwordCavalierFStanding 141 
+#define SwordCavalierStanding 142 
+#define SwordPaladinFStanding 143 
+#define SwordPaladinStanding 144 
+#define TorchStanding 145 
+#define Village_A1_Standing 146 
+#define Village_A2_Standing 147 
+#define Village_A3_Standing 148 
+#define Village_A4_Standing 149 
+#define Village_B1_Standing 150 
+#define Village_B2_Standing 151 
+#define Village_B3_Standing 152 
+#define WagonStanding 153 
+#define WallStanding 154 
+#define WallVerticalStanding 155 
+#define WildWyvern 156 
+#define WyvernKnightFStanding 157 
+#define WyvernKnightStanding 158 
+#define WyvernRiderFStanding 159 
+#define WyvernRiderStanding 160 
+ 
+ 
+//First free MMS is 127 and will show up if you've expanded classes.
+#define AcolyteFMoving 127 
+#define AxeArmorMoving 128 
+#define AxeCavalierFMoving 129 
+#define AxeCavalierMoving 130 
+#define AxePaladinFMoving 131 
+#define AxePaladinMoving 132 
+#define BowKnightFMoving 133 
+#define BowKnightMoving 134 
+#define DeserterMoving 135 
+#define DruidFMoving 136 
+#define DukeMoving 137 
+#define FighterMoving 138 
+#define LanceArmorMoving 139 
+#define LanceCavalierFMoving 140 
+#define LanceCavalierMoving 141 
+#define LancePaladinFMoving 142 
+#define LancePaladinMoving 143 
+#define LightMageMoving 144 
+#define MageMoving 145 
+#define OracleFMoving 146 
+#define PaladinFMoving 147 
+#define ShamanFMoving 148 
+#define SwordArmorMoving 149 
+#define SwordCavalierFMoving 150 
+#define SwordCavalierMoving 151 
+#define SwordPaladinFMoving 152 
+#define SwordPaladinMoving 153 
+#define TorchMoving 154 
+#define WagonMoving 155 
+#define WildWyvernMoving 156 
+#define WyvernKnightFMoving 157 
+#define WyvernKnightMoving 158 
+#define WyvernRiderFMoving 159 
+#define WyvernRiderMoving 160 
+#define ChestMoving 161 
 
 
 

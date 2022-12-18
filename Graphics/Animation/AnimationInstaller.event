@@ -1,9 +1,11 @@
-//#ifndef ClassAnimTable
-//    #define ClassAnimTable (0xc00008)
-//#endif
+#ifndef ClassAnimTable
+  #ifdef _FE8_
+    #define ClassAnimTable (0xc00008-0x20)
+  #endif
+#endif
 
-
-#define AnimTableEntry(index) "ORG ClassAnimTable - 0x20 + (index * 0x20)"
+//#define AnimTableEntry(index) "ORG ClassAnimTable - 0x20 + (index * 0x20)"
+#define AnimTableEntry(index) "ORG ClassAnimTable + (index * 0x20)"
 {
 #include "_Animations/Cavalier_SwordInstaller.event"
 #include "_Animations/Cavalier_LanceInstaller.event"

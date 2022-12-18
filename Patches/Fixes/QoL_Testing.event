@@ -10,6 +10,10 @@ EVBIT_MODIFY 0x1
 SKIPWN
 ENDA
 
+// Skip new game text 
+ORG 0xC4928
+BYTE 0x00 0x00
+
 
 // Autosave killer by Laquier 
 ORG 0x154FE 

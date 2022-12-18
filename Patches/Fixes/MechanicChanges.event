@@ -1,4 +1,10 @@
 PUSH 
+
+ORG 0x9DEC 
+BYTE Ch1Ch // Do not save when moving from Ch0 to Ch1 
+
+ORG $AB920
+WORD 0 // Remove sound room 
 ORG $AB932 // Remove support viewer 
 BYTE 0x00 0x00 0x00 0x20
 ORG $AB90E // Remove link arena 

@@ -1,0 +1,103 @@
+PUSH 
+ORG $1a1a4 
+jumpToHack(UpdateShopTraps)
+POP 
+
+
+
+
+
+ALIGN 4 
+ShopTable: 
+POIN $A3F082
+POIN $A3F096
+POIN $A3F0B4
+POIN $A3F0D2
+POIN $A3F0EE
+
+ALIGN 4 
+ArmouryTable:
+POIN $A188E4
+POIN $A3EFB8
+POIN $A3EFCE
+POIN $A3EFEA
+POIN $A3F00E
+
+SecretShopTable: 
+POIN $A3F18E
+POIN $A3F1B8
+POIN $A3F1E8
+POIN $9ED83E
+POIN $9ED912
+
+
+#define ShopTrapID 20 
+#define ArmouryTrapID 21 
+#define SecretShopTrapID 22 
+#define ChestTrapID 23 
+
+
+
+
+SetTrapEventInit(ShopTrapID,CompletionFlagTrapInitialization)
+SetTrapMapSprite(ShopTrapID,0)
+SetTrapMap___Pal(ShopTrapID,NPCTrapPaletteWord)
+SetLightSourceTrap(ShopTrapID)
+//SetImpassableTrap(ShopTrapID)
+#define ShopTrap(x, y, ShopListID) "BYTE ShopTrapID x y 0 ShopListID 0" 
+
+SetTrapEventInit(ArmouryTrapID,CompletionFlagTrapInitialization)
+SetTrapMapSprite(ArmouryTrapID,0)
+SetTrapMap___Pal(ArmouryTrapID,NPCTrapPaletteWord)
+SetLightSourceTrap(ArmouryTrapID)
+//SetImpassableTrap(ArmouryTrapID)
+SetTrapEventInit(SecretShopTrapID,CompletionFlagTrapInitialization)
+SetTrapMapSprite(SecretShopTrapID,0)
+SetTrapMap___Pal(SecretShopTrapID,NPCTrapPaletteWord)
+SetLightSourceTrap(SecretShopTrapID)
+//SetImpassableTrap(SecretShopTrapID)
+
+SetTrapEventInit(ChestTrapID,CompletionFlagTrapInitialization)
+SetTrapMapSprite(ChestTrapID,ChestStanding)
+SetTrapMap___Pal(ChestTrapID,LightRuneTrapPaletteWord)
+//SetLightSourceTrap(ChestTrapID)
+//SetImpassableTrap(SecretShopTrapID)
+
+
+
+#include "GenericFunctions.lyn.event" 
+#include "ShopTrap.lyn.event" 
+#include "SpawnTraps.lyn.event" 
+
+
+ALIGN 4 
+GiveSomeItem:
+CALL 0x8591F40 
+GIVEITEMTO (-1) 
+NoFade 
+ENDA 
+
+
+
+TutTextEvent:
+TutText(-1)
+NoFade 
+ENDA 
+
+TextEvent:
+Text(-1)
+NoFade 
+ENDA 
+
+WallTextEvent:
+WallText(-1) 
+NoFade 
+ENDA 
+
+#define CGTextFadeOut(TextID) "_0x1A22; TEXTSHOW TextID; TEXTEND; REMA; FADI 0xFF; CLEAN; SHOWMAP; FADU 0xFF"
+#define NewCGText(TextID) "_0x1A22; TEXTSHOW TextID; TEXTEND; REMA; SHOWMAP"
+ShowTextEvent:
+NewCGText(-1) 
+NoFade
+ENDA 
+
