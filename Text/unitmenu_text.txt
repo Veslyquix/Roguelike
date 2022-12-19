@@ -227,3 +227,15 @@ Visit the armoury.[X]
 ## UM_ChestDesc2
 Loot the chest.[X]
 
+## UM_Door2
+ Unlock[X]
+## UM_DoorDesc2
+Unlock the door.[X]
+
+## UM_Break
+ Break[X]
+## UM_BreakDesc
+Break the wall.[X]
+
+
+

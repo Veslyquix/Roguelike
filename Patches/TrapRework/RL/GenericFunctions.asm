@@ -106,7 +106,8 @@ bx r1
 GetAdjacentTrap: 
 push {r4-r7,r14}
 mov r4, r0 @r0 = unit we're checking for adjacency to
-mov r7, r1 @r1 = trap ID we want to match to 
+lsl r7, r1, #24 
+lsr r7, #24 @r1 = trap ID we want to match to 
 ldrb r5,[r4,#0x10] @x coord
 ldrb r6,[r4,#0x11] @y coord
 

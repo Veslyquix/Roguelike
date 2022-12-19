@@ -31,9 +31,13 @@ bx r1
 .global ChestTrapUsability 
 ChestTrapUsability: 
 push {lr} 
+bl IsActiveUnitThief 
+cmp r0, #3 
+beq ChestFalse 
 ldr r0, =ChestTrapID 
 mov r1, #0 @ on tile 
 bl TrapUsabilityCompletionFlag 
+ChestFalse: 
 pop {r1} 
 bx r1 
 .ltorg 
@@ -67,6 +71,116 @@ strb r0, [r1,#0x11]
 @mov r0, #0x17	@makes the unit wait?? makes the menu disappear after command is selected??
 mov r0,#0x94		@play beep sound & end menu on next frame & clear menu graphics
 pop {r4-r5} 
+pop {r3} 
+bx r3 
+.ltorg 
+
+.type DoorTrapUsability, %function 
+.global DoorTrapUsability 
+DoorTrapUsability: 
+push {lr} 
+
+bl IsActiveUnitThief 
+cmp r0, #3
+beq DoorFalse 
+ldr r0, =DoorTrapID 
+mov r1, #1 @ adjacent to tile 
+bl TrapUsabilityCompletionFlag 
+
+DoorFalse: 
+pop {r1} 
+bx r1 
+.ltorg 
+
+.type IsActiveUnitThief, %function 
+.global IsActiveUnitThief
+IsActiveUnitThief: 
+push {lr} 
+
+mov r0, #1 
+b ExitThief 
+
+ldr r3, =CurrentUnit 
+ldr r3, [r3] 
+ldr r0, [r3] 
+ldr r1, [r3, #4] @ class pointer 
+ldr r0, [r0, #0x28] @ability word unit 
+ldr r1, [r1, #0x28] @ability word class 
+orr r0, r1 
+mov r1, #8 @ thief bitflag 
+tst r0, r1 
+beq NotThief 
+mov r0, #1 
+b ExitThief 
+
+
+NotThief: 
+mov r0, #3 
+
+ExitThief: 
+pop {r1} 
+bx r1 
+.ltorg 
+
+.global DoorTrapEffect 
+.type DoorTrapEffect, %function 
+DoorTrapEffect: 
+push {lr} 
+
+ldr r0, =CurrentUnit 
+ldr r0, [r0] 
+ldr r1, =DoorTrapID 
+bl GetAdjacentTrap
+cmp r0, #0 
+beq ExitDoor
+@r0 = trap 
+blh RemoveTrap 
+
+
+ExitDoor: 
+ldr r1, =CurrentUnitFateData	@these four lines copied from wait routine
+mov r0, #0x10
+strb r0, [r1,#0x11]
+@mov r0, #0x17	@makes the unit wait?? makes the menu disappear after command is selected??
+mov r0,#0x94		@play beep sound & end menu on next frame & clear menu graphics
+pop {r3} 
+bx r3 
+.ltorg 
+
+.type BreakableWallTrapUsability, %function 
+.global BreakableWallTrapUsability 
+BreakableWallTrapUsability: 
+push {lr} 
+ldr r0, =BreakableWallTrapID 
+mov r1, #1 @ adjacent to tile 
+bl TrapUsabilityCompletionFlag 
+
+WallFalse: 
+pop {r1} 
+bx r1 
+.ltorg 
+
+.global BreakableWallTrapEffect 
+.type BreakableWallTrapEffect, %function 
+BreakableWallTrapEffect: 
+push {lr} 
+
+ldr r0, =CurrentUnit 
+ldr r0, [r0] 
+ldr r1, =BreakableWallTrapID 
+bl GetAdjacentTrap
+cmp r0, #0 
+beq ExitWall
+@r0 = trap 
+blh RemoveTrap 
+
+
+ExitWall: 
+ldr r1, =CurrentUnitFateData	@these four lines copied from wait routine
+mov r0, #0x10
+strb r0, [r1,#0x11]
+@mov r0, #0x17	@makes the unit wait?? makes the menu disappear after command is selected??
+mov r0,#0x94		@play beep sound & end menu on next frame & clear menu graphics
 pop {r3} 
 bx r3 
 .ltorg 

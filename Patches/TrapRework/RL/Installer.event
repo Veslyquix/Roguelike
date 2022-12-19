@@ -35,7 +35,15 @@ POIN $9ED912
 #define ArmouryTrapID 21 
 #define SecretShopTrapID 22 
 #define ChestTrapID 23 
+#define DoorTrapID 24 
+#define BreakableWallTrapID 25
 
+ALIGN 4 
+DoorTrapID_Link:
+WORD DoorTrapID 
+ALIGN 4 
+BreakableWallTrapID_Link:
+WORD BreakableWallTrapID 
 
 
 
@@ -63,6 +71,17 @@ SetTrapMap___Pal(ChestTrapID,LightRuneTrapPaletteWord)
 //SetLightSourceTrap(ChestTrapID)
 //SetImpassableTrap(SecretShopTrapID)
 
+SetTrapEventInit(DoorTrapID,CompletionFlagTrapInitialization)
+SetTrapMapSprite(DoorTrapID,DoorStanding)
+SetTrapMap___Pal(DoorTrapID,LightRuneTrapPaletteWord)
+//SetLightSourceTrap(ChestTrapID)
+SetImpassableTrap(DoorTrapID)
+
+SetTrapEventInit(BreakableWallTrapID,CompletionFlagTrapInitialization)
+SetTrapMapSprite(BreakableWallTrapID,WallStanding)
+SetTrapMap___Pal(BreakableWallTrapID,LightRuneTrapPaletteWord)
+//SetLightSourceTrap(ChestTrapID)
+SetImpassableTrap(BreakableWallTrapID)
 
 
 #include "GenericFunctions.lyn.event" 

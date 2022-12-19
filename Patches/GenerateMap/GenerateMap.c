@@ -156,7 +156,8 @@ void GenerateMap(struct Map_Struct* dst)
 	SetRandState(saveRandState); 
 }
 
-
+extern int DoorTrapID_Link; 
+extern int BreakableWallTrapID_Link; 
 
 void CopyMapPiece(u16 dst[], u8 placement_x, u8 placement_y, u8 map_size_x, u8 map_size_y, u16 defaultTile)
 {
@@ -180,13 +181,58 @@ void CopyMapPiece(u16 dst[], u8 placement_x, u8 placement_y, u8 map_size_x, u8 m
 			if (dst[(border_y+y) * map_size_x + border_x+x] != defaultTile) { exit = true; } 
 		}
 	}
-	
-		// this is to stop it from drawing outside the map / from one side to another 
+	int loc; 
+		// this line is to stop it from drawing outside the map / from one side to another 
 	if (!(((piece_size_x + placement_x) > map_size_x) || ((piece_size_y + placement_y) > map_size_y) || (exit)))  {
 		for (u8 y = 0; y<piece_size_y; y++) {
 			for (u8 x = 0; x < piece_size_x; x++) {
+				loc = ((placement_y+y) * map_size_x) + placement_x+x; 
 				//dst[((placement_y+y) * map_size_x) + placement_x+x] = T->data[y*piece_size_x+x]; 
-				dst[((placement_y+y) * map_size_x) + placement_x+x] = T->data[y*piece_size_x+x]; 
+				dst[loc] = T->data[y*piece_size_x+x]; 
+				
+				// this is hardcoded to the village tileset atm 
+				if (dst[loc] == 0x590) { // door at 4x 11y in tileset (0-indexed) 
+					dst[loc] = 0x8BC; // floor with left shadow 
+					AddTrap(placement_x+x, placement_y+y, DoorTrapID_Link, 0);
+				}
+				if (dst[loc] == 0x104) { // Chest
+					dst[loc] = 0x100; // Open chest 
+					//AddTrap(placement_x+x, placement_y+y, DoorTrapID_Link, 0);
+				}
+				if (dst[loc] == 0xBC8) { // broken wall big 
+					dst[loc] = 0x840; // floor no shadow 
+					AddTrap(placement_x+x, placement_y+y, BreakableWallTrapID_Link, 0);
+				}
+			if ((dst[loc] == 0xC8C) || (dst[loc] == 0xC80) || (dst[loc] == 0xC98)) { // village 1/6  
+					dst[loc] = 0xCA4; // ruins 1/6
+					//AddTrap(placement_x+x, placement_y+y, BreakableWallTrapID_Link, 0);
+				}
+				if ((dst[loc] == 0xC90) || (dst[loc] == 0xC84) || (dst[loc] == 0xC9C)) { // village 2/6  
+					dst[loc] = 0xCA8; // ruins 2/6
+					//AddTrap(placement_x+x, placement_y+y, BreakableWallTrapID_Link, 0);
+				}
+				if ((dst[loc] == 0xC94) || (dst[loc] == 0xC88) || (dst[loc] == 0xCA0)) { // village 3/6  
+					dst[loc] = 0xCAC; // ruins 3/6
+					//AddTrap(placement_x+x, placement_y+y, BreakableWallTrapID_Link, 0);
+				}
+				if ((dst[loc] == 0xD0C) || (dst[loc] == 0xD00) || (dst[loc] == 0xD18)) { // village 4/6  
+					dst[loc] = 0xD24; // ruins 4/6
+					//AddTrap(placement_x+x, placement_y+y, BreakableWallTrapID_Link, 0);
+				}
+				if ((dst[loc] == 0xD10) || (dst[loc] == 0xD04) || (dst[loc] == 0xD1C)) { // village 5/6  
+					dst[loc] = 0xD28; // ruins 5/6
+					//AddTrap(placement_x+x, placement_y+y, BreakableWallTrapID_Link, 0);
+				}
+				if ((dst[loc] == 0xD14) || (dst[loc] == 0xD08) || (dst[loc] == 0xD20)) { // village 6/6  
+					dst[loc] = 0xD2C; // ruins 6/6
+					//AddTrap(placement_x+x, placement_y+y, BreakableWallTrapID_Link, 0);
+				}
+				
+				
+				// add either village or house at random 
+				//if (dst[loc] == 0xD24) // add village traps 
+					//AddTrap(placement_x+x, placement_y+y, BreakableWallTrapID_Link, 0);
+				
 			}
 		}
 	}
