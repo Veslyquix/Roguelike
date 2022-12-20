@@ -237,5 +237,8 @@ Unlock the door.[X]
 ## UM_BreakDesc
 Break the wall.[X]
 
-
+## UM_Visit2
+ Visit[X]
+## UM_VisitDesc2
+ Visit the village.[X]
 

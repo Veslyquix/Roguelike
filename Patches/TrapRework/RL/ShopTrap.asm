@@ -147,6 +147,63 @@ pop {r3}
 bx r3 
 .ltorg 
 
+.type VisitTrapUsability, %function 
+.global VisitTrapUsability 
+VisitTrapUsability: 
+push {lr} 
+ldr r0, =VillageBTrapID 
+mov r1, #0 @ on tile
+bl TrapUsabilityCompletionFlag 
+
+VisitFalse: 
+pop {r1} 
+bx r1 
+.ltorg 
+
+.global VisitTrapEffect 
+.type VisitTrapEffect, %function 
+VisitTrapEffect: 
+push {r4, lr} 
+
+ldr r0, =CurrentUnit 
+ldr r4, [r0] 
+mov r0, r4 
+ldr r1, =VillageBTrapID 
+bl GetTrapAtUnit
+cmp r0, #0 
+beq ExitVisit
+@r0 = trap 
+blh RemoveTrap 
+
+
+ldrb r0, [r4, #0x10] @ xx 
+ldrb r1, [r4, #0x11] @ yy 
+ldr r2, =VillageDTrapID_Link 
+ldr r2, [r2] 
+blh SpawnTrap @r0 = x coord, r1 = y coord, r2 = trap ID
+
+ldr r3, =MemorySlot 
+mov r0, #0x6C 
+str r0, [r3, #4*0x03] @ s3 as item 
+
+@ s2 as text ID 
+
+ldr r0, =VillageGiveSomeItem
+mov r1, #1 
+blh EventEngine 
+
+
+ExitVisit: 
+ldr r1, =CurrentUnitFateData	@these four lines copied from wait routine
+mov r0, #0x10
+strb r0, [r1,#0x11]
+@mov r0, #0x17	@makes the unit wait?? makes the menu disappear after command is selected??
+mov r0,#0x94		@play beep sound & end menu on next frame & clear menu graphics
+pop {r4} 
+pop {r3} 
+bx r3 
+.ltorg 
+
 .type BreakableWallTrapUsability, %function 
 .global BreakableWallTrapUsability 
 BreakableWallTrapUsability: 

@@ -116,8 +116,8 @@
 	SetLightSourceTrap(TorchStaffTrapID)
 	
 	//Macro for setting traps as impassable, like light runes
-	#define SetImpassableTrap(trapID) "PUSH; ORG (TrapLightRuneImpassableTable+trapID); BYTE 1; POP"
-	
+	#define SetImpassableTrap(trapID) "PUSH; ORG (TrapLightRuneImpassableTable+trapID); BYTE 1; POP" // BYTE 0x19 fence 
+	#define SetTerrainForTrap(trapID, terrain) "PUSH; ORG (TrapLightRuneImpassableTable+trapID); BYTE terrain; POP" 
 	SetImpassableTrap(LightRuneTrapID)
 	
 	

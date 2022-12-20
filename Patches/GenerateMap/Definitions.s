@@ -2,6 +2,9 @@
 .include "C:/devkitPro/FE-CLib/reference/FE8U-20190316.s"
 
 //@ Vanilla function declarations:
+SET_FUNC SetEventId, 0x8083D81
+SET_FUNC UnsetEventId, 0x8083D95
+SET_FUNC CheckEventId, 0x8083DA9
 
 SET_FUNC GetUnitStructFromEventParameter, 0x800BC51
 

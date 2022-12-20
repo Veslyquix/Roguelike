@@ -37,13 +37,28 @@ POIN $9ED912
 #define ChestTrapID 23 
 #define DoorTrapID 24 
 #define BreakableWallTrapID 25
+#define BreakableSnagTrapID 26 
+#define VillageATrapID 27
+#define VillageBTrapID 28
+#define VillageCTrapID 29
+#define VillageDTrapID 30
+#define BlankVillageTrapID 31 
 
 ALIGN 4 
 DoorTrapID_Link:
 WORD DoorTrapID 
-ALIGN 4 
 BreakableWallTrapID_Link:
-WORD BreakableWallTrapID 
+WORD BreakableWallTrapID  
+VillageATrapID_Link:
+WORD VillageATrapID 
+VillageBTrapID_Link:
+WORD VillageBTrapID 
+VillageCTrapID_Link: 
+WORD VillageCTrapID 
+VillageDTrapID_Link:
+WORD VillageDTrapID
+BlankVillageTrapID_Link:
+WORD BlankVillageTrapID
 
 
 
@@ -84,6 +99,35 @@ SetTrapMap___Pal(BreakableWallTrapID,LightRuneTrapPaletteWord)
 SetImpassableTrap(BreakableWallTrapID)
 
 
+
+
+SetTrapEventInit(VillageATrapID,CompletionFlagTrapInitialization)
+SetTrapMapSprite(VillageATrapID,Village_A1_Standing)
+SetTrapMap___Pal(VillageATrapID,LightRuneTrapPaletteWord)
+SetLightSourceTrap(VillageATrapID)
+SetTerrainForTrap(VillageATrapID, 0x2E) // Village (cannot cross) 
+SetTrapEventInit(VillageBTrapID,CompletionFlagTrapInitialization)
+SetTrapMapSprite(VillageBTrapID,Village_A2_Standing)
+SetTrapMap___Pal(VillageBTrapID,LightRuneTrapPaletteWord)
+SetLightSourceTrap(VillageBTrapID)
+SetTerrainForTrap(VillageBTrapID, 3) // Village (can cross) 
+SetTrapEventInit(VillageCTrapID,CompletionFlagTrapInitialization)
+SetTrapMapSprite(VillageCTrapID,Village_A3_Standing)
+SetTrapMap___Pal(VillageCTrapID,LightRuneTrapPaletteWord)
+SetLightSourceTrap(VillageCTrapID)
+SetTerrainForTrap(VillageCTrapID, 0x2E) // Village (cannot cross) 
+SetTrapEventInit(VillageDTrapID,CompletionFlagTrapInitialization)
+SetTrapMapSprite(VillageDTrapID,Village_A4_Standing)
+SetTrapMap___Pal(VillageDTrapID,LightRuneTrapPaletteWord)
+SetLightSourceTrap(VillageDTrapID)
+SetTerrainForTrap(VillageDTrapID, 0x2E) // Village (cannot cross) 
+
+SetTrapEventInit(BlankVillageTrapID,CompletionFlagTrapInitialization)
+//SetTrapMapSprite(BlankID,WallStanding)
+SetTrapMap___Pal(BlankVillageTrapID,LightRuneTrapPaletteWord)
+//SetLightSourceTrap(ChestTrapID)
+SetTerrainForTrap(BlankVillageTrapID, 0x2E) // Village (cannot cross) 
+
 #include "GenericFunctions.lyn.event" 
 #include "ShopTrap.lyn.event" 
 #include "SpawnTraps.lyn.event" 
@@ -96,6 +140,13 @@ GIVEITEMTO (-1)
 NoFade 
 ENDA 
 
+// #define VillageEventItem(textID,background,item) "MUSI; SMOV 0x2 background; SMOV 0x3 textID; CALL $9EE310; MUNO; CALL $591F40; SMOV 0x3 item; GIVEITEMTO 0xFFFF; EVBIT_T 0x7; ENDA"
+
+ALIGN 4 
+VillageGiveSomeItem: 
+VillageEventItem(0x9df,Village,Vulnerary) 
+NoFade 
+ENDA 
 
 
 TutTextEvent:
