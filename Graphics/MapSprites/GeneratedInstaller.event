@@ -49,17 +49,18 @@
 #define Village_A2_Standing 147 
 #define Village_A3_Standing 148 
 #define Village_A4_Standing 149 
-#define Village_B1_Standing 150 
-#define Village_B2_Standing 151 
-#define Village_B3_Standing 152 
-#define WagonStanding 153 
-#define WallStanding 154 
-#define WallVerticalStanding 155 
-#define WildWyvern 156 
-#define WyvernKnightFStanding 157 
-#define WyvernKnightStanding 158 
-#define WyvernRiderFStanding 159 
-#define WyvernRiderStanding 160 
+#define Village_A5_Standing 150 
+#define Village_B1_Standing 151 
+#define Village_B2_Standing 152 
+#define Village_B3_Standing 153 
+#define WagonStanding 154 
+#define WallStanding 155 
+#define WallVerticalStanding 156 
+#define WildWyvern 157 
+#define WyvernKnightFStanding 158 
+#define WyvernKnightStanding 159 
+#define WyvernRiderFStanding 160 
+#define WyvernRiderStanding 161 
  
  
 //First free MMS is 127 and will show up if you've expanded classes.
@@ -150,6 +151,7 @@ SetSMS(Village_A1_Standing, 1, Village_A1_Standing_Data)
 SetSMS(Village_A2_Standing, 1, Village_A2_Standing_Data) 
 SetSMS(Village_A3_Standing, 1, Village_A3_Standing_Data) 
 SetSMS(Village_A4_Standing, 1, Village_A4_Standing_Data) 
+SetSMS(Village_A5_Standing, 1, Village_A5_Standing_Data) 
 SetSMS(Village_B1_Standing, 1, Village_B1_Standing_Data) 
 SetSMS(Village_B2_Standing, 1, Village_B2_Standing_Data) 
 SetSMS(Village_B3_Standing, 1, Village_B3_Standing_Data) 
@@ -377,6 +379,10 @@ Village_A3_Standing_Data:
 ALIGN 4 
 Village_A4_Standing_Data: 
 #incbin "dmp/Village_A4_Standing.dmp" 
+ 
+ALIGN 4 
+Village_A5_Standing_Data: 
+#incbin "dmp/Village_A5_Standing.dmp" 
  
 ALIGN 4 
 Village_B1_Standing_Data: 

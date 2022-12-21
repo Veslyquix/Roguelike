@@ -42,7 +42,8 @@ POIN $9ED912
 #define VillageBTrapID 28
 #define VillageCTrapID 29
 #define VillageDTrapID 30
-#define BlankVillageTrapID 31 
+#define VillageETrapID 31
+#define BlankVillageTrapID 32 
 
 ALIGN 4 
 DoorTrapID_Link:
@@ -57,6 +58,8 @@ VillageCTrapID_Link:
 WORD VillageCTrapID 
 VillageDTrapID_Link:
 WORD VillageDTrapID
+VillageETrapID_Link:
+WORD VillageETrapID
 BlankVillageTrapID_Link:
 WORD BlankVillageTrapID
 
@@ -121,6 +124,11 @@ SetTrapMapSprite(VillageDTrapID,Village_A4_Standing)
 SetTrapMap___Pal(VillageDTrapID,LightRuneTrapPaletteWord)
 SetLightSourceTrap(VillageDTrapID)
 SetTerrainForTrap(VillageDTrapID, 0x2E) // Village (cannot cross) 
+SetTrapEventInit(VillageETrapID,CompletionFlagTrapInitialization)
+SetTrapMapSprite(VillageETrapID,Village_A5_Standing)
+SetTrapMap___Pal(VillageETrapID,LightRuneTrapPaletteWord)
+SetLightSourceTrap(VillageETrapID)
+SetTerrainForTrap(VillageETrapID, 0x2E) // Village (cannot cross) 
 
 SetTrapEventInit(BlankVillageTrapID,CompletionFlagTrapInitialization)
 //SetTrapMapSprite(BlankID,WallStanding)
@@ -140,11 +148,11 @@ GIVEITEMTO (-1)
 NoFade 
 ENDA 
 
-// #define VillageEventItem(textID,background,item) "MUSI; SMOV 0x2 background; SMOV 0x3 textID; CALL $9EE310; MUNO; CALL $591F40; SMOV 0x3 item; GIVEITEMTO 0xFFFF; EVBIT_T 0x7; ENDA"
+#define VillageEventItem(background) "MUSI; SMOV 0x2 background; CALL $9EE310; MUNO; CALL $591F40; SADD s3 s4 s0; GIVEITEMTO 0xFFFF"
 
 ALIGN 4 
 VillageGiveSomeItem: 
-VillageEventItem(0x9df,Village,Vulnerary) 
+VillageEventItem(Village) 
 NoFade 
 ENDA 
 
@@ -170,4 +178,31 @@ ShowTextEvent:
 NewCGText(-1) 
 NoFade
 ENDA 
+
+
+ALIGN 4 
+VillagesTextTable:
+SHORT Village_0 
+SHORT Village_1 Village_2 Village_3 Village_4 Village_5
+SHORT Village_6 Village_7 Village_8 Village_9 Village_10
+//SHORT //Village_11 Village_12 Village_13 Village_14 Village_15
+
+ALIGN 4 
+VillagesTextMax: 
+WORD 10 
+
+ALIGN 4 
+VillageRewardsTable_T1:
+BYTE Vulnerary
+BYTE IronSword IronAxe IronLance IronBow 
+BYTE Fire Flux Light Heal
+BYTE Antitoxin Elixir 
+
+
+ALIGN 4 
+VillageRewardsMax_T1: 
+WORD 10 
+
+
+
 

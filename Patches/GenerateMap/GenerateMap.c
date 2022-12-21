@@ -165,6 +165,7 @@ extern int VillageATrapID_Link;
 extern int VillageBTrapID_Link;
 extern int VillageCTrapID_Link;
 extern int VillageDTrapID_Link;
+extern int VillageETrapID_Link;
 extern int BlankVillageTrapID_Link;
 
 
@@ -248,7 +249,7 @@ void CopyMapPiece(u16 dst[], u8 placement_x, u8 placement_y, u8 map_size_x, u8 m
 				}
 				if (dst[loc] == 0xD28) { // add village traps 
 					AddTrap(placement_x+x, placement_y+y, VillageBTrapID_Link, 0);
-					AddTrap(placement_x+x, placement_y+y-1, BlankVillageTrapID_Link, 0);
+					AddTrap(placement_x+x, placement_y+y-1, VillageETrapID_Link, 0);
 				}
 				if (dst[loc] == 0xD2C) { // add village traps 
 					AddTrap(placement_x+x, placement_y+y, VillageCTrapID_Link, 0);

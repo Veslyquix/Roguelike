@@ -1,0 +1,93 @@
+## Village_0 
+[OpenMidLeft][LoadVillagerMan][OpenMidRight][LoadActive][OpenMidLeft]Hmm? Enemies? I wonder why[N]
+we open the gates at all.[A][N]
+Maybe we should just[N]
+leave them closed...[A][X]
+
+## Village_1
+[OpenMidLeft][LoadMomVillager][OpenMidLeft]This is terrible[ToggleMouthMove]... [ToggleMouthMove]What are we going[N]
+to do? Those enemies are so close.[A][N]
+If we can't find some way to protect[N]
+ourselves, the village is doomed.[A][X]
+
+
+## Village_2
+[OpenMidRight][LoadMoustacheVillager][OpenMidLeft][LoadFace][0xFFFF][OpenMidRight]Hm? What is it? What's[N]
+all the ruckus?[A][N]
+What? E-enemies?![N]
+In my Fire Emblem?[A][N]
+Spread the word, everyone![N]
+Close the village gates![A]
+Thank you for your warning.[N]
+Please, accept this small token.[A][X]
+
+## Village_3
+[OpenMidLeft][LoadActive][OpenMidRight][LoadOldMoustacheVillager][OpenMidRight]Have you seen any cracked[N]
+walls around?[A][N]
+Take a weapon to it and smash[N]
+it to bits![A][N]
+Here, take this and give it a try.[N]
+It ought to do the trick.[.][A][X]
+
+## Village_4
+[OpenMidLeft][LoadMoneyman][OpenMidRight][LoadFace][0xFFFF][OpenMidLeft]Please, traveler, take this item.[A][N]
+It'll help you against[N]
+many a tough foe.[.][A][N]
+Take it and use it to[N]
+your advantage[.][A][X]
+
+## Village_5
+[ToggleSmile][OpenMidLeft][LoadLady][OpenMidRight][LoadActive][OpenMidLeft]Oh, by the way[ToggleMouthMove]... [ToggleMouthMove]Would you be interested[N]
+in one of these items?[A][N]
+A wealthy patron left me a small ransom[N]
+in gifts after watching my performance.[A][N]
+You can sell it for gold if you'd like[N]
+or use it on your journey.[A][X]
+
+
+## Village_6
+[OpenMidLeft][LoadAnna]I simply cannot carry all of this loot by[N]
+myself, so please, take this one.[A][N]
+Wealth is useless if you can't use it[N]
+to bring happiness to others, right?[A][X]
+
+## Village_7
+[OpenMidLeft][LoadOldMan][OpenMidRight][LoadActive][OpenMidLeft]In my youth, I was a knight of some[N]
+renown, I'll have you know.[A][N]
+Ah, but I'm an old man now[ToggleMouthMove]...[ToggleMouthMove][A][N]
+I'm starting to worry[.][ToggleMouthMove]... [ToggleMouthMove]What if I die[N]
+without helping out the youth of today?[A][N]
+You seem like a strong warrior. I'd[N]
+be honored if you would accept this.[A][X]
+
+## Village_8
+[ToggleSmile][OpenMidLeft][LoadBoy][OpenMidRight][LoadActive][OpenMidLeft]I heard there are monsters[N]
+in this game.[A][N]
+Here, maybe this item will help[N]
+you against them.[A][N]
+Or they might just eat you...[N]
+Good luck![A][X]
+
+## Village_9
+[OpenMidLeft][LoadOldMoustacheVillager][OpenMidRight][LoadActive][OpenMidLeft]I just want some peace and quiet.[N]
+I'm sick of being ordered around.[A][N]
+Huh? Oh, don't mind me.[N]
+Just thinking out loud.[A][N]
+Here, I want you to hold on to this[N]
+for me. Don't tell anyone.[A][X]
+
+## Village_10 
+[OpenMidLeft][LoadVillagerMan][OpenMidRight][LoadActive][OpenMidLeft]Wh-what do you want?[N]
+Gimme a break[.][ToggleMouthMove]...[ToggleMouthMove][A][N]
+Leave us out of this stupid wargame of yours![N]
+We don't want anything to do with it![A][N]
+Or[ToggleMouthMove]...[.][ToggleMouthMove]are you just another victim, like[N]
+the rest of us here?[A][N]
+Well, regardless[ToggleMouthMove]... [ToggleMouthMove]Here.[A][N]
+Take this, and go do something about[N]
+all this fighting, will you?[A][X]
+
+
+
+
+

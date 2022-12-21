@@ -56,8 +56,15 @@ beq Exit
 mov r4, r0  @&The DV
 blh RemoveTrap 
 
+@ separate into tiers based on chapters complete (once tracked) 
+ldrh r0, [r4, #0x10] @ coord 
+ldr r1, =VillageRewardsMax_T1 
+ldr r1, [r1] 
+bl HashShort
+ldr r2, =VillageRewardsTable_T1 
+add r2, r0 
+ldrb r0, [r2] 
 ldr r3, =MemorySlot 
-mov r0, #0x6C 
 str r0, [r3, #4*0x03] @ s3 as item 
 
 ldr r0, =GiveSomeItem 
@@ -182,11 +189,33 @@ ldr r2, =VillageDTrapID_Link
 ldr r2, [r2] 
 blh SpawnTrap @r0 = x coord, r1 = y coord, r2 = trap ID
 
-ldr r3, =MemorySlot 
-mov r0, #0x6C 
-str r0, [r3, #4*0x03] @ s3 as item 
 
-@ s2 as text ID 
+
+
+ldrh r0, [r4, #0x10] @ coord 
+ldr r1, =VillagesTextMax 
+ldr r1, [r1] 
+bl HashShort
+ldr r2, =VillagesTextTable 
+lsl r0, #1 @ 2 bytes per entry 
+add r2, r0 
+ldrh r0, [r2] 
+ldr r3, =MemorySlot 
+str r0, [r3, #4*0x03] @ s3 as text ID 
+
+
+@ separate into tiers based on chapters complete (once tracked) 
+
+ldrh r0, [r4, #0x10] @ coord 
+ldr r1, =VillageRewardsMax_T1 
+ldr r1, [r1] 
+bl HashShort
+ldr r2, =VillageRewardsTable_T1 
+add r2, r0 
+ldrb r0, [r2] 
+ldr r3, =MemorySlot 
+str r0, [r3, #4*0x04] @ s4 as item 
+
 
 ldr r0, =VillageGiveSomeItem
 mov r1, #1 
