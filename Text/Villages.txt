@@ -1,3 +1,30 @@
+## RelicTitle
+Choose a[N]
+passive relic.[X]
+
+## RelicSlimBuild
+ Slim Build[X]
+ 
+## RelicSlimBuildDesc
+For each Str point below[N]
+the cap, +5 avoid.[N]
+Testing testing testing.[X]
+
+## RelicHawkeye
+ Hawkeye[X]
+ 
+## RelicHawkeyeDesc
+Your units cannot miss.[X]
+
+## RelicWeaponsExpert
+ Weapon's Expert[X]
+ 
+## RelicWeaponsExpertDesc
+Your weapons have 50%[N]
+more might.[X]
+
+
+
 ## Village_0 
 [OpenMidLeft][LoadVillagerMan][OpenMidRight][LoadActive][OpenMidLeft]Hmm? Enemies? I wonder why[N]
 we open the gates at all.[A][N]

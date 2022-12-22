@@ -26,6 +26,7 @@ ENUN
 LOAD1 1 EnemyUnits 
 ENUN 
 FADU 44 
+ASMC SelectRelic_ASMC
 NoFade 
 ENDA 
 

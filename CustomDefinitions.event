@@ -11,7 +11,7 @@ String("V0.01                 Dec 2022") ; BYTE 0; POP // this overflows into th
 #include "Maps/Definitions.event" 
 #include "Defs/Installer.event" 
 
-
+#define NewFlagsRam 0x3005250 // vanilla global flags 
 #define StartTimeSeedRam 0x30017b0 // - b3 used in RandomizeClass 
 // originally from valni records 
 

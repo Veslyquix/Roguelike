@@ -1,0 +1,52 @@
+#include "eastdlib.event" 
+
+ALIGN 4 
+NewFlagsRamLink: 
+WORD NewFlagsRam 
+#include "Flag.lyn.event" 
+#include "SelectRelic.lyn.event"
+
+ALIGN 4 
+RelicDescBoxTSA:
+#incbin "DescBox.dmp" 
+
+ALIGN 4 
+RelicTitleBoxTSA:
+#incbin "TitleBox.dmp" 
+
+ALIGN 4 
+RelicTitleLink:
+SHORT RelicTitle 
+
+
+#define SlimBuildFlag (0x90-0x64)
+#define HawkeyeFlag (0x91-0x64)
+#define WeaponsExpertFlag (0x92-0x64 )
+
+ALIGN 4 
+RelicMaxLink:
+WORD 3 
+
+ALIGN 4 
+SlimBuildImage:
+#incbin "Images/Image.dmp"
+HawkeyeImage:
+#incbin "Images/2.dmp"
+WeaponsExpertImage: 
+#incbin "Images/3.dmp"
+
+ALIGN 4 
+SlimBuildImage_pal:
+#incbin "Images/Image_pal.dmp" 
+HawkeyeImage_pal:
+#incbin "Images/2_pal.dmp" 
+WeaponsExpertImage_pal:
+#incbin "Images/3_pal.dmp" 
+
+ALIGN 4 
+RelicNameTable: 
+POIN SlimBuildImage SlimBuildImage_pal; SHORT RelicSlimBuild RelicSlimBuildDesc SlimBuildFlag 0; 
+POIN HawkeyeImage HawkeyeImage_pal; SHORT RelicHawkeye RelicHawkeyeDesc HawkeyeFlag 0; 
+POIN WeaponsExpertImage WeaponsExpertImage_pal; SHORT RelicWeaponsExpert RelicWeaponsExpertDesc WeaponsExpertFlag 0; 
+
+
