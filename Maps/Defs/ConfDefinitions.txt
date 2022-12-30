@@ -12,4 +12,8 @@
 .avoid 110
 .avoid 123
 .avoid 138
+CastleConf
+DesertBasionConf
+FF2TownConf
+FrontierConf
 UpdatedVillageConf

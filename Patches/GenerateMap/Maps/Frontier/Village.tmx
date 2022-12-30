@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="3" height="3" tilewidth="16" tileheight="16" infinite="0" nextlayerid="2" nextobjectid="1">
+ <tileset firstgid="1" name="../TilesetPreviews/UpdatedVillage" tilewidth="16" tileheight="16" tilecount="1024" columns="32">
+  <image source="Frontier.png" trans="ffffff" width="512" height="512"/>
+ </tileset>
+ <layer id="1" name="Tile Layer 1" width="3" height="3">
+  <properties>
+   <property name="Anims1" value="UpdatedVillageAnimations"/>
+   <property name="ChapterID" value="Debug2Ch"/>
+   <property name="Main" value=""/>
+   <property name="MapID" value="Debug2Map"/>
+   <property name="ObjectType" value="UpdatedVillageObj"/>
+   <property name="PaletteID" value="UpdatedVillagePal"/>
+   <property name="TileConfig" value="UpdatedVillageConf"/>
+  </properties>
+  <data>
+   <tile gid="904"/>
+   <tile gid="905"/>
+   <tile gid="906"/>
+   <tile gid="936"/>
+   <tile gid="937"/>
+   <tile gid="938"/>
+   <tile gid="968"/>
+   <tile gid="969"/>
+   <tile gid="970"/>
+  </data>
+ </layer>
+</map>

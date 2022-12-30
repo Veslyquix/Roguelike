@@ -1,2 +1,8 @@
-#define UpdatedVillageObj 0x3
-#define UpdatedVillagePal 0x4
+#define DesertBastionObj 0x3
+#define DesertBastionPal 0x4
+#define FF2TownObj 0x5
+#define FF2TownPal 0x6
+#define FrontierObj 0x7
+#define FrontierPal 0x8
+#define UpdatedVillageObj 0x9
+#define UpdatedVillagePal 0xA

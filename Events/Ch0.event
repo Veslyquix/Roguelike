@@ -31,7 +31,7 @@ ASMC SaveGameSeed // records frames it took to get here from start of the game
 //FADU 44 
 LOAD1 1 StartingUnits 
 ENUN 
-MNC2 Ch1Ch
+MNC2 Ch2Ch
 NoFade 
 ENDA 
 

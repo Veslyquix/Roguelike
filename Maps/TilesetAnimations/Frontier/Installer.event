@@ -1,0 +1,38 @@
+ALIGN 4
+FrontierTilesetAnimation:
+{ ; 
+ConfAnimsTiles(28,4096,Frontier0)
+ConfAnimsTiles(28,4096,Frontier1)
+ConfAnimsTiles(28,4096,Frontier2)
+ConfAnimsTiles(28,4096,Frontier3)
+ConfAnimsTiles(28,4096,Frontier4)
+ConfAnimsTiles(28,4096,Frontier5)
+ConfAnimsTiles(28,4096,Frontier6)
+ConfAnimsTiles(28,4096,Frontier7)
+WORD 0x00 0x00
+
+ALIGN 4
+Frontier0: // None of these are compressed
+#incbin "frontieranims.mapanime 1_000.dmp"
+ALIGN 4
+Frontier1: // None of these are compressed
+#incbin "frontieranims.mapanime 1_001.dmp"
+ALIGN 4
+Frontier2: // None of these are compressed
+#incbin "frontieranims.mapanime 1_002.dmp"
+ALIGN 4
+Frontier3: // None of these are compressed
+#incbin "frontieranims.mapanime 1_003.dmp"
+ALIGN 4
+Frontier4: // None of these are compressed
+#incbin "frontieranims.mapanime 1_004.dmp"
+ALIGN 4
+Frontier5: // None of these are compressed
+#incbin "frontieranims.mapanime 1_005.dmp"
+ALIGN 4
+Frontier6: // None of these are compressed
+#incbin "frontieranims.mapanime 1_006.dmp"
+ALIGN 4
+Frontier7: // None of these are compressed
+#incbin "frontieranims.mapanime 1_007.dmp"
+}

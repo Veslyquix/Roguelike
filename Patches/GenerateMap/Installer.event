@@ -1,7 +1,8 @@
 #include "GenerateMap.lyn.event"
-#include "Map/GeneratedInstaller.event"
+#include "Maps/Installer.event"
 
-#define RandomizedChapterID_Def Ch1Ch // Debug2 ChID  
+
+#define RandomizedChapterID_Def Ch2Ch // Debug2 ChID  
 #define Minimum_X_Size 15 
 #define Minimum_Y_Size 10
 #define Maximum_X_Size 35
@@ -60,16 +61,50 @@ POP
 //WORD 0
 
 
-ALIGN 4 
-NumberOfMapPieces: // automatically defined in GeneratedInstaller.event 
-WORD NumberOfMapPiecesDef 
-
-
 // no longer used 
 // #define GenerateMapRam 0x203F7C4
 //ALIGN 4 
 //GenerateMapRam_Link:
 //WORD GenerateMapRam
+
+#define UseVillage 0 
+#define UseFrontier 1
+ALIGN 4 
+TilesetPointerTable:
+POIN Village_MapPiecesTable 
+POIN Frontier_MapPiecesTable 
+
+
+ALIGN 4 
+TilesetPiecesTable:
+POIN Village_NumberOfMapPieces //UseVillage index 
+POIN Frontier_NumberOfMapPieces// UseFrontier index
+
+ALIGN 4 
+UseVillageLink:
+WORD UseVillage 
+UseFrontierLink:
+WORD UseFrontier 
+
+ALIGN 4 
+
+
+ALIGN 4 
+TilesetTable:
+BYTE UseVillage // ch 0 
+BYTE UseVillage // ch 1 
+BYTE UseFrontier // ch 2
+BYTE UseFrontier // ch 1 
+BYTE UseFrontier // ch 1 
+BYTE UseFrontier // ch 1 
+BYTE UseFrontier // ch 1 
+BYTE UseFrontier // ch 1 
+BYTE UseFrontier // ch 1 
+BYTE UseFrontier // ch 1 
+BYTE UseFrontier // ch 1 
+BYTE UseFrontier // ch 1 
+ORG TilesetTable+256 
+
 
 
 

@@ -36,5 +36,11 @@
 .avoid 163
 .avoid 122
 .avoid 137
+DesertBastionObj
+DesertBastionPal
+FF2TownObj
+FF2TownPal
+FrontierObj
+FrontierPal
 UpdatedVillageObj
 UpdatedVillagePal

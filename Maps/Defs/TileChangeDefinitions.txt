@@ -1,3 +1,4 @@
 //Generated. Do not edit!
 Ch1TileChanges
+Ch2TileChanges
 PrologueTileChanges

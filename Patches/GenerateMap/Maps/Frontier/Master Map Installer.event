@@ -1,0 +1,6 @@
+#include "Island1.event"
+#include "Island2.event"
+#include "Island3.event"
+#include "Island4.event"
+#include "Room1.event"
+#include "Village.event"

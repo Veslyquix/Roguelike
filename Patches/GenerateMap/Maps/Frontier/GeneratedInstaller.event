@@ -1,0 +1,38 @@
+//Generated - do not edit!
+ 
+ 
+ 
+ALIGN 4 
+Frontier_MapPiecesTable: 
+{ 
+POIN Island1_data 
+POIN Island2_data 
+POIN Island3_data 
+POIN Island4_data 
+POIN Room1_data 
+POIN Village_data 
+WORD 0 
+ 
+ 
+ALIGN 4 
+Island1_data: 
+#incbin "Island1_data.dmp" 
+ALIGN 4 
+Island2_data: 
+#incbin "Island2_data.dmp" 
+ALIGN 4 
+Island3_data: 
+#incbin "Island3_data.dmp" 
+ALIGN 4 
+Island4_data: 
+#incbin "Island4_data.dmp" 
+ALIGN 4 
+Room1_data: 
+#incbin "Room1_data.dmp" 
+ALIGN 4 
+Village_data: 
+#incbin "Village_data.dmp" 
+} 
+ALIGN 4 
+Frontier_NumberOfMapPieces: 
+WORD 6 

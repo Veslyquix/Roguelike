@@ -1,6 +1,16 @@
 //Generated. Do not edit!
 
+ObjTypePalettePointerTable(DesertBastionPal,DesertBastionPalData)
+ObjTypePalettePointerTable(DesertBastionObj,DesertBastionObjData)
+ObjTypePalettePointerTable(FF2TownPal,FF2TownPalData)
+ObjTypePalettePointerTable(FF2TownObj,FF2TownObjData)
+ObjTypePalettePointerTable(FrontierPal,FrontierPalData)
+ObjTypePalettePointerTable(FrontierObj,FrontierObjData)
 ObjTypePalettePointerTable(UpdatedVillagePal,UpdatedVillagePalData)
 ObjTypePalettePointerTable(UpdatedVillageObj,UpdatedVillageObjData)
+TileConfigPointerTable(CastleConf,CastleConfData)
+TileConfigPointerTable(DesertBasionConf,DesertBasionConfData)
+TileConfigPointerTable(FF2TownConf,FF2TownConfData)
+TileConfigPointerTable(FrontierConf,FrontierConfData)
 TileConfigPointerTable(UpdatedVillageConf,UpdatedVillageConfData)
-ALIGN 4UpdatedVillageObjData:#incbin "dmp/UpdatedVillage.dmp"ALIGN 4UpdatedVillagePalData:#incbin "dmp/UpdatedVillage_pal.dmp"ALIGN 4UpdatedVillageConfData:#incbin "dmp/UpdatedVillage_comp.dmp"
+ALIGN 4DesertBastionObjData:#incbin "dmp/DesertBastion.dmp"ALIGN 4DesertBastionPalData:#incbin "dmp/DesertBastion_pal.dmp"ALIGN 4FF2TownObjData:#incbin "dmp/FF2Town.dmp"ALIGN 4FF2TownPalData:#incbin "dmp/FF2Town_pal.dmp"ALIGN 4FrontierObjData:#incbin "dmp/Frontier.dmp"ALIGN 4FrontierPalData:#incbin "dmp/Frontier_pal.dmp"ALIGN 4UpdatedVillageObjData:#incbin "dmp/UpdatedVillage.dmp"ALIGN 4UpdatedVillagePalData:#incbin "dmp/UpdatedVillage_pal.dmp"ALIGN 4CastleConfData:#incbin "dmp/Castle_comp.dmp"ALIGN 4DesertBasionConfData:#incbin "dmp/DesertBasion_comp.dmp"ALIGN 4FF2TownConfData:#incbin "dmp/FF2Town_comp.dmp"ALIGN 4FrontierConfData:#incbin "dmp/Frontier_comp.dmp"ALIGN 4UpdatedVillageConfData:#incbin "dmp/UpdatedVillage_comp.dmp"

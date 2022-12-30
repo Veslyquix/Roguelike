@@ -1,2 +1,3 @@
 #define Ch1Ch 0x1
-#define PrologueCh 0x2
+#define Ch2Ch 0x2
+#define PrologueCh 0x3

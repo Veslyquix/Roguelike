@@ -1,1 +1,5 @@
-#define UpdatedVillageConf 0x1
+#define CastleConf 0x1
+#define DesertBasionConf 0x2
+#define FF2TownConf 0x4
+#define FrontierConf 0x5
+#define UpdatedVillageConf 0x6

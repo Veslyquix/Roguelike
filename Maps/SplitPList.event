@@ -4,8 +4,11 @@
 //<property name="Anims" value="WaterAnimation"/>
 
 #include "TilesetAnimations/UpdatedVillage/Installer.event"
+#include "TilesetAnimations/Frontier/Installer.event"
 #define UpdatedVillageAnimations 1
 TileAnimPointerTable(UpdatedVillageAnimations, UpdatedVillageTilesetAnimation)
+#define FrontierAnimations 2
+TileAnimPointerTable(FrontierAnimations, FrontierTilesetAnimation)
 
 
 

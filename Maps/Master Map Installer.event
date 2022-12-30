@@ -13,5 +13,8 @@
 #include "Maps\Ch1.event"
 }
 {
+#include "Maps\Ch2.event"
+}
+{
 #include "Maps\Prologue.event"
 }

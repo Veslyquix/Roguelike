@@ -19,9 +19,38 @@ extern bool UnsetEventId(int flag);
 
 void CopyMapPiece(u16 dst[], u8 xx, u8 yy, u8 map_size_x, u8 map_size_y, u16 defaultTile);
 
-extern int NumberOfMapPieces; 
+struct MapPieces_Struct
+{
+	u8 x; 
+	u8 y; 
+	u16 data[0xff]; 
+};
+extern u8 TilesetTable[0xFF];
+extern int UseFrontierLink; 
+extern int UseVillageLink; 
+
+struct MapPieces_Struct_Poin 
+{
+	struct MapPieces_Struct* mapPieces[0xFF]; 
+};
+
+struct PoinTilesetInfo_Struct
+{
+	struct MapPieces_Struct_Poin* MapPiecesPoin; 
+};
+struct PoinTilesetPieces_Struct
+{
+	int* numberOfMapPieces; 
+};
+
+//extern struct PoinTilesetInfo_Struct TilesetPointerTable[0xFF];
+extern struct MapPieces_Struct_Poin* TilesetPointerTable[0xFF];
+extern int* TilesetPiecesTable[0xFF];
+
+
+
+
 extern int FrequencyOfObjects_Link; 
-//extern int *GenerateMapRam_Link[]; 
 
 struct GeneratedMapDimensions_Struct
 {
@@ -33,13 +62,7 @@ struct GeneratedMapDimensions_Struct
 
 extern struct GeneratedMapDimensions_Struct GeneratedMapDimensions;
 
-struct MapPieces_Struct
-{
-	u8 x; 
-	u8 y; 
-	u16 data[0xff]; 
-};
-extern struct MapPieces_Struct* MapPiecesTable[0xFF];
+
 
 struct Map_Struct
 {
@@ -169,10 +192,16 @@ extern int VillageETrapID_Link;
 extern int BlankVillageTrapID_Link;
 
 
+
 void CopyMapPiece(u16 dst[], u8 placement_x, u8 placement_y, u8 map_size_x, u8 map_size_y, u16 defaultTile)
 {
-	struct MapPieces_Struct* T = MapPiecesTable[NextRN_N(NumberOfMapPieces)];
-	
+
+	u8 index = TilesetTable[gChapterData.chapterIndex];
+	//asm("mov r11, r11");
+	int numberOfMapPieces = *TilesetPiecesTable[index];
+	//asm("mov r11, r11");
+	struct MapPieces_Struct* T = TilesetPointerTable[index]->mapPieces[NextRN_N(numberOfMapPieces)];
+	//asm("mov r11, r11"); 
 	u8 piece_size_x = (T->x);
 	u8 piece_size_y = (T->y);
 	
@@ -200,9 +229,43 @@ void CopyMapPiece(u16 dst[], u8 placement_x, u8 placement_y, u8 map_size_x, u8 m
 				//dst[((placement_y+y) * map_size_x) + placement_x+x] = T->data[y*piece_size_x+x]; 
 				dst[loc] = T->data[y*piece_size_x+x]; 
 				
-				// this is hardcoded to the village tileset atm 
+				// frontier 
 
+				if (TilesetTable[gChapterData.chapterIndex] == UseFrontierLink) { 
+				if (!(CheckEventId(8))) { 
+				if (dst[loc] == 0x400) { // door at 4x 11y in tileset (0-indexed) 
+					dst[loc] = 0x10; // plain
+					AddTrap(placement_x+x, placement_y+y, DoorTrapID_Link, 0);
+				}
+				if (dst[loc] == 0x84) { // Chest
+					dst[loc] = 0x4; // Open chest 
+					//AddTrap(placement_x+x, placement_y+y, DoorTrapID_Link, 0);
+				}
+				if (dst[loc] == 0xE3C) { // broken wall big 
+					dst[loc] = 0x10; // floor no shadow 
+					AddTrap(placement_x+x, placement_y+y, BreakableWallTrapID_Link, 0);
+				}
 				
+				// add village
+				if ((dst[loc] == 0xD1C) | (dst[loc] == 0xCAC)) { // add village traps 
+					AddTrap(placement_x+x, placement_y+y, VillageATrapID_Link, 0);
+					AddTrap(placement_x+x, placement_y+y-1, BlankVillageTrapID_Link, 0);
+				}
+				if ((dst[loc] == 0xD20) | (dst[loc] == 0xCB0)) { // add village traps 
+					AddTrap(placement_x+x, placement_y+y, VillageBTrapID_Link, 0);
+					AddTrap(placement_x+x, placement_y+y-1, VillageETrapID_Link, 0);
+				}
+				if ((dst[loc] == 0xD24) | (dst[loc] == 0xCB4)) { // add village traps 
+					AddTrap(placement_x+x, placement_y+y, VillageCTrapID_Link, 0);
+					AddTrap(placement_x+x, placement_y+y-1, BlankVillageTrapID_Link, 0);
+				}
+				} 
+				}
+				
+				
+				
+				// this is hardcoded to the village tileset atm 
+				if (TilesetTable[gChapterData.chapterIndex] == UseVillageLink) { 
 				if ((dst[loc] == 0xC8C) || (dst[loc] == 0xC80) || (dst[loc] == 0xC98)) { // village 1/6  
 					dst[loc] = 0xCA4; // ruins 1/6
 					//AddTrap(placement_x+x, placement_y+y, BreakableWallTrapID_Link, 0);
@@ -255,6 +318,7 @@ void CopyMapPiece(u16 dst[], u8 placement_x, u8 placement_y, u8 map_size_x, u8 m
 					AddTrap(placement_x+x, placement_y+y, VillageCTrapID_Link, 0);
 					AddTrap(placement_x+x, placement_y+y-1, BlankVillageTrapID_Link, 0);
 				}
+				} 
 				
 				}
 
