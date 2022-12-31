@@ -1,4 +1,4 @@
-
+#include "GlobalStatAdjustments/Installer.event" 
 #include "ExtendWeaponDescBox/Installer.event" 
 
 // randomize map(s) 

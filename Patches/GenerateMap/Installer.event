@@ -1,8 +1,6 @@
 #include "GenerateMap.lyn.event"
 #include "Maps/Installer.event"
 
-
-#define RandomizedChapterID_Def Ch2Ch // Debug2 ChID  
 #define Minimum_X_Size 15 
 #define Minimum_Y_Size 10
 #define Maximum_X_Size 35
@@ -25,8 +23,9 @@ FrequencyOfObjects_Link:
 WORD FrequencyOfObjects 
 
 ALIGN 4 
-RandomizedChapterID_Link:
-WORD RandomizedChapterID_Def
+RandomizedChapterID_List:
+BYTE 1 2 3 4 5 6 7 8 9 10 // Chapter IDs to randomize 
+BYTE 0xFF 
 
 ALIGN 4
 PUSH; ORG CurrentOffset+1

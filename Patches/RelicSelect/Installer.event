@@ -19,13 +19,10 @@ RelicTitleLink:
 SHORT RelicTitle 
 
 
-#define SlimBuildFlag (0x90-0x64)
-#define HawkeyeFlag (0x91-0x64)
-#define WeaponsExpertFlag (0x92-0x64 )
 
 ALIGN 4 
 RelicMaxLink:
-WORD 3 
+WORD 4 
 
 ALIGN 4 
 SlimBuildImage:
@@ -33,6 +30,8 @@ SlimBuildImage:
 HawkeyeImage:
 #incbin "Images/2.dmp"
 WeaponsExpertImage: 
+#incbin "Images/3.dmp"
+CelerityImage: 
 #incbin "Images/3.dmp"
 
 ALIGN 4 
@@ -42,11 +41,14 @@ HawkeyeImage_pal:
 #incbin "Images/2_pal.dmp" 
 WeaponsExpertImage_pal:
 #incbin "Images/3_pal.dmp" 
+CelerityImage_pal:
+#incbin "Images/3_pal.dmp" 
 
 ALIGN 4 
 RelicNameTable: 
-POIN SlimBuildImage SlimBuildImage_pal; SHORT RelicSlimBuild RelicSlimBuildDesc SlimBuildFlag 0; 
-POIN HawkeyeImage HawkeyeImage_pal; SHORT RelicHawkeye RelicHawkeyeDesc HawkeyeFlag 0; 
-POIN WeaponsExpertImage WeaponsExpertImage_pal; SHORT RelicWeaponsExpert RelicWeaponsExpertDesc WeaponsExpertFlag 0; 
+POIN SlimBuildImage SlimBuildImage_pal; SHORT RelicSlimBuild RelicSlimBuildDesc; POIN SlimBuildFunc; 
+POIN HawkeyeImage HawkeyeImage_pal; SHORT RelicHawkeye RelicHawkeyeDesc; POIN HawkeyeFunc; 
+POIN WeaponsExpertImage WeaponsExpertImage_pal; SHORT RelicWeaponsExpert RelicWeaponsExpertDesc; POIN WeaponsExpertFunc; 
+POIN CelerityImage CelerityImage_pal; SHORT RelicCelerity RelicCelerityDesc; POIN CelerityFunc; 
 
 

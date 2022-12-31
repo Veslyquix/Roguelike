@@ -11,6 +11,9 @@ String("V0.01                 Dec 2022") ; BYTE 0; POP // this overflows into th
   #define DebuffTableSize 0x00000440
 #endif
 
+// flags 0xDD and higher are reserved for stat modifications atm 
+
+
 // Attribute for defining items with passive stat bonuses
 #define PASSIVE_ITEM_BOOSTS_ATTR 0x00800000
 

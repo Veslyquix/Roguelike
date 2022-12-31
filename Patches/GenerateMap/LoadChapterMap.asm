@@ -13,10 +13,17 @@ MOV r0 ,r6
 blh 0x08034640   //Examine address of stage map mapdata
 push {r0} 
 MOV r1 ,r4
-ldr r3, =RandomizedChapterID_Link 
-ldr r3, [r3] 
-cmp r6, r3
+ldr r3, =RandomizedChapterID_List 
+sub r3, #1 
+Loop: 
+add r3, #1 
+ldrb r0, [r3]
+cmp r0, #0xFF @ terminator 
+beq Continue
+cmp r6, r0
 beq Skip
+b Loop 
+Continue: 
 pop {r0} 
 blh 0x08012F50   //UnLZ77Decompress
 b Skip2 

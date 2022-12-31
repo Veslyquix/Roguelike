@@ -56,7 +56,6 @@ extern int RelicMaxLink;
 extern TSA RelicDescBoxTSA;
 extern TSA RelicTitleBoxTSA;
 extern u16 RelicTitleLink;
-extern void SetNewFlag(int flag); 
 extern unsigned gEventSlot[];
 
 struct Struct_SelectRelicProc
@@ -78,8 +77,8 @@ struct RelicNameTableStruct
 	void* pal;
 	u16 name;
     u16 desc;
-	u16 flag; 
-	u16 pad; 
+	void* func; 
+	//u16 pad; 
 };
 
 extern struct RelicNameTableStruct RelicNameTable[0xFF]; 
@@ -364,7 +363,7 @@ static void DrawYes(struct MenuProc* menu, struct MenuCommandProc* command)
 }
 
 
-
+extern void CallFunction(void* function); 
 
 
 static int SelectYes(struct MenuProc* menu, struct MenuCommandProc* command)
@@ -375,7 +374,7 @@ static int SelectYes(struct MenuProc* menu, struct MenuCommandProc* command)
 	
 	Struct_SelectRelicProc* proc = (Struct_SelectRelicProc*)ProcFind(&ProcInstruction_SelectRelic);
 
-	SetNewFlag(RelicNameTable[proc->entry[proc->currOptionIndex]].flag);
+	CallFunction(RelicNameTable[proc->entry[proc->currOptionIndex]].func);
 	// save the choice we made 
 	
 	EndAllMenus(menu);

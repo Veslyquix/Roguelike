@@ -1,0 +1,38 @@
+#include "Relics.lyn.event"
+
+ALIGN 4 
+RelicsMagRam_Link:
+WORD 0x300525F
+ALIGN 4 
+RelicsStrRam_Link:
+WORD 0x3005260
+ALIGN 4 
+RelicsSklRam_Link:
+WORD 0x3005261
+ALIGN 4 
+RelicsSpdRam_Link:
+WORD 0x3005262
+ALIGN 4 
+RelicsDefRam_Link:
+WORD 0x3005263
+ALIGN 4 
+RelicsResRam_Link:
+WORD 0x3005264
+ALIGN 4 
+RelicsLukRam_Link:
+WORD 0x3005265
+ALIGN 4 
+RelicsHPRam_Link:
+WORD 0x3005266
+ALIGN 4 
+RelicsMovRam_Link:
+WORD 0x3005267
+ALIGN 4 
+RelicsConRam_Link:
+WORD 0x3005268
+
+
+
+
+
+

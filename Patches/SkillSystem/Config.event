@@ -28,11 +28,11 @@
 // USE_SAVE_EXPANSION will be used even if commented
 // TODO: Define an item ID for Spirit Dust (Mag statbooster) in "Strmag/Str Mag Split/Installer.event". Energy Ring is used by default!
 // Item icon for Spirit Dust is included! Define your icon ID in "Strmag/_Master Asm Installer.event". Default is Green Note.
-// #define USE_STRMAG_SPLIT
+#define USE_STRMAG_SPLIT
 
 // If uncommented, will use a full (EMS-based) save expansion instead of the "old" suspend expansion
 // Enabling this *will* break saves, but allows for higher stats and other things.
-// #define USE_SAVE_EXPANSION
+#define USE_SAVE_EXPANSION
 
 //If uncommented, will enable Battle Stats with Animations Off.
 #define BATTLE_STATS
@@ -145,7 +145,7 @@
 
 //If uncommented, Cannot Crit will be implemented.
 //Makes weapon crit of 255 negate crits.
-//#define CANNOT_CRIT
+#define CANNOT_CRIT
 
 //If uncommented, AdvWeaponLocks will be implemented.
 //This is a rewrite of venno's array-based weapon locks.
@@ -187,7 +187,7 @@
 // #define BATTLE_ANIMATION_NUMBERS
 
 //ID of flag to use for hiding damage numbers, if enabled above.
-#define BATTLE_ANIMATION_NUMBERS_FLAG 0xEE
+#define BATTLE_ANIMATION_NUMBERS_FLAG 0xCE
 
 // If uncommented, passive stat boosts will not stack and only the 
 // first item in the inventory with passive stat boosts will apply them.
@@ -320,13 +320,13 @@
 #define PRESS_SELECT_TO_VIEW_GROWTHS
 
 //If true, the stat colors for player units will reflect their growth in the stat.
-#define USE_STAT_COLORS True
+#define USE_STAT_COLORS False
 
 //If true, Fixed Growths mode will exist.
 #define FIXED_GROWTHS_MODE False
 
 //ID of flag to use for fixed growths mode, if enabled
-#define FIXED_GROWTHS_FLAG_ID 0xEF
+#define FIXED_GROWTHS_FLAG_ID 0xCF
 
 //If true, passive growth boosters and metis tome will not affect growths in fixed growths mode.
 #define FIXED_GROWTHS_DONT_BOOST True

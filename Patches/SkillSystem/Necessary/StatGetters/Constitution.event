@@ -5,6 +5,7 @@
 ALIGN 4
 pConModifiers: // Consitition
 	POIN prAddUnitBaseCon prAddUnitConBonus prItemPassiveCon (prGetItemConBonus-1)
+	POIN RelicsCon
 	#ifdef DEBUFFS_MIN_ZERO
 	POIN prMinZero
 	#endif

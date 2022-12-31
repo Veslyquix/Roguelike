@@ -23,6 +23,11 @@ Your units cannot miss.[X]
 Your weapons have 50%[N]
 more might.[X]
 
+## RelicCelerity
+ Celerity[X]
+ 
+## RelicCelerityDesc
+Your units have +1 mov.[X]
 
 
 ## Village_0 

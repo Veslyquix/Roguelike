@@ -92,6 +92,7 @@ SetTrapMap___Pal(ChestTrapID,LightRuneTrapPaletteWord)
 SetTrapEventInit(DoorTrapID,CompletionFlagTrapInitialization)
 SetTrapMapSprite(DoorTrapID,DoorStanding)
 SetTrapMap___Pal(DoorTrapID,LightRuneTrapPaletteWord)
+SetTerrainForTrap(DoorTrapID, 0x1E) // Door 
 //SetLightSourceTrap(ChestTrapID)
 SetImpassableTrap(DoorTrapID)
 

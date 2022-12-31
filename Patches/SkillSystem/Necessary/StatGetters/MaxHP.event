@@ -5,6 +5,7 @@
 
 pMaxHPModifiers: // Maximum HP
 	POIN prAddUnitMaxHP prHexingRodEffect prAddEquipHP prItemPassiveHp
+	POIN RelicsHP	
 	#ifdef DEBUFFS_MIN_ZERO
 	POIN prMinZero
 	#endif
