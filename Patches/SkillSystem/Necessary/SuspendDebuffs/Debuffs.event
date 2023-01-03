@@ -12,8 +12,8 @@ TeamDebuffTables:
   #define MaxEnemyUnits 50+1
   #define MaxGreenUnits 20+1
   
-  #define DebuffEntrySize 8 //still assumed to be 8 in some places, beware if changing
-  #define PUDebuffTable DebuffTable
+  #define DebuffEntrySize 12 
+  #define PUDebuffTable DebuffTableRam
   #define EUDebuffTable "PUDebuffTable + (MaxPlayerUnits*DebuffEntrySize)"
   #define GUDebuffTable "EUDebuffTable + (MaxEnemyUnits*DebuffEntrySize)"
   #define OUDebuffTable "GUDebuffTable + (MaxGreenUnits*DebuffEntrySize)"
@@ -29,13 +29,13 @@ TeamDebuffTables:
   PUSH
 
     ORG 0x17D7C // To zero out the additional data upon making a new unit.
-      gotoHackWithR3(Initialization)
+      gotoHackWithR3(InitDebuffs)
 
     ORG 0xA5808 // This is for loading a previously deployed unit for the first time on a map.
-      gotoHackWithR3(Reloading)
+      gotoHackWithR3(ReloadDebuffs)
 
     ORG 0x188A8 // This is for decreasing the debuffs each turn/ending rally
-      jumpToHack(PerTurn)
+      jumpToHack(ProcessDebuffs)
 
     ORG 0x59A308 // Clear debuffs on chapter switch
       WORD $0D; POIN MapMainClearProc
@@ -78,6 +78,7 @@ TeamDebuffTables:
 
   POP
 
+
   ALIGN 4
   damagedThisTurn:
     #incbin "asm/Debuffs/SetDamagedThisTurn.dmp"
@@ -85,52 +86,81 @@ TeamDebuffTables:
   ALIGN 4
   setDebuffs:
     #include "asm/Debuffs/SetDebuffs.lyn.event"
-    POIN GetDebuffs|1
+    POIN GetUnitDebuffEntry|1
     POIN ItemTable
     POIN WeaponDebuffTable
 
-  ALIGN 4
-  Initialization:
-    #include "asm/Debuffs/NewInitializer.lyn.event"
-    POIN GetDebuffs|1
+   
+    
 
-  ALIGN 4
-  Reloading:
-    #include "asm/Debuffs/NewReload.lyn.event"
-    POIN GetDebuffs|1
-
-  ALIGN 4
-  PerTurn:
-    #ifndef USE_STRMAG_SPLIT
-      #include "asm/Debuffs/ProcessDebuffs.lyn.event"
-      POIN GetDebuffs|1
-    #else
-      #include "asm/Debuffs/ProcessDebuffsMag.lyn.event"
-      POIN GetDebuffs|1
-    #endif // USE_STRMAG_SPLIT
 
   ALIGN 4
   MapMainClearProc:
-    WORD $02; POIN (ClearDebuffs|1)
+    WORD $02; POIN (ClearAllDebuffs|1)
     WORD $02 $80155C5
     WORD $0D $859A310
 
   ALIGN 4
   GameCtrlClearProc:
-    WORD $02; POIN (ClearDebuffs|1)
+    WORD $02; POIN (ClearAllDebuffs|1)
     WORD $02 $8009D99
     WORD $0D $8591924
 
   }
 
-  ClearDebuffs:
-    #include "asm/Debuffs/ClearDebuffs.lyn.event"
-    WORD DebuffTable
-    WORD DebuffTableSize
 
-  GetDebuffs:
-    #include "asm/Debuffs/GetDebuffs.lyn.event"
-    POIN TeamDebuffTables
+	#include "asm/Debuffs/Reload.lyn.event"
+	#include "asm/Debuffs/InitDebuffs.lyn.event"
+    #include "asm/Debuffs/ClearDebuffs.lyn.event"
+    #include "asm/Debuffs/GetUnitDebuffEntry.lyn.event"
+	#include "asm/Debuffs/ProcessDebuffs.lyn.event"
+
+
+ALIGN 4 
+DebuffEntrySize_Link:
+WORD DebuffEntrySize 
+
+ALIGN 4 
+DebuffTableRam_Link:
+WORD DebuffTableRam 
+
+ALIGN 4 
+DebuffTableSize_Link: 
+WORD DebuffTableSize 
+
+
+ALIGN 4 
+DebuffRestorePerTurnAmount_Link:
+WORD 3 
+
+ALIGN 4 
+BuffDepletePerTurnAmount_Link:
+WORD 2 
+
+#define RequireDamageToDebuff True 
+RequireDamageToDebuff_Link: 
+WORD RequireDamageToDebuff
+
+RallySpectrumAmount_Link: 
+WORD 2 
+MagRallyAmount_Link: 
+WORD 4 
+StrRallyAmount_Link: 
+WORD 4 
+SklRallyAmount_Link: 
+WORD 4 
+SpdRallyAmount_Link: 
+WORD 4 
+
+DefRallyAmount_Link: 
+WORD 4 
+ResRallyAmount_Link: 
+WORD 4 
+LukRallyAmount_Link: 
+WORD 8 
+MovRallyAmount_Link: 
+WORD 2 
+
 
 #else // _FE8_
   ERROR Suspend Expansion and Debuff hack is for FE8

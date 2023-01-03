@@ -1,3 +1,17 @@
+
+#define WepDebuffEntry(mag, str, skl, spd, def, res, luk, mov) "BYTE (0-mag) (0-str) (0-skl) (0-spd) (0-def) (0-res) (0-luk) (0-mov)" 
+#define WepBuffEntry(mag, str, skl, spd, def, res, luk, mov) "BYTE mag str skl spd def res luk mov" 
+
+
+ALIGN 4 
+NewWeaponDebuffTable: // BuffEnemy bitflag 0x40? DebuffSelf bitflag 0x40? 
+// 				mag, str, skl, spd, def, res, luk, mov
+BYTE 0 0 0 0 0 0 0 0 // do nothing for 0th entry 
+WepDebuffEntry( 1,   2,   3,    4,   5,   6,   7,   8 ) 
+WepBuffEntry( 1, 2, 3, 4, 5, 6, 7, 8) 
+WORD 0xFFFFFFFF 0xFFFFFFFF // For FEBuilder to show no further data with 
+
+
 WeaponDebuffTable:
 defWeaponDebuffs(0,0,0,0,0,0,0) //0x0: let 0-index entry be no debuffs.
 defWeaponDebuffs(0,1,1,0,2,2,0) //0x1: Bronze Shuriken debuff.

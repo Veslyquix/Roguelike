@@ -17,14 +17,6 @@ prAddUnitSpeed:
 prAddEquipSpeed:
 	rAdd(rForUnitEquipped(rCallExternal(prGetItemSpdBonus)))
 
-prDebuffSpd:
-	#include "_asm/DebuffSpd.lyn.event"
-	POIN GetDebuffs|1
-
-prRallySpd:
-	#include "_asm/RallySpd.lyn.event"
-	POIN GetDebuffs|1
-
 prItemPassiveSpeed:
 #ifndef DONT_STACK_BOOSTS
 	rPassiveStatBoostsStacking(STAT_SPEED)

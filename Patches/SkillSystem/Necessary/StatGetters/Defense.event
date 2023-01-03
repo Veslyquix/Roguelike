@@ -17,13 +17,6 @@ prAddUnitDefense:
 prAddEquipDefense:
 	rAdd(rForUnitEquipped(rCallExternal(prGetItemDefBonus)))
 
-prDebuffDef:
-	#include "_asm/DebuffDef.lyn.event"
-	POIN GetDebuffs|1
-
-prRallyDef:
-	#include "_asm/RallyDef.lyn.event"
-	POIN GetDebuffs|1
 	
 prFortressDefenseDef:
 	_testSkill(FortressDefenseID,5,0)

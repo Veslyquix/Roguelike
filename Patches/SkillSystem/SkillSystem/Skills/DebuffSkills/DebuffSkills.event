@@ -11,7 +11,7 @@ SealSkills:
 #include "SealSkills/SealSkills.lyn.event"
 POIN SkillTester
 POIN SealSkillList
-POIN GetDebuffs|1
+POIN GetUnitDebuffEntry
 POIN ItemTable
 WORD FullMetalBodyID
 POIN WeaponDebuffTable

@@ -20,14 +20,6 @@ prAddEquipResistance:
 prAddPureWaterBarrierMod: // Upper part of byte 0x31 in unit struct is current pure water/barrier bonus duration
 	rAdd(rUpperHalfByteOf(rUByteAt(0x31)))
 
-prDebuffRes:
-	#include "_asm/DebuffRes.lyn.event"
-	POIN GetDebuffs|1
-
-prRallyRes:
-	#include "_asm/RallyRes.lyn.event"
-	POIN GetDebuffs|1
-
 prLifeAndDeathMinus:
 _testSkill(HeroesLifeAndDeathID,0,5)
 

@@ -1,14 +1,14 @@
 PUSH; ORG $D74D0	//{U}
-String("V0.01                 Dec 2022") ; BYTE 0; POP // this overflows into the date but I don't use the date so whatever 
+String("V0.02                 Jan 2022") ; BYTE 0; POP // this overflows into the date but I don't use the date so whatever 
 
 #define FreeSpaceGFX 0x1000000 
 // currently ends at 0x138----
 #define 	FreeSpace 0x1400000
 #define   FreeSpaceBLRange 0x1c1ec0
 
-#ifndef DebuffTable
-  #define DebuffTable     0x0203FA58
-  #define DebuffTableSize 0x00000440
+#ifndef DebuffTableRam
+  #define DebuffTableRam     0x0203F990 // - 0x203FFF0 
+  #define DebuffTableSize 0x00000660
 #endif
 
 // flags 0xDD and higher are reserved for stat modifications atm 

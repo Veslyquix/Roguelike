@@ -123,9 +123,7 @@ RallyCommandEffect.apply:
 
 	@ add  r3, r0
 
-	ldr  r3, =GetDebuffs
-	mov lr, r3
-	.short 0xF800
+	bl GetUnitDebuffEntry
 	mov r3, r0
 
 	ldrb r0, [r3, #3] @ Magic rally occupies the 9th bit which shouldn't affect regular behavior. (Really no #ifdef necessary)
