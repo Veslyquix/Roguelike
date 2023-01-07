@@ -14,7 +14,8 @@ lsr r0,r2,#0x6
 
 ldr r1, =TeamDebuffTables
 lsl r0,r0,#0x2 @ WORD ram address 
-add r0, r1 @ specific table we want 
+add r0, r1 
+ldr r0, [r0] @ specific table we want 
 @ cmp r0,#0x0
 @ beq End
 

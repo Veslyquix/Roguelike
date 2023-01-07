@@ -4,7 +4,9 @@
 #include "_Common.event"
 
 pLuckModifiers: // Luck
-	POIN prAddUnitLuck prHalveIfCapturing prDebuffLuk prAddEquipLuck prItemPassiveLuck prRallyLuk prDefiantLck
+	POIN prAddUnitLuck prHalveIfCapturing 
+	POIN prDebuffLuk 
+	POIN prAddEquipLuck prItemPassiveLuck prRallyLuk prDefiantLck
 	POIN RelicsLuk
 	#ifdef DEBUFFS_MIN_ZERO
 	POIN prMinZero

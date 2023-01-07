@@ -1,12 +1,21 @@
 .thumb
+.macro blh to, reg=r3
+  ldr \reg, =\to
+  mov lr, \reg
+  .short 0xf800
+.endm
+
 .include "definitions.s"
+.equ NextRN_N, 0x08000C80
 GetDebuffAmount: 
 push {r4, lr} 
-mov r4, r2 @ stat 
+mov r4, r2 @ bit offset 
 mov r0, r1 @ unit 
 bl GetUnitDebuffEntry 
-mov r2,r0
-ldrsb r0, [r2, r4]
+mov r1, r4 @ bit offset 
+ldr r2, =DebuffStatNumberOfBits_Link
+ldr r2, [r2] 
+bl UnpackData_Signed 
 pop {r4} 
 pop {r1} 
 bx r1 
@@ -18,7 +27,8 @@ prDebuffMag:
 push {r4-r5, lr}
 mov r5, r0 @stat
 mov r4, r1 @unit
-mov r2, #mag 
+ldr r2, =DebuffStatBitOffset_Mag
+ldr r2, [r2] 
 bl GetDebuffAmount 
 add r0, r5 
 mov r1, r4
@@ -34,7 +44,8 @@ prDebuffStr:
 push {r4-r5, lr}
 mov r5, r0 @stat
 mov r4, r1 @unit
-mov r2, #str 
+ldr r2, =DebuffStatBitOffset_Str
+ldr r2, [r2] 
 bl GetDebuffAmount 
 add r0, r5 
 mov r1, r4
@@ -49,7 +60,8 @@ prDebuffSkl:
 push {r4-r5, lr}
 mov r5, r0 @stat
 mov r4, r1 @unit
-mov r2, #skl
+ldr r2, =DebuffStatBitOffset_Skl
+ldr r2, [r2] 
 bl GetDebuffAmount 
 add r0, r5 
 mov r1, r4
@@ -65,7 +77,8 @@ prDebuffSpd:
 push {r4-r5, lr}
 mov r5, r0 @stat
 mov r4, r1 @unit
-mov r2, #spd 
+ldr r2, =DebuffStatBitOffset_Spd
+ldr r2, [r2] 
 bl GetDebuffAmount 
 add r0, r5 
 mov r1, r4
@@ -80,7 +93,8 @@ prDebuffDef:
 push {r4-r5, lr}
 mov r5, r0 @stat
 mov r4, r1 @unit
-mov r2, #def 
+ldr r2, =DebuffStatBitOffset_Def
+ldr r2, [r2] 
 bl GetDebuffAmount 
 add r0, r5 
 mov r1, r4
@@ -95,7 +109,8 @@ prDebuffRes:
 push {r4-r5, lr}
 mov r5, r0 @stat
 mov r4, r1 @unit
-mov r2, #res
+ldr r2, =DebuffStatBitOffset_Res
+ldr r2, [r2] 
 bl GetDebuffAmount 
 add r0, r5 
 mov r1, r4
@@ -110,7 +125,8 @@ prDebuffLuk:
 push {r4-r5, lr}
 mov r5, r0 @stat
 mov r4, r1 @unit
-mov r2, #luk
+ldr r2, =DebuffStatBitOffset_Luk
+ldr r2, [r2] 
 bl GetDebuffAmount 
 add r0, r5 
 mov r1, r4
@@ -125,7 +141,8 @@ prDebuffMov:
 push {r4-r5, lr}
 mov r5, r0 @stat
 mov r4, r1 @unit
-mov r2, #spd 
+ldr r2, =DebuffStatBitOffset_Mov
+ldr r2, [r2] 
 bl GetDebuffAmount 
 add r0, r5 
 mov r1, r4

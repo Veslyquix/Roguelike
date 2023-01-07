@@ -4,7 +4,9 @@
 #include "_Common.event"
 ALIGN 4
 pMovModifiers: // Movement
-	POIN prAddUnitBaseMov prAddUnitMovBonus prGetItemMovBonus prDebuffMov prItemPassiveMov prRallyMov prSkillCelerity prSkillPoise prArmorMarchCheck
+	POIN prAddUnitBaseMov prAddUnitMovBonus prGetItemMovBonus 
+	POIN prDebuffMov 
+	POIN prItemPassiveMov prRallyMov prSkillCelerity prSkillPoise prArmorMarchCheck
 	POIN RelicsMov	
 	#ifdef STAIRS_ASM
 	POIN StairsMoveDebuff

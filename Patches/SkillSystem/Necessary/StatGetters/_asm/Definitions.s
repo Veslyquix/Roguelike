@@ -3,6 +3,9 @@
 @8: Rallies (str/skl/spd/def/res/luk) (bit 7 = rally move, bit 8 = rally spectrum)
 @9: bit 1 = half str, bit 2 = half mag, bit 3 = hexing rod, bit 4 = rally mag, bits 5-8 are free 
 
+
+
+
 .equ mag, 0 @ signed. eg up to +127 or -128 in a stat.
 .equ str, 1 
 .equ skl, 2 

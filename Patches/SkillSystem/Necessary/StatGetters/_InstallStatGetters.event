@@ -12,6 +12,33 @@
 
 #include "_Common.event"
 
+#define DebuffStatNumberOfBits 6 
+
+ALIGN 4 
+DebuffStatNumberOfBits_Link:
+WORD DebuffStatNumberOfBits 
+
+ALIGN 4 
+DebuffStatBitOffset_Mag: 
+WORD 0*DebuffStatNumberOfBits
+DebuffStatBitOffset_Str: 
+WORD 1*DebuffStatNumberOfBits
+DebuffStatBitOffset_Skl: 
+WORD 2*DebuffStatNumberOfBits
+DebuffStatBitOffset_Spd: 
+WORD 3*DebuffStatNumberOfBits
+DebuffStatBitOffset_Def: 
+WORD 4*DebuffStatNumberOfBits
+DebuffStatBitOffset_Res: 
+WORD 5*DebuffStatNumberOfBits
+DebuffStatBitOffset_Luk: 
+WORD 6*DebuffStatNumberOfBits
+DebuffStatBitOffset_Mov: 
+WORD 7*DebuffStatNumberOfBits
+
+
+
+#include "_asm/Bitpack.lyn.event" 
 #include "_asm/HalfStatFunctions.lyn.event" 
 #include "_asm/RallyStat.lyn.event" 
 #include "_asm/DebuffStat.lyn.event" 
