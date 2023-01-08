@@ -19,6 +19,15 @@ DebuffStatNumberOfBits_Link:
 WORD DebuffStatNumberOfBits 
 
 ALIGN 4 
+DebuffAssertTable: 
+
+
+
+
+DebuffTooBig:  // give us an error if we accidentally include too much data in the debuff table 
+ASSERT (DebuffAssertTable+DebuffEntrySize)-DebuffTooBig 
+
+ALIGN 4 
 DebuffStatBitOffset_Mag: 
 WORD 0*DebuffStatNumberOfBits
 DebuffStatBitOffset_Str: 
@@ -36,6 +45,38 @@ WORD 6*DebuffStatNumberOfBits
 DebuffStatBitOffset_Mov: 
 WORD 7*DebuffStatNumberOfBits
 
+#define RalliesOffset 8*DebuffStatNumberOfBits
+ALIGN 4 
+RalliesOffset_Link:
+WORD RalliesOffset 
+
+//@8: Rallies (str/skl/spd/def/res/luk) (bit 7 = rally move, bit 8 = rally spectrum)
+//@9: Str/Skl Silver Debuff (6 bits), bit 7 = RallyMag, bit 8 = free 
+
+
+StrRallyOffset_Link: 
+WORD 0+RalliesOffset 
+SklRallyOffset_Link: 
+WORD 1+RalliesOffset 
+SpdRallyOffset_Link: 
+WORD 2+RalliesOffset 
+DefRallyOffset_Link: 
+WORD 3+RalliesOffset 
+ResRallyOffset_Link: 
+WORD 4+RalliesOffset 
+LukRallyOffset_Link: 
+WORD 5+RalliesOffset 
+MovRallyOffset_Link: 
+WORD 6+RalliesOffset 
+SpecRallyOffset_Link: 
+WORD 7+RalliesOffset 
+MagRallyOffset_Link: 
+WORD 8+RalliesOffset+7 // because reasons 
+
+
+ALIGN 4 
+RalliesNumberOfBits_Link:
+WORD 9 
 
 
 #include "_asm/Bitpack.lyn.event" 

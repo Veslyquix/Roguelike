@@ -172,9 +172,178 @@ pop {r4-r7}
 bx lr
 .ltorg 
 
+.global CheckBit 
+.type CheckBit, %function 
+CheckBit: 
+
+@ given r0 = address 
+@ r1 = bitoffset 
+@ return if the bit is set or not 
+
+lsr r2, r1, #3 @ the byte offset 
+ldrb r0, [r0, r2] @ the byte we care about 
+mov r2, #1 
+lsl r2, r1 @ the bit we care about 
+and r0, r2 @ the bit we want to check is here 
+@(as well as some bits in bigger bytes etc. but since we're only loading a byte, it doesn't matter) 
+cmp r0, #0 
+beq ReturnZero 
+mov r0, #1 
+ReturnZero: 
+bx lr 
 
 
 
+
+
+.global UnpackData
+.type UnpackData, %function 
+UnpackData: 
+push {r4-r5}
+mov r4, r1 
+cmp r2, #32 
+blt NoCapBitsA 
+mov r2, #32 
+NoCapBitsA: 
+mov r5, r2 
+
+sub r4, r1 @ starting bit of the offset 
+lsr r1, #3 @ 8 bits per byte 
+add r0, r1 @ starting address 
+
+mov r3, #7 
+add r3, r2 
+lsr r3, #3 @ bits / 8 rounded up as # of bytes to load 
+@ r3 as the number of bytes to load
+cmp r3, #3 
+ble NoCapA 
+mov r3, #3 @ only load up to 4 bytes 
+NoCapA: 
+sub r3, #1 @ 0-indexed 
+mov r2, r0 @ starting address 
+
+mov r1, #0 
+LoopA: 
+ldrb r0, [r2, r3] 
+sub r3, #1 
+lsl r1, #8 
+orr r1, r0 
+cmp r3, #0 
+blt BreakA 
+b LoopA 
+
+BreakA: 
+@ r1 has the data we need 
+@ r4 = bit to start at 
+@ r5 = number of bits to load 
+lsr r1, r4 
+mov r2, #32 
+sub r2, r5 
+
+mov r0, #1 
+mov r3, r5 
+sub r3, #1 
+lsl r0, r3 @ only top bit set 
+
+lsl r1, r2 
+lsr r1, r2 @ data we asked for 
+mov r0, r1
+pop {r4-r5} 
+bx lr
+.ltorg 
+
+
+@ given r0 = address, r1 = bit offset, r2 = number of bits, r3 = data to store
+@ return nothing
+@ if data exceeds the space, cap it at max value 
+
+.global PackData
+.type PackData, %function 
+PackData: 
+push {r4-r7}
+
+
+mov r4, r1 
+mov r6, r3 @ data to store 
+
+cmp r2, #32 
+blt NoCapBitsStore2 
+mov r2, #32 
+NoCapBitsStore2: 
+mov r5, r2 
+
+sub r4, r1 @ starting bit of the offset 
+lsr r1, #3 @ 8 bits per byte 
+add r0, r1 @ starting address 
+
+
+mov r3, #7 
+add r3, r2 
+lsr r3, #3 @ bits / 8 rounded up as # of bytes to load 
+@ r3 as the number of bytes to load
+cmp r3, #3 
+ble NoCap3 
+mov r3, #4 @ only load up to 4 bytes 
+NoCap3: 
+mov r2, r0 @ starting address 
+sub r3, #1 @ 0-indexed 
+mov r7, r3 @ number of bytes - 1 
+
+mov r1, #0 
+Loop4: 
+ldrb r0, [r2, r3] 
+sub r3, #1 
+lsl r1, #8 
+orr r1, r0 
+cmp r3, #0 
+blt Break3 
+b Loop4
+
+Break3: 
+@ r1 has the data we need 
+@ r4 = bit to start at 
+@ r5 = number of bits to store
+mov r0, #1 
+mov r3, r5 
+sub r3, #1 
+lsl r0, r3 @ only top bit set 
+
+mov r3, r6 @ value to add 
+cmp r6, r0 
+blt NoCapStoreData2
+mov r3, r0 
+sub r3, #1 @ all bits except top 
+NoCapStoreData2: 
+add r0, r3 @ capped or just our negative value 
+mov r6, r0 @ 
+
+StoreData2: 
+@ don't lsr chop anything off in loaded data, just bic the bits we are going to store to 
+@ remove any set bits in original data 
+mov r3, #1 
+lsl r3, r5 @ # of bits 
+sub r3, #1 @ all bits to remove are set 
+bic r1, r3 @ remove any set bits for what we're overwriting 
+
+@ r1 as data 
+@ r2 as address to store into 
+@ r6 as new data 
+lsl r6, r4 @ bit offset 
+orr r1, r6 @ new data is here! 
+
+@ now store them back byte by byte 
+mov r3, #0 
+Loop5: 
+strb r1, [r2, r3] 
+cmp r3, r7 
+bgt Exit2 
+add r3, #1 
+b Loop5 
+
+Exit2: 
+pop {r4-r7} 
+bx lr
+.ltorg 
 
 
 

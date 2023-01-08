@@ -141,6 +141,8 @@ WORD 2
 RequireDamageToDebuff_Link: 
 WORD RequireDamageToDebuff
 
+
+
 RallySpectrumAmount_Link: 
 WORD 2 
 MagRallyAmount_Link: 
