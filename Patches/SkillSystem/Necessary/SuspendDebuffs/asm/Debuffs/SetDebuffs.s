@@ -28,7 +28,7 @@ bx r2
 
 .ltorg 
 ApplyDebuffs:
-@First apply own debuffs
+@ Apply debuffs based on each units weapon 
 push {r4-r7,lr}
 mov r4, r0          @r4 = unit to update
 mov r5, r1          @r5 = other unit
@@ -43,28 +43,54 @@ mov r7, r0
 mov r0, #0x48       @Equipped item after battle
 ldrh r0, [r4, r0]   
 bl GetWepDebuffByte
-ldrb r1, [r6, #11]
-mov r2, #0x1       @str/2 for status data
-and r2, r1
-cmp r2, #0x0
-beq checkHalveStrength
-@Str was already halved so unhalve it.
-mov r2, #0xFE
-and r1, r2
-strb r1, [r6, #11]
-b magicHalvingDebuff
-checkHalveStrength:
-mov r1, #0x80       @str/2 for weapon debuff data.
-and r1, r0
-cmp r1, #0x0        @No str/2 debuff
-beq magicHalvingDebuff
-ldrb r1, [r6, #11] @reload the debuff
-mov r2, #0x1       @set the str/2 bit
-orr r1, r2
-strb r1, [r6, #11]
+mov r1, #0x80 
+tst r0, r1 
+beq DontHalveStr 
 
-magicHalvingDebuff:
-@TODO: Implement mag/2 debuffs
+mov r0, r6 
+ldr r1, =HalfStrBitOffset_Link 
+ldr r1, [r1] 
+@ given r0 = address 
+@ r1 = bitoffset 
+bl SetBit
+b FinishedHalfStr
+
+DontHalveStr: 
+@Str was possibly halved so unhalve it (no point checking) 
+mov r0, r6 
+ldr r1, =HalfStrBitOffset_Link 
+ldr r1, [r1] 
+@ given r0 = address 
+@ r1 = bitoffset 
+bl UnsetBit
+
+FinishedHalfStr: 
+
+mov r0, #0x48       @Equipped item after battle
+ldrh r0, [r4, r0]   
+bl GetWepDebuffByte
+mov r1, #0x40 
+tst r0, r1 
+beq DontHalveMag 
+
+mov r0, r6 
+ldr r1, =HalfMagBitOffset_Link 
+ldr r1, [r1] 
+@ given r0 = address 
+@ r1 = bitoffset 
+bl SetBit
+b FinishedHalfMag
+
+DontHalveMag: 
+@Mag was possibly halved so unhalve it (no point checking) 
+mov r0, r6 
+ldr r1, =HalfMagBitOffset_Link 
+ldr r1, [r1] 
+@ given r0 = address 
+@ r1 = bitoffset 
+bl UnsetBit
+FinishedHalfMag: 
+
 
 mov r0, #0x48       @Equipped item after battle
 ldrh r0, [r4, r0]   
@@ -93,6 +119,9 @@ bx r0
 
 OverwriteDebuffs: 
 push {r4-r7, lr} 
+mov r5, r8 
+push {r5} 
+
 mov r4, #0x1f 
 and r4, r0 @ wep debuff entry 
 
@@ -113,52 +142,67 @@ bne AlwaysDebuff
 cmp r0, #0x0
 beq BreakLoop
 AlwaysDebuff:
-
-
-ldr r2, =DebuffEntrySize_Link
+ldr r2, =DebuffNumberOfStats_Link
 ldr r1, [r2] @ max 
+mov r8, r1 
+
 mov r2, #0x40 @ no 0x40 bitflag of Swap 
 ldr r3, =NewWeaponDebuffTable
 lsl r4, #2 @ 4 bytes per 
 add r4, r3 @ entry we care about 
 
-mov r3, #0 @ counter 
-sub r3, #1 
+mov r5, #0 @ counter 
+sub r5, #1 
 
 Loop:
-add r3, #1 
-cmp r3, r1 
+
+mov r2, #0x40 
+add r5, #1 
+cmp r5, r8 
 bge BreakLoop  
 
-ldrsb r0, [r4, r3] 
+ldrsb r3, [r4, r5] @ table data uses a byte per stat 
 
 @ positive affects user 
 @ positive swap affects opponent 
 @ negative affects enemy 
 @ negative swap affects self 
 
-cmp r0, #0 
+cmp r3, #0 
 blt NegativeA 
-tst r0, r2 
+tst r3, r2 
 beq AffectUser
 b AffectEnemy
 
 NegativeA: 
-tst r0, r2 
+tst r3, r2 
 beq AffectEnemy 
-@b AffectUser 
 
 AffectUser: 
-bic r0, r2 @ remove the 0x40 
-strb r0, [r6, r3] 
+bic r3, r2 @ remove the 0x40 - value to store 
+mov r0, r6 @ debuff entry 
+ldr r2, =DebuffStatNumberOfBits_Link
+ldr r2, [r2] 
+mov r1, r5 @ counter 
+mul r1, r2 @ bit offset 
+bl PackData_Signed 
+
 b Loop 
 
 AffectEnemy: 
-bic r0, r2 @ remove the 0x40 
-strb r0, [r7, r3] 
+bic r3, r2 @ remove the 0x40 - value to store 
+mov r0, r7 @ debuff entry 
+ldr r2, =DebuffStatNumberOfBits_Link
+ldr r2, [r2] 
+mov r1, r5 @ counter 
+mul r1, r2 @ bit offset 
+bl PackData_Signed 
+
 b Loop 
 
 BreakLoop: 
+pop {r5} 
+mov r8, r5 
 
 pop {r4-r7} 
 pop {r0} 

@@ -175,23 +175,58 @@ bx lr
 .global CheckBit 
 .type CheckBit, %function 
 CheckBit: 
-
 @ given r0 = address 
 @ r1 = bitoffset 
 @ return if the bit is set or not 
-
 lsr r2, r1, #3 @ the byte offset 
 ldrb r0, [r0, r2] @ the byte we care about 
+lsl r2, #3 
+sub r1, r2 @ only the bit 
 mov r2, #1 
 lsl r2, r1 @ the bit we care about 
 and r0, r2 @ the bit we want to check is here 
-@(as well as some bits in bigger bytes etc. but since we're only loading a byte, it doesn't matter) 
 cmp r0, #0 
 beq ReturnZero 
 mov r0, #1 
 ReturnZero: 
 bx lr 
+.ltorg 
 
+.global SetBit 
+.type SetBit, %function 
+SetBit: 
+@ given r0 = address 
+@ r1 = bitoffset 
+@ set the bit 
+lsr r3, r1, #3 @ the byte offset 
+lsl r3, #3 
+sub r1, r3 @ the bit only 
+mov r2, #1 
+lsl r2, r1 @ the bit we care about 
+lsr r1, r3, #3 @ the byte offset 
+ldrb r3, [r0, r1] @ the byte we care about 
+orr r3, r2 @ the bit we want to set is here 
+strb r3, [r0, r1] 
+bx lr 
+.ltorg 
+
+.global UnsetBit 
+.type UnsetBit, %function 
+UnsetBit: 
+@ given r0 = address 
+@ r1 = bitoffset 
+@ set the bit 
+lsr r3, r1, #3 @ the byte offset 
+lsl r3, #3 
+sub r1, r3 @ the bit only 
+mov r2, #1 
+lsl r2, r1 @ the bit we care about 
+lsr r1, r3, #3 @ the byte offset 
+ldrb r3, [r0, r1] @ the byte we care about 
+bic r3, r2 @ the bit we want to unset is here 
+strb r3, [r0, r1] 
+bx lr 
+.ltorg 
 
 
 
