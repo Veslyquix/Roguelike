@@ -181,7 +181,7 @@ TeamDebuffTables:
 
     // ORG 0x2C086
       // SHORT 0x46C0 // nop
-      // jumpToHack(setDebuffs)
+      // jumpToHack(setDebuffs) // now SealSkills hooks this instead ? 
 
     ORG 0x2C078
       callHack_r3(setDebuffs)
@@ -193,12 +193,7 @@ TeamDebuffTables:
   damagedThisTurn:
     #incbin "asm/Debuffs/SetDamagedThisTurn.dmp"
 
-  ALIGN 4
-  setDebuffs:
-    #include "asm/Debuffs/SetDebuffs.lyn.event"
-    POIN GetUnitDebuffEntry|1
-    POIN ItemTable
-    POIN WeaponDebuffTable
+
 
    
     
@@ -218,6 +213,12 @@ TeamDebuffTables:
 
   }
 
+  ALIGN 4
+  setDebuffs:
+    #include "asm/Debuffs/SetDebuffs.lyn.event"
+    POIN GetUnitDebuffEntry|1
+    POIN ItemTable
+    POIN WeaponDebuffTable
 
 	#include "asm/Debuffs/Reload.lyn.event"
 	#include "asm/Debuffs/InitDebuffs.lyn.event"

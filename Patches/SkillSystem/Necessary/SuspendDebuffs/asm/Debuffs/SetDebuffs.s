@@ -4,30 +4,33 @@ GetDebuffs = EALiterals+0x0
 ItemTableLocation = EALiterals+0x4
 WeaponDebuffTable = EALiterals+0x8
 
-push {r0, lr}
-@r5 = attacker
-@r4 = defender
-mov r0, r5
-mov r1, r4
-bl ApplyDebuffs
-mov r0, r4
-mov r1, r5
-bl ApplyDebuffs
-pop {r0}
-@From original routine
-lsl     r0,r0,#0x1
-mov     r1,r4
-add     r1,#0x1E
-add     r0,r0,r1
-add     r1,#0x2A
-ldrh    r1,[r1]
+@push {r0, lr}
+@@r5 = attacker
+@@r4 = defender
+@mov r0, r5
+@mov r1, r4
+@bl ApplyDebuffs
+@mov r0, r4
+@mov r1, r5
+@bl ApplyDebuffs
+@pop {r0}
+@@From original routine
+@lsl     r0,r0,#0x1
+@mov     r1,r4
+@add     r1,#0x1E
+@add     r0,r0,r1
+@add     r1,#0x2A
+@ldrh    r1,[r1]
+@
+@pop {r2}
+@BXR2:
+@bx r2
 
-pop {r2}
-BXR2:
-bx r2
 
+.global ApplyWeaponDebuffs 
+.type ApplyWeaponDebuffs, %function 
 .ltorg 
-ApplyDebuffs:
+ApplyWeaponDebuffs:
 @ Apply debuffs based on each units weapon 
 push {r4-r7,lr}
 mov r4, r0          @r4 = unit to update
