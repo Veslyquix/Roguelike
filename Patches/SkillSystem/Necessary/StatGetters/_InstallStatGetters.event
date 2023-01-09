@@ -12,98 +12,10 @@
 
 #include "_Common.event"
 
-
-
-//#define DebuffStatNumberOfBits 5 // Up to +/- 15 in a stat 
-//#define DebuffStatNumberOfBits 6 // Up to +/- 31 in a stat 
-#define DebuffStatNumberOfBits 7   // Up to +/- 63 in a stat 
-// more than +63 in a stat is not currently supported by buffs
-#define RalliesNumberOfBits 9 
-
-ALIGN 4 
-DebuffStatNumberOfBits_Link:
-WORD DebuffStatNumberOfBits 
-
-// Buffs/Debuffs - Rallies - Half Str/Mag/Hp - Armor March - Vigor Dance 
-// Cut: Steel/Silver self-debuffs that restore independently 
-// These now debuff yourself regularly (eg. you don't recover a self-debuff and an enemy debuff independently) 
-
-ALIGN 4 
-DebuffStatBitOffset_Mag: 
-WORD 0*DebuffStatNumberOfBits
-DebuffStatBitOffset_Str: 
-WORD 1*DebuffStatNumberOfBits
-DebuffStatBitOffset_Skl: 
-WORD 2*DebuffStatNumberOfBits
-DebuffStatBitOffset_Spd: 
-WORD 3*DebuffStatNumberOfBits
-DebuffStatBitOffset_Def: 
-WORD 4*DebuffStatNumberOfBits
-DebuffStatBitOffset_Res: 
-WORD 5*DebuffStatNumberOfBits
-DebuffStatBitOffset_Luk: 
-WORD 6*DebuffStatNumberOfBits
-DebuffStatBitOffset_Mov: 
-WORD 7*DebuffStatNumberOfBits
-
-#define RalliesOffset 8*DebuffStatNumberOfBits
-ALIGN 4 
-RalliesOffset_Link:
-WORD RalliesOffset 
-
-HalfStrBitOffset_Link: 
-WORD RalliesNumberOfBits+RalliesOffset
-HalfMagBitOffset_Link:
-WORD RalliesNumberOfBits+RalliesOffset+1 
-HalfHpBitOffset_Link:
-WORD RalliesNumberOfBits+RalliesOffset+2 
-
-//@8: Rallies (str/skl/spd/def/res/luk) (bit 7 = rally move, bit 8 = rally spectrum)
-//@9: Str/Skl Silver Debuff (6 bits), bit 7 = RallyMag, bit 8 = free 
-
-
-StrRallyOffset_Link: 
-WORD 0+RalliesOffset 
-SklRallyOffset_Link: 
-WORD 1+RalliesOffset 
-SpdRallyOffset_Link: 
-WORD 2+RalliesOffset 
-DefRallyOffset_Link: 
-WORD 3+RalliesOffset 
-ResRallyOffset_Link: 
-WORD 4+RalliesOffset 
-LukRallyOffset_Link: 
-WORD 5+RalliesOffset 
-MovRallyOffset_Link: 
-WORD 6+RalliesOffset 
-SpecRallyOffset_Link: 
-WORD 7+RalliesOffset 
-MagRallyOffset_Link: 
-WORD 8+RalliesOffset+7 // because reasons 
-
-
-ALIGN 4 
-RalliesNumberOfBits_Link:
-WORD RalliesNumberOfBits
-
-
-
-
 #include "_asm/Bitpack.lyn.event" 
 #include "_asm/HalfStatFunctions.lyn.event" 
 #include "_asm/RallyStat.lyn.event" 
 #include "_asm/DebuffStat.lyn.event" 
-
-
-ALIGN 4 
-DebuffAssertTable: 
-ORG DebuffAssertTable+((RalliesOffset+7)>>3)
-BYTE 0 
-
-
-DebuffTooBig:  // give us an error if we accidentally include too much data in the debuff table 
-ASSERT (DebuffAssertTable+DebuffEntrySize)-DebuffTooBig 
-
 
 #include "MaxHP.event"
 #include "CurHP.event"

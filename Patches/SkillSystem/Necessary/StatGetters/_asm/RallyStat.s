@@ -1,5 +1,5 @@
 .thumb 
-.include "definitions.s"
+
 .global prRallyMag
 .type prRallyMag, %function
 prRallyMag:

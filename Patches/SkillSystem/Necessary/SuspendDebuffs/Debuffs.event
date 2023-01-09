@@ -3,8 +3,119 @@
 
 // Debuffs
 // hack by CrazyColorz5, with additions by circleseverywhere and Kirb
+// Largely rewritten by Vesly 
 
 #ifdef _FE8_
+
+#define DebuffEntrySize 8 // Number of bytes 
+
+// NOTE: If you wish to use more bits in the debuff table, please use the provided functions for ease of use. 
+/*
+GetUnitDebuffEntry 	@ r0 = unit struct @ returns debuff entry address 
+@ this address is then used by the following functions: 
+SetBit 					@ r0 = address, r1 = bitoffset 
+UnsetBit 				@ r0 = address, r1 = bitoffset 
+CheckBit 				@ r0 = address, r1 = bitoffset @ returns true/false 
+
+UnpackData				@ r0 = address, r1 = bit offset, r2 = number of bits @ returns the data we want as an unsigned 32
+PackData 				@ r0 = address, r1 = bit offset, r2 = number of bits, r3 = data to store @ caps data at max value if you overflow 
+UnpackData_Signed		@ r0 = address, r1 = bit offset, r2 = number of bits @ returns the data we want as an int 
+PackData_Signed 		@ r0 = address, r1 = bit offset, r2 = number of bits, r3 = data to store @ caps data at max value if you overflow while respecting positive/negative 
+*/ 
+
+// Currently ending at VigorDance sizes: 
+//#define DebuffStatNumberOfBits 5 // Up to +/- 15 in a stat // Requires 54 bits / 7 bytes 
+#define DebuffStatNumberOfBits 6 // Up to +/- 31 in a stat // Requires 62 bits / 8 bytes 
+//#define DebuffStatNumberOfBits 7   // Up to +/- 63 in a stat // Requires 70 bits / 9 bytes per entry 
+// more than +63 in a stat is not currently supported by buffs
+#define RalliesNumberOfBits 9 
+
+ALIGN 4 
+DebuffStatNumberOfBits_Link:
+WORD DebuffStatNumberOfBits 
+
+// Buffs/Debuffs - Rallies - Half Str/Mag/Hp - Armor March - Vigor Dance 
+// Cut: Steel/Silver self-debuffs that restore independently 
+// These now debuff yourself regularly (eg. you don't recover a self-debuff and an enemy debuff independently) 
+
+ALIGN 4 
+DebuffStatBitOffset_Mag: 
+WORD 0*DebuffStatNumberOfBits
+DebuffStatBitOffset_Str: 
+WORD 1*DebuffStatNumberOfBits
+DebuffStatBitOffset_Skl: 
+WORD 2*DebuffStatNumberOfBits
+DebuffStatBitOffset_Spd: 
+WORD 3*DebuffStatNumberOfBits
+DebuffStatBitOffset_Def: 
+WORD 4*DebuffStatNumberOfBits
+DebuffStatBitOffset_Res: 
+WORD 5*DebuffStatNumberOfBits
+DebuffStatBitOffset_Luk: 
+WORD 6*DebuffStatNumberOfBits
+DebuffStatBitOffset_Mov: 
+WORD 7*DebuffStatNumberOfBits
+
+#define RalliesOffset 8*DebuffStatNumberOfBits
+ALIGN 4 
+RalliesOffset_Link:
+WORD RalliesOffset 
+
+StrRallyOffset_Link: 
+WORD 0+RalliesOffset 
+SklRallyOffset_Link: 
+WORD 1+RalliesOffset 
+SpdRallyOffset_Link: 
+WORD 2+RalliesOffset 
+DefRallyOffset_Link: 
+WORD 3+RalliesOffset 
+ResRallyOffset_Link: 
+WORD 4+RalliesOffset 
+LukRallyOffset_Link: 
+WORD 5+RalliesOffset 
+MovRallyOffset_Link: 
+WORD 6+RalliesOffset 
+SpecRallyOffset_Link: 
+WORD 7+RalliesOffset 
+MagRallyOffset_Link: 
+WORD 8+RalliesOffset 
+
+#define MiscOffset 9+RalliesOffset 
+HalfStrBitOffset_Link: 
+WORD MiscOffset
+HalfMagBitOffset_Link:
+WORD MiscOffset+1 
+HalfHpBitOffset_Link:
+WORD MiscOffset+2 
+ArmorMarchBitOffset_Link: 
+WORD MiscOffset+3
+VigorDanceBitOffset_Link:
+WORD MiscOffset+4 
+
+
+ALIGN 4 
+RalliesNumberOfBits_Link:
+WORD RalliesNumberOfBits
+
+
+
+
+
+
+
+ALIGN 4 
+DebuffAssertTable: 
+ORG DebuffAssertTable+((MiscOffset+5)>>3)
+BYTE 0 
+
+
+DebuffTooBig:  // give us an error if we accidentally include too much data in the debuff table 
+ASSERT (DebuffAssertTable+DebuffEntrySize)-DebuffTooBig 
+
+
+
+
+
 
 TeamDebuffTables:
   {
@@ -12,7 +123,6 @@ TeamDebuffTables:
   #define MaxEnemyUnits 50+1
   #define MaxGreenUnits 20+1
   
-  #define DebuffEntrySize 12 
   #define PUDebuffTable DebuffTableRam
   #define EUDebuffTable "PUDebuffTable + (MaxPlayerUnits*DebuffEntrySize)"
   #define GUDebuffTable "EUDebuffTable + (MaxEnemyUnits*DebuffEntrySize)"
@@ -148,7 +258,7 @@ WORD RequireDamageToDebuff
 
 
 
-RallySpectrumAmount_Link: 
+SpecRallyAmount_Link: 
 WORD 2 
 MagRallyAmount_Link: 
 WORD 4 

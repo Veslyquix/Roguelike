@@ -1,5 +1,5 @@
 .thumb
-.include "definitions.s"
+
 .global HalfHpFunc
 .type HalfHpFunc, %function 
 HalfHpFunc: @ for hexing rod 
@@ -9,10 +9,13 @@ mov r4, r1 @unit
 mov r0, r4 @ unit 
 bl GetUnitDebuffEntry 
 @hp/2 Debuff NOTE TO SELF: off of base only.
-ldrb r2, [r0, #MiscByte]
-mov r1, #HexBit
-tst r2, r1 
+
+ldr r1, =HalfHpBitOffset_Link
+ldr r1, [r1] 
+bl CheckBit 
+cmp r0, #0 
 beq ExitHp 
+
 lsr r2, r5, #0x1F
 add r5, r2
 asr r5, #0x1            @Signed divide by two.
@@ -33,9 +36,10 @@ mov r4, r1 @unit
 mov r0, r4 @ unit 
 bl GetUnitDebuffEntry 
 @str/2 Debuff NOTE TO SELF: off of base only.
-ldrb r2, [r0, #MiscByte]
-mov r1, #StrBit
-tst r2, r1 
+ldr r1, =HalfStrBitOffset_Link
+ldr r1, [r1] 
+bl CheckBit 
+cmp r0, #0 
 beq ExitStr 
 lsr r2, r5, #0x1F
 add r5, r2
@@ -56,9 +60,10 @@ mov r5, r0 @stat
 mov r4, r1 @unit
 mov r0, r4 @ unit 
 bl GetUnitDebuffEntry 
-ldrb r2, [r0, #MiscByte]
-mov r1, #MagBit
-tst r2, r1 
+ldr r1, =HalfStrBitOffset_Link
+ldr r1, [r1] 
+bl CheckBit 
+cmp r0, #0 
 beq ExitMag
 lsr r2, r5, #0x1F
 add r5, r2

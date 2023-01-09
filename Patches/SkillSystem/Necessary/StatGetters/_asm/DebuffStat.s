@@ -5,7 +5,6 @@
   .short 0xf800
 .endm
 
-.include "definitions.s"
 .equ NextRN_N, 0x08000C80
 GetDebuffAmount: 
 push {r4, lr} 

@@ -7,8 +7,8 @@ String("V0.02                 Jan 2022") ; BYTE 0; POP // this overflows into th
 #define   FreeSpaceBLRange 0x1c1ec0
 
 #ifndef DebuffTableRam
-  #define DebuffTableRam     0x0203F990 // - 0x203FFF0 
-  #define DebuffTableSize 0x00000660
+  #define DebuffTableRam     0x203F110 //0x0203F990 // - 0x203FFF0 
+  #define DebuffTableSize 0x00000440
 #endif
 
 // flags 0xDD and higher are reserved for stat modifications atm 
