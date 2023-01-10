@@ -59,7 +59,6 @@ mov r0, r4
 blh HashInt @ returns hash'd int in r0 
 
 add sp, #12
-@mov r11, r11 
 blh SetOtherRNState // from 0xAA0 / 0xA20 
 blh GetOtherRN
 blh InitRN 

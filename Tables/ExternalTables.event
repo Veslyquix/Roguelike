@@ -1,7 +1,12 @@
 
-#define WepDebuffEntry(mag, str, skl, spd, def, res, luk, mov) "BYTE (0-mag) (0-str) (0-skl) (0-spd) (0-def) (0-res) (0-luk) (0-mov)" 
+#define WepDebuffEntry(mag, str, skl, spd, def, res, luk, mov) "BYTE (0-mag & 0xBF) (0-str & 0xBF) (0-skl & 0xBF) (0-spd & 0xBF) (0-def & 0xBF) (0-res & 0xBF) (0-luk & 0xBF) (0-mov & 0xBF)" 
 #define WepBuffEntry(mag, str, skl, spd, def, res, luk, mov) "BYTE mag str skl spd def res luk mov" 
 
+// for negative numbers, 2nd highest bitflag is assumed to always be on 
+// don't use negative numbers below -64 
+#define SwapWhoToAffect 0x40 
+#define AffectSelf 0x40 
+#define AffectOpponent 0x40 
 // max boost is +63/-63 and is definable based on # of bits (31 and 15 also work) 
 // values above the max will just be capped 
 ALIGN 4 
@@ -9,7 +14,7 @@ NewWeaponDebuffTable: // BuffEnemy bitflag 0x40? DebuffSelf bitflag 0x40?
 // 				mag, str, skl, spd, def, res, luk, mov
 BYTE 0 0 0 0 0 0 0 0 // do nothing for 0th entry 
 WepDebuffEntry( 1,   2,   3,    4,   5,   6,   7,   8 ) 
-WepBuffEntry( 1, 2, 3, 4, 5, 6, 7, 8) 
+WepBuffEntry( 1|AffectOpponent, 2, 3, 4, 5, 6, 7, 8) 
 WORD 0xFFFFFFFF 0xFFFFFFFF // For FEBuilder to show no further data with 
 
 
