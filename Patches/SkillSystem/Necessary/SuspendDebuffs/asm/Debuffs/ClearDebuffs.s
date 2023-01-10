@@ -45,7 +45,7 @@ Loop:
 add r2, #1 
 cmp r2, r3 
 bge Break 
-strb r1, [r0]                @Clear out this byte 
+strb r1, [r0, r2]                @Clear out this byte 
 b Loop 
 
 Break: 

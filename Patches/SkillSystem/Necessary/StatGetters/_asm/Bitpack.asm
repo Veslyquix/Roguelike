@@ -13,9 +13,10 @@ mov r2, #32
 NoCapBits: 
 mov r5, r2 
 
-sub r4, r1 @ starting bit of the offset 
 lsr r1, #3 @ 8 bits per byte 
 add r0, r1 @ starting address 
+lsl r1, #3 @ only bits that don't make a byte 
+sub r4, r1 @ starting bit of the offset 
 
 mov r3, #7 
 add r3, r2 
@@ -25,7 +26,6 @@ cmp r3, #3
 ble NoCap 
 mov r3, #3 @ only load up to 4 bytes 
 NoCap: 
-sub r3, #1 @ 0-indexed 
 mov r2, r0 @ starting address 
 
 mov r1, #0 
@@ -57,9 +57,7 @@ lsr r1, r2 @ data we asked for not yet signed
 tst r1, r0 
 beq ReturnData
 bic r1, r0 @ remove top bit 
-mov r0, #0 
-sub r0, r1 @ negative 
-mov r1, r0 
+neg r1, r1 
 
 ReturnData: 
 mov r0, r1
@@ -87,9 +85,10 @@ mov r2, #32
 NoCapBitsStore: 
 mov r5, r2 
 
-sub r4, r1 @ starting bit of the offset 
 lsr r1, #3 @ 8 bits per byte 
 add r0, r1 @ starting address 
+lsl r1, #3 @ only bits that don't make a byte 
+sub r4, r1 @ starting bit of the offset 
 
 
 mov r3, #7 
@@ -121,7 +120,7 @@ Break2:
 mov r0, #1 
 mov r3, r5 
 sub r3, #1 
-lsl r0, r3 @ only top bit set 
+lsl r0, r3 @ only top bit set (the negative determining one) 
 
 cmp r6, #0 
 blt Negative 
@@ -134,22 +133,30 @@ NoCapStorePositiveData:
 b StoreData 
 Negative: 
 
+mov r11, r11 
 neg r6, r6 @ swap negative into positive 
 mov r3, r6 @ value to add 
 cmp r6, r0 
 blt NoCapStoreNegativeData
 mov r3, r0 
 sub r3, #1 @ all bits except top 
+add r0, r3 @ capped
 NoCapStoreNegativeData: 
-add r0, r3 @ capped or just our negative value 
-mov r6, r0 @ 
+mov r6, r3 
+mov r3, #1 
+mov r0, r5 
+sub r0, #1 
+lsl r3, r0 @ # of bits -1 so we'll be at the final, negative bit 
+orr r6, r3 @ negative bit is set 
 
 StoreData: 
 @ don't lsr chop anything off in loaded data, just bic the bits we are going to store to 
 @ remove any set bits in original data 
 mov r3, #1 
-lsl r3, r5 @ # of bits 
+mov r0, r5 
+lsl r3, r0 @ # of bits 
 sub r3, #1 @ all bits to remove are set 
+lsl r3, r4 @ bit offset 
 bic r1, r3 @ remove any set bits for what we're overwriting 
 
 @ r1 as data 
@@ -164,6 +171,7 @@ Loop3:
 strb r1, [r2, r3] 
 cmp r3, r7 
 bgt Exit 
+lsr r1, #8 
 add r3, #1 
 b Loop3 
 
@@ -242,9 +250,10 @@ mov r2, #32
 NoCapBitsA: 
 mov r5, r2 
 
-sub r4, r1 @ starting bit of the offset 
 lsr r1, #3 @ 8 bits per byte 
 add r0, r1 @ starting address 
+lsl r1, #3 @ only bits that don't make a byte 
+sub r4, r1 @ starting bit of the offset 
 
 mov r3, #7 
 add r3, r2 
@@ -307,9 +316,10 @@ mov r2, #32
 NoCapBitsStore2: 
 mov r5, r2 
 
-sub r4, r1 @ starting bit of the offset 
 lsr r1, #3 @ 8 bits per byte 
 add r0, r1 @ starting address 
+lsl r1, #3 @ only bits that don't make a byte 
+sub r4, r1 @ starting bit of the offset 
 
 
 mov r3, #7 

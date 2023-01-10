@@ -162,7 +162,6 @@ mov r8, r1
 mov r2, #0x40 @ no 0x40 bitflag of Swap 
 ldr r3, =NewWeaponDebuffTable
 
-mov r11, r11 
 lsl r4, #3 @ 8 bytes per entry 
 add r4, r3 @ entry we care about 
 
@@ -200,6 +199,7 @@ ldrsb r1, [r4, r5] @ table data uses a byte per stat
 @ positive old value, add 
 
 cmp r1, #0 
+beq Loop 
 blt NegativeA 
 
 @ new value is positive 
@@ -217,7 +217,6 @@ b AffectEnemy
 
 NegativeA: @ new value is negative 
 mov r3, r1 
-mov r11, r11 
 orr r3, r2 @ always have the 0x40 bitflag whilst negative 
 cmp r0, #0 
 ble DontAddToValue_Negative
@@ -229,7 +228,6 @@ tst r1, r2
 beq AffectEnemy 
 
 AffectUser:  
-mov r11, r11 
 mov r0, r6 @ debuff entry 
 ldr r2, =DebuffStatNumberOfBits_Link
 ldr r2, [r2] 
@@ -242,13 +240,21 @@ b Loop
 
 
 AffectEnemy: 
-bic r3, r2 @ remove the 0x40 - value to store 
 mov r0, r7 @ debuff entry 
 ldr r2, =DebuffStatNumberOfBits_Link
 ldr r2, [r2] 
 mov r1, r5 @ counter 
 mul r1, r2 @ bit offset 
+push {r3} 
 bl PackData_Signed 
+mov r0, r7 @ debuff entry 
+ldr r2, =DebuffStatNumberOfBits_Link
+ldr r2, [r2] 
+mov r1, r5 @ counter 
+mul r1, r2 @ bit offset 
+bl UnpackData_Signed 
+pop {r1} 
+mov r11, r11 
 
 b Loop 
 

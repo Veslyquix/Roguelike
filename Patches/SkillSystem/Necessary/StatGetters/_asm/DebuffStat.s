@@ -19,7 +19,7 @@ pop {r4}
 pop {r1} 
 bx r1 
 .ltorg 
-
+@ 203F310
 .global prDebuffMag
 .type prDebuffMag, %function 
 prDebuffMag:
