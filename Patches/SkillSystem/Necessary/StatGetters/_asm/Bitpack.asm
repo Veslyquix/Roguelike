@@ -133,14 +133,13 @@ NoCapStorePositiveData:
 b StoreData 
 Negative: 
 
-mov r11, r11 
 neg r6, r6 @ swap negative into positive 
 mov r3, r6 @ value to add 
 cmp r6, r0 
 blt NoCapStoreNegativeData
 mov r3, r0 
 sub r3, #1 @ all bits except top 
-add r0, r3 @ capped
+add r3, r0 @ capped as all bits 
 NoCapStoreNegativeData: 
 mov r6, r3 
 mov r3, #1 
@@ -153,8 +152,7 @@ StoreData:
 @ don't lsr chop anything off in loaded data, just bic the bits we are going to store to 
 @ remove any set bits in original data 
 mov r3, #1 
-mov r0, r5 
-lsl r3, r0 @ # of bits 
+lsl r3, r5 @ # of bits 
 sub r3, #1 @ all bits to remove are set 
 lsl r3, r4 @ bit offset 
 bic r1, r3 @ remove any set bits for what we're overwriting 
@@ -350,7 +348,6 @@ Break3:
 @ r5 = number of bits to store
 mov r0, #1 
 mov r3, r5 
-sub r3, #1 
 lsl r0, r3 @ only top bit set 
 
 mov r3, r6 @ value to add 
@@ -358,16 +355,18 @@ cmp r6, r0
 blt NoCapStoreData2
 mov r3, r0 
 sub r3, #1 @ all bits except top 
+add r3, r0 @ capped
 NoCapStoreData2: 
-add r0, r3 @ capped or just our negative value 
-mov r6, r0 @ 
+mov r6, r3 
 
 StoreData2: 
 @ don't lsr chop anything off in loaded data, just bic the bits we are going to store to 
 @ remove any set bits in original data 
+
 mov r3, #1 
 lsl r3, r5 @ # of bits 
 sub r3, #1 @ all bits to remove are set 
+lsl r3, r4 @ bit offset 
 bic r1, r3 @ remove any set bits for what we're overwriting 
 
 @ r1 as data 
@@ -383,6 +382,7 @@ strb r1, [r2, r3]
 cmp r3, r7 
 bgt Exit2 
 add r3, #1 
+lsr r1, #8 
 b Loop5 
 
 Exit2: 

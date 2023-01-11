@@ -13,8 +13,6 @@ ldr r2, =MagRallyOffset_Link
 ldr r2, [r2] 
 bl IsRallySet
 cmp r0, #0 
-bl IsRallySet
-cmp r0, #0 
 beq ExitMag 
 ldr r0, =MagRallyAmount_Link 
 ldr r0, [r0] 

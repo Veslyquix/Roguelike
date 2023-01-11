@@ -181,7 +181,8 @@ mul r1, r2 @ bit offset
 bl UnpackData_Signed 
 @ r0 as data 
 mov r2, #0x40 
-ldrsb r1, [r4, r5] @ table data uses a byte per stat 
+ldrb r1, [r4, r5] @ table data uses a byte per stat 
+
 
 @ positive affects user 
 @ positive swap affects opponent 
@@ -200,13 +201,14 @@ ldrsb r1, [r4, r5] @ table data uses a byte per stat
 
 cmp r1, #0 
 beq Loop 
-blt NegativeA 
+cmp r1, #0x80 
+bge NegativeA 
 
 @ new value is positive 
 mov r3, r1 
 bic r3, r2 @ remove 0x40 swap bitflag 
 cmp r0, #0 
-bgt DontAddToValue 
+bge DontAddToValue 
 adc r3, r0 @ to remove negatives first 
 DontAddToValue: 
 cmp r3, r0 
@@ -215,9 +217,10 @@ tst r1, r2
 beq AffectUser
 b AffectEnemy
 
-NegativeA: @ new value is negative 
-mov r3, r1 
-orr r3, r2 @ always have the 0x40 bitflag whilst negative 
+NegativeA: @ new value will be negative 
+mov r3, #0x3F 
+and r3, r1 
+neg r3, r3 
 cmp r0, #0 
 ble DontAddToValue_Negative
 adc r3, r0 @ to remove positives first 
@@ -245,7 +248,7 @@ ldr r2, =DebuffStatNumberOfBits_Link
 ldr r2, [r2] 
 mov r1, r5 @ counter 
 mul r1, r2 @ bit offset 
-push {r3} 
+@push {r3} 
 bl PackData_Signed 
 mov r0, r7 @ debuff entry 
 ldr r2, =DebuffStatNumberOfBits_Link
@@ -253,8 +256,8 @@ ldr r2, [r2]
 mov r1, r5 @ counter 
 mul r1, r2 @ bit offset 
 bl UnpackData_Signed 
-pop {r1} 
-mov r11, r11 
+@pop {r1} 
+@mov r11, r11 @ this was done for testing that inputted value = outputted value 
 
 b Loop 
 
