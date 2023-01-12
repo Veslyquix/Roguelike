@@ -16,8 +16,8 @@ ALIGN 4
 NewWeaponDebuffTable: // BuffEnemy bitflag 0x40? DebuffSelf bitflag 0x40? 
 // 				mag, str, skl, spd, def, res, luk, mov
 BYTE 0 0 0 0 0 0 0 0 // do nothing for 0th entry 
-//BYTE 21 22 23 24 25 26 27 28 
-WepDebuffEntry( 21,  22,   23,    24,   25,   26,   27,   28 ) 
+BYTE 63 63|Debuff|Swap 23 24 25 26 27 28 
+//WepDebuffEntry( 81,  22,   23,    24,   25,   26,   27,   28 ) 
 WepBuffEntry( 1|Swap, 2, 3, 4, 5, 6, 7, 8) 
 WORD 0xFFFFFFFF 0xFFFFFFFF // For FEBuilder to show no further data with 
 

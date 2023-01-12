@@ -19,9 +19,10 @@ lsl r1, #3 @ only bits that don't make a byte
 sub r4, r1 @ starting bit of the offset 
 
 mov r3, #7 
-add r3, r2 
+add r3, r2 @ number of bits + 7 for rounding 
+add r3, r4 @ bit offset (ignoring bits that made a byte) 
 lsr r3, #3 @ bits / 8 rounded up as # of bytes to load 
-@ r3 as the number of bytes to load
+@ r3 as the number of bytes to load (0-indexed) 
 cmp r3, #3 
 ble NoCap 
 mov r3, #3 @ only load up to 4 bytes 
@@ -73,7 +74,7 @@ bx lr
 .global PackData_Signed 
 .type PackData_Signed, %function 
 PackData_Signed: 
-push {r4-r7}
+push {r4-r6}
 
 
 mov r4, r1 
@@ -92,17 +93,15 @@ sub r4, r1 @ starting bit of the offset
 
 
 mov r3, #7 
-add r3, r2 
+add r3, r2 @ number of bits + 7 for rounding 
+add r3, r4 @ bit offset (ignoring bits that made a byte) 
 lsr r3, #3 @ bits / 8 rounded up as # of bytes to load 
-@ r3 as the number of bytes to load
+@ r3 as the number of bytes to load (0-indexed) 
 cmp r3, #3 
 ble NoCap2 
-mov r3, #4 @ only load up to 4 bytes 
+mov r3, #3 @ only load up to 4 bytes 
 NoCap2: 
 mov r2, r0 @ starting address 
-sub r3, #1 @ 0-indexed 
-mov r7, r3 @ number of bytes - 1 
-
 mov r1, #0 
 Loop2: 
 ldrb r0, [r2, r3] 
@@ -167,14 +166,13 @@ orr r1, r6 @ new data is here!
 mov r3, #0 
 Loop3: 
 strb r1, [r2, r3] 
-cmp r3, r7 
-bgt Exit 
 lsr r1, #8 
 add r3, #1 
-b Loop3 
+cmp r1, #0 
+bne Loop3 
 
 Exit: 
-pop {r4-r7} 
+pop {r4-r6} 
 bx lr
 .ltorg 
 
@@ -254,16 +252,16 @@ lsl r1, #3 @ only bits that don't make a byte
 sub r4, r1 @ starting bit of the offset 
 
 mov r3, #7 
-add r3, r2 
+add r3, r2 @ number of bits + 7 for rounding 
+add r3, r4 @ bit offset (ignoring bits that made a byte) 
 lsr r3, #3 @ bits / 8 rounded up as # of bytes to load 
-@ r3 as the number of bytes to load
+@ r3 as the number of bytes to load (0-indexed) 
+
 cmp r3, #3 
 ble NoCapA 
 mov r3, #3 @ only load up to 4 bytes 
 NoCapA: 
-sub r3, #1 @ 0-indexed 
 mov r2, r0 @ starting address 
-
 mov r1, #0 
 LoopA: 
 ldrb r0, [r2, r3] 
@@ -302,7 +300,7 @@ bx lr
 .global PackData
 .type PackData, %function 
 PackData: 
-push {r4-r7}
+push {r4-r6}
 
 
 mov r4, r1 
@@ -319,19 +317,17 @@ add r0, r1 @ starting address
 lsl r1, #3 @ only bits that don't make a byte 
 sub r4, r1 @ starting bit of the offset 
 
-
 mov r3, #7 
-add r3, r2 
+add r3, r2 @ number of bits + 7 for rounding 
+add r3, r4 @ bit offset (ignoring bits that made a byte) 
 lsr r3, #3 @ bits / 8 rounded up as # of bytes to load 
-@ r3 as the number of bytes to load
+@ r3 as the number of bytes to load (0-indexed) 
+
 cmp r3, #3 
 ble NoCap3 
-mov r3, #4 @ only load up to 4 bytes 
+mov r3, #3 @ only load up to 4 bytes 
 NoCap3: 
 mov r2, r0 @ starting address 
-sub r3, #1 @ 0-indexed 
-mov r7, r3 @ number of bytes - 1 
-
 mov r1, #0 
 Loop4: 
 ldrb r0, [r2, r3] 
@@ -379,14 +375,13 @@ orr r1, r6 @ new data is here!
 mov r3, #0 
 Loop5: 
 strb r1, [r2, r3] 
-cmp r3, r7 
-bgt Exit2 
 add r3, #1 
 lsr r1, #8 
-b Loop5 
+cmp r1, #0 
+bne Loop5 
 
 Exit2: 
-pop {r4-r7} 
+pop {r4-r6} 
 bx lr
 .ltorg 
 

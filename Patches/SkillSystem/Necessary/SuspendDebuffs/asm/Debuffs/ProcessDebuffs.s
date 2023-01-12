@@ -34,7 +34,7 @@ mov r5,r0
 ldr r2, =DebuffStatNumberOfBits_Link
 ldr r6, [r2] 
 
-@ I don't think a loop would be any more efficient in terms of speed 
+@ I dont think a loop would be any more efficient in terms of speed 
 @ (but it would look nicer and take fewer lines of code) 
 ldr r1, =DebuffStatBitOffset_Mag
 ldr r1, [r1] 
@@ -171,6 +171,8 @@ BXR3:
 bx r3
 .ltorg 
 
+.global GetNewTemporaryStatValue
+.type GetNewTemporaryStatValue, %function 
 GetNewTemporaryStatValue:
 @ given r0 as a signed buff, restore towards 0 
 cmp r0, #0 
