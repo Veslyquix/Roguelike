@@ -1,5 +1,3 @@
-.equ ArmorMarchBit, DebuffTable+4
-.equ EntrySize, ArmorMarchBit+4
 .equ Boost, EntrySize+4
 .thumb
 
@@ -14,7 +12,8 @@ ldr r1, [r1]
 bl CheckBit 
 cmp r0, #0 
 beq End 
-ldr	r0,Boost
+ldr	r0, =ArmorMarchBoost
+ldr r0, [r0] 
 add	r4,r0		@add stat
 
 End:
@@ -24,7 +23,5 @@ pop	{r4-r6}
 pop	{r2}
 bx	r2
 
-.align
 .ltorg
-DebuffTable:
-@WORD Boost
+

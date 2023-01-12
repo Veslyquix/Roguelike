@@ -81,7 +81,9 @@ POP
 
 StartingUnits: 
 UNIT Eirika Lord 0x1 Level(5,Ally,True)   [2,2] 0b 0x0 0x1 REDA2R2 [Rapier] [0x0]
-UNIT Seth Paladin 0x1 Level(5,Ally,True)   [2,3] 0b 0x0 0x1 REDA2R3 [SilverLance] [0x0]
+UNIT Seth Paladin 0x1 Level(5,Ally,True)   [2,4] 0b 0x0 0x1 REDA2R4 [SilverLance] [0x0]
+UNIT Gilliam Knight 0x1 Level(5,Ally,True)   [2,3] 0b 0x0 0x1 REDA2R3 [SilverLance] [0x0]
+UNIT Tethys Dancer 0x1 Level(5,Ally,True)   [1,3] 0b 0x0 0x1 REDA1R3 [Vulnerary] [0x0]
 UNIT 
 
 // give enemy bosses death quotes to set flag 2 

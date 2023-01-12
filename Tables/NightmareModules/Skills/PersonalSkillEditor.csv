@@ -1,8 +1,8 @@
 INLINE PersonalSkillTable,Skill
 None,0x0
-Eirika,0x0
-Seth,0x0
-Gilliam,0x0
+Eirika,KeepUpID
+Seth,ArmorMarchID
+Gilliam,CantoID
 Franz,0x0
 Moulder,0x0
 Vanessa,0x0
@@ -20,7 +20,7 @@ Kyle,0x0
 Amelia,0x0
 Artur,0x0
 Gerik,0x0
-Tethys,0x0
+Tethys,VigorDanceID
 Marisa,0x0
 Saleh,0x0
 Ewan,0x0
