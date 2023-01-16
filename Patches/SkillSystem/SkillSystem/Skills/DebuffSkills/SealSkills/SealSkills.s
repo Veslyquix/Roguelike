@@ -4,7 +4,6 @@
 .equ ExtraUnitData, SealSkillList+4
 .equ ItemTableLocation, ExtraUnitData+4 @dont forget to add this to the master skill installer
 .equ FullMetalBodyID, ItemTableLocation+4
-.equ DebuffTableLocation, FullMetalBodyID+4
 
 mov r1,r5
 ldr r3, =0x802c1ec @UpdateUnitFromBattleUnit
@@ -142,4 +141,3 @@ SkillTester:
 @POIN ExtraUnitData
 @POIN ItemTableLocation
 @WORD FullMetalBodyID
-@POIN DebuffTableLocation

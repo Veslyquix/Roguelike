@@ -5,6 +5,21 @@
   .short 0xf800
 .endm
 
+.global MaxMovCap
+.type MaxMovCap, %function 
+MaxMovCap:
+@ r0 = movement 
+@ r1 = unit 
+ldr r2, =MaxMovementValue_Link
+ldr r2, [r2] 
+cmp r0, r2 
+ble NoCapHere
+mov r0, r2 
+NoCapHere: 
+@ returns new movement 
+bx lr 
+.ltorg 
+
 .equ NextRN_N, 0x08000C80
 GetDebuffAmount: 
 push {r4, lr} 

@@ -1,8 +1,6 @@
 .thumb
 
-GetDebuffs = EALiterals+0x0
-ItemTableLocation = EALiterals+0x4
-WeaponDebuffTable = EALiterals+0x8
+ItemTableLocation = EALiterals+0
 
 push {r0, lr}
 @r5 = attacker
@@ -289,14 +287,8 @@ bx lr
 
 .align
 EALiterals:
-@.long GetDebuffs
 @.long ItemTableLocation
-@.long WeaponDebuffTable
 
-@ ExtraDataLocation:
-@ .long 0x0203F100
 @ ItemTableLocation:
 @ .long 0x08809B10
-@ DebuffTableLocation:
-@.long 0xDEADBEEF
 

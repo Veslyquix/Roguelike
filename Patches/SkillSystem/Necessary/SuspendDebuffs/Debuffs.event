@@ -216,9 +216,7 @@ TeamDebuffTables:
   ALIGN 4
   setDebuffs:
     #include "asm/Debuffs/SetDebuffs.lyn.event"
-    POIN GetUnitDebuffEntry|1
     POIN ItemTable
-    POIN WeaponDebuffTable
 
 	#include "asm/Debuffs/Reload.lyn.event"
 	#include "asm/Debuffs/InitDebuffs.lyn.event"
