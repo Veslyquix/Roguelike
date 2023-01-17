@@ -1,6 +1,8 @@
 .thumb
 .align
 
+
+
 .equ SkillTester, AuraSkillCheck+4
 .equ ArmorMarchList, SkillTester+4
 .equ IndoorTerrainList, ArmorMarchList+4

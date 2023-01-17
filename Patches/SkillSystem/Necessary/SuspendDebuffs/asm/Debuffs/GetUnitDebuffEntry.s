@@ -1,7 +1,6 @@
 .thumb
 @arguments: r0 = unit pointer
 @returns: r0 = pointer to unit's debuffs
-.equ DebuffEntrySize, DebuffTables+4
 .global GetUnitDebuffEntry 
 .type GetUnitDebuffEntry, %function 
 GetUnitDebuffEntry:
