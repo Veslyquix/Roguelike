@@ -1,0 +1,19 @@
+
+#define MoxieID 1 
+
+#include "lyn.event/Moxie.lyn.event" 
+
+
+ALIGN 4 
+BuffsStackable_Link: 
+WORD True 
+
+ALIGN 4 
+MoxieBuffAmount: 
+WORD 4 
+
+VeslyHack_Link: 
+WORD True 
+
+
+

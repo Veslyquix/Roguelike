@@ -150,9 +150,6 @@ bl PackData_Signed
 
 
 @BreakLoop: 
-@
-@8: Rallies (str/skl/spd/def/res/luk) (bit 7 = rally move, bit 8 = rally spectrum)
-@9: Str/Skl Silver Debuff (6 bits), bit 7 = RallyMag, bit 8 = free 
 ldr r1, =RalliesOffset_Link 
 ldr r1, [r1] 
 mov r3, #0 @ value 
@@ -160,8 +157,6 @@ mov r0, r5 @ debuff entry for unit
 ldr r2, =RalliesNumberOfBits_Link 
 ldr r2, [r2] 
 bl PackData
-@10: mag/str/skl/spd/def/res/luk/hp tonics (+2 in each, +4 luk, +5 hp) 
-@11: bit 1 = half str, bit 2 = half mag, bit 3 = hexing rod, bits 4-8 are free 
 
 pop {r4-r6}
 pop {r3} 

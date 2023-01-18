@@ -1,7 +1,7 @@
 //#include "CannotDie/Installer.event"
 #include "GlobalStatAdjustments/Installer.event" 
 #include "ExtendWeaponDescBox/Installer.event" 
-
+#include "Skills/Installer.event" 
 // randomize map(s) 
 #include "GenerateMap/Installer.event" 
 
