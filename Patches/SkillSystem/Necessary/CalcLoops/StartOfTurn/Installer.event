@@ -1,0 +1,13 @@
+PUSH
+ORG $1538C
+jumpToHack(StartOfTurn_CalcLoopHook) //set or unset a bit in the debuff entries to give mov to units
+POP
+
+StartOfTurn_List: 
+POIN ArmorMarch_StartOfTurn 
+WORD 0 
+
+
+#include "StartOfTurn_CalcLoopHook.lyn.event" 
+
+

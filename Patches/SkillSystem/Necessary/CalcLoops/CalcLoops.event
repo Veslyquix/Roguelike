@@ -1,6 +1,8 @@
 
 #include "EXPCalcLoop/EXPCalcLoop.event"
 
+#include "StartOfTurn/Installer.event" 
+
 //#include "MugLoadingCalcLoop/MugLoadingCalcLoop.event"
 
 #include "PostActionCalcLoop/PostActionCalcLoop.event"

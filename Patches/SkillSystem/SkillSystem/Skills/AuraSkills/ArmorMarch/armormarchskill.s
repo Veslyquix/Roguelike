@@ -3,28 +3,17 @@
 .equ ArmorMarchList, SkillTester+4
 .thumb
 
-.set gChapterData,                 0x0202BCF0
+
 .set GetUnit,                      0x08019430
 	@ arguments:
 		@r0 = unit deployment id
 	@returns:
 		@r0 = unit pointer
 
-@my really ugly hook
-push	{lr}
-ldr	r1,=#0x8015395
-mov	lr,r1
-ldr	r2,=gChapterData
-ldrb	r0,[r2,#0xF]
-mov	r1,pc
-add	r1,#7
-push	{r1}
-cmp	r0,#0x40
-bx	lr
-Back:
 
-push	{r4-r6}
 
+ArmorMarch_StartOfTurn: 
+push	{r4-r6, lr}
 @unset everyone
 mov	r4,#1
 unsetLoop:

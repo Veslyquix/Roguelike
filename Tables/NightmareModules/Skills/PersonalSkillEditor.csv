@@ -1,7 +1,7 @@
 INLINE PersonalSkillTable,Skill
 None,0x0
-Eirika,KeepUpID
-Seth,ArmorMarchID
+Eirika,CantoID
+Seth,CantoID
 Gilliam,CantoID
 Franz,0x0
 Moulder,0x0

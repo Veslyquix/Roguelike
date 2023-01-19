@@ -1,16 +1,41 @@
 
-#define MoxieID 1 
+ALIGN 4 
+TakerMaxBuff_Link: 
+WORD 10 // Won't buff above 10. 
 
-#include "lyn.event/Moxie.lyn.event" 
+#define StrTakerID 1 
+#define SklTakerID 1 
+#define SpdTakerID 1 
+#define DefTakerID 1 
+#define ResTakerID 1 
+#define LukTakerID 1 
+#define MagTakerID 1 
+#define MovTakerID 1 
+
+#include "lyn.event/TakerSkills.lyn.event" 
 
 
 ALIGN 4 
-BuffsStackable_Link: 
+TakerSkillsStackable_Link: 
 WORD True 
 
 ALIGN 4 
-MoxieBuffAmount: 
+StrTakerBuffAmount_Link: 
 WORD 4 
+SklTakerBuffAmount_Link: 
+WORD 4 
+SpdTakerBuffAmount_Link: 
+WORD 4 
+DefTakerBuffAmount_Link: 
+WORD 4 
+ResTakerBuffAmount_Link: 
+WORD 4 
+LukTakerBuffAmount_Link: 
+WORD 4 
+MagTakerBuffAmount_Link: 
+WORD 4 
+MovTakerBuffAmount_Link: 
+WORD 3 
 
 VeslyHack_Link: 
 WORD True 
