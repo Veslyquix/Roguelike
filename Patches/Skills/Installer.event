@@ -1,4 +1,7 @@
 
+
+#include "lyn.event/HoneSkills.lyn.event" 
+
 ALIGN 4 
 TakerMaxBuff_Link: 
 WORD 10 // Won't buff above 10. 

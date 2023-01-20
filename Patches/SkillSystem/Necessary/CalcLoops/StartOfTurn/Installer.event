@@ -1,13 +1,28 @@
 PUSH
-ORG $1538C
-jumpToHack(StartOfTurn_CalcLoopHook) //set or unset a bit in the debuff entries to give mov to units
+ORG $15428
+jumpToHack(StartOfTurn_CalcLoopHook) //unset it when the turn starts again
 POP
 
+ALIGN 4 
 StartOfTurn_List: 
-POIN ArmorMarch_StartOfTurn 
+POIN ArmorMarch_StartOfTurn VigorDanceReset StartOfTurnUnitLoop
 WORD 0 
 
+// this occurs *before* the code that processes debuffs, so that will have to be moved here 
+// atm this means if you buff a unit by say +7 str, it depletes immediately after 
 
-#include "StartOfTurn_CalcLoopHook.lyn.event" 
+// Below is optional but more efficient 
+// Executes a function where the unit has already been deemed to be on the field with the relevant skill 
+// loops through all units, checks if fielded, creates a buffer of skills, then runs the function for each skill ID that has an entry here 
+ALIGN 4 
+StartOfTurn_SkillTable: 
+FILL(256*4) 
+
+#define StartOfTurnFunctionEntry(skillID, function) "PUSH; ORG StartOfTurn_SkillTable+(skillID*4); POIN function|1; POP" 
+
+StartOfTurnFunctionEntry(CantoID, HoneStr) // for testing 
+
+
+#include "StartOfTurn_CalcLoop.lyn.event" 
 
 
