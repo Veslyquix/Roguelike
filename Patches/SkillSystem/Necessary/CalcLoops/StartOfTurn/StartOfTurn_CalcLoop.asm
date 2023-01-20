@@ -5,6 +5,7 @@
   .short 0xf800
 .endm
 
+.equ ReturnAddress, 0x8015431
 .equ BufferSize, 12 
 .equ gAttackerSkillBuffer, 0x02026BB0
 .equ gDefenderSkillBuffer, 0x02026C00
@@ -13,7 +14,7 @@
 .equ gUnitRangeBuffer, 0x0202764C
 .equ GetUnit, 0x8019430
 
-.global StartOfTurn_CalcLoopHook
+.global StartOfTurn_CalcLoopHook // gets called twice on turn 2 of player phase for some reason 
 .type StartOfTurn_CalcLoopHook, %function 
 StartOfTurn_CalcLoopHook: 
 cmp	r0,#1
@@ -46,7 +47,7 @@ Break:
 pop {r4-r6} 
 pop {r1} @ lr (useless) 
 pop	{r0} @ true or false 
-ldr r1, =0x8015431 
+ldr r1, =ReturnAddress 
 bx r1 
 .ltorg 
 
@@ -84,6 +85,7 @@ mov r0, r5 @ unit
 ldr r1, =gAttackerSkillBuffer
 bl MakeSkillBuffer @(Unit* unit, SkillBuffer* buffer)
 mov r6, r0 @ skill buffer 
+@ possibly need to remove duplicate skills here 
 @ /*00*/  u8 lastUnitChecked;
 @ /*01*/  u8 skills[11];
 mov r7, #0 

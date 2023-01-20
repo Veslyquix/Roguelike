@@ -1,4 +1,12 @@
 
+ALIGN 4 
+SethSkillList: 
+//BYTE 21 1 
+BYTE 21 2 
+BYTE 00 00 
+ALIGN 4 
+
+
 EphraimLordSkillList:
 BYTE 00 00
 ALIGN 4
