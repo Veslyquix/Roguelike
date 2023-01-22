@@ -75,14 +75,7 @@ ALIGN 4
 TakerMaxBuff_Link: 
 WORD 10 // Won't buff above 10. 
 
-#define StrTakerID 1 
-#define SklTakerID 1 
-#define SpdTakerID 1 
-#define DefTakerID 1 
-#define ResTakerID 1 
-#define LukTakerID 1 
-#define MagTakerID 1 
-#define MovTakerID 1 
+
 
 #include "lyn.event/TakerSkills.lyn.event" 
 

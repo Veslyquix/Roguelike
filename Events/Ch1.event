@@ -27,7 +27,7 @@ LOAD1 1 EnemyUnits
 ENUN 
 //ASMC TestFunc 
 FADU 44 
-ASMC SelectRelic_ASMC
+//ASMC SelectRelic_ASMC
 NoFade 
 ENDA 
 
@@ -92,7 +92,18 @@ EnemyUnits:
 UNIT Breguet Fighter 0x1 Level(5,Enemy,True)   [3,2] 0b 0x0 0x1 REDA3R2 [IronAxe] [0x0]
 //UNIT Breguet Fighter 0x1 Level(5,Enemy,True)   [14,8] 0b 0x0 0x1 REDA14R8 [IronAxe] [0x0]
 UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,3] 0b 0x0 0x1 REDA3R3 [IronAxe] [0x0]
-UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [14,9] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
+UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
+UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
+UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
+UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
+UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
+UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
+UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
+UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
+UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
+UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
+UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
+UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
 UNIT 
 
 PrepUnits: 

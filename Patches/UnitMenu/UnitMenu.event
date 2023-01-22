@@ -85,7 +85,9 @@ ALIGN 4         //Insert new commands where you want them to appear in the menu
 UnitMenuTable:
   //Use the macro MenuCommand(name,description,colour,usability,effect)
   //Color options: NormalText, GrayText, BlueText, OrangeText, GreenText (flashes), BlackText
-
+  #ifdef __DEBUG__
+    MenuCommand(UM_EditSkill, UM_EditSkillDesc, OrangeText, $04F449, SkillDebugCommand_OnSelect)
+  #endif
 
 POIN 0x0D7E9C;SHORT 0x067A 0x06CC;BYTE 0x00 0x4E 0x00 0x00;POIN 0x022FDD 0x00 0x023021 0x00 0x00 0x00 //00  Seize
 POIN 0x0D7E94;SHORT 0x067B 0x06C0;BYTE 0x00 0x4F 0x00 0x00;POIN 0x0249AD 0x00 0x022B31 0x00 0x022C31 0x022C99 //01  Attack

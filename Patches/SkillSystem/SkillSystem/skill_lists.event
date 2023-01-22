@@ -2,7 +2,10 @@
 ALIGN 4 
 SethSkillList: 
 //BYTE 21 1 
-BYTE 21 2 
+BYTE 21 SpectrumInitID 
+BYTE 21 HoneStrID 
+BYTE 21 StrOathID 
+BYTE 21 RouseStrID 
 BYTE 00 00 
 ALIGN 4 
 

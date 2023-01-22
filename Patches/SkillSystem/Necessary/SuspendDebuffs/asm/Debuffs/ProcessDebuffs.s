@@ -1,9 +1,8 @@
 @Originally at 188A8
 .thumb
-.global ProcessDebuffs
-.type ProcessDebuffs, %function 
-ProcessDebuffs: 
-
+.type ProcessPureWater, %function 
+.global ProcessPureWater
+ProcessPureWater: 
 @This should do what the code in place did
 cmp     r0,#0x0
 beq     noBarrier
@@ -24,9 +23,15 @@ orr r0, r1
 mov r3, r4
 add     r3,#0x31
 strb r0, [r3]
+@no need to do anything
+ldr r3, ReturnLocation
+BXR3:
+bx r3
+.ltorg 
 
-@Now the debuffs
-mov r0,r4 @ unit 
+.global ProcessDebuffs
+.type ProcessDebuffs, %function 
+ProcessDebuffs: 
 push {r4-r6, lr} 
 bl GetUnitDebuffEntry
 mov r5,r0
@@ -160,9 +165,6 @@ bl PackData
 
 pop {r4-r6}
 pop {r3} 
-@no need to do anything
-ldr r3, ReturnLocation
-BXR3:
 bx r3
 .ltorg 
 

@@ -127,6 +127,31 @@ pop {r0}
 bx r0 
 .ltorg 
 
+.global SpectrumInit 
+.type SpectrumInit, %function 
+SpectrumInit: 
+push {r4, lr} 
+mov r4, r0 @ unit 
+bl CleverInit 
+mov r0, r4 
+bl StrongInit 
+mov r0, r4 
+bl DeftInit 
+mov r0, r4 
+bl QuickInit 
+mov r0, r4 
+bl SturdyInit 
+mov r0, r4 
+bl CalmInit 
+mov r0, r4 
+bl LuckyInit 
+mov r0, r4 
+bl NimbleInit 
+pop {r4} 
+pop {r0} 
+bx r0 
+.ltorg 
+
 
 
 InitiativeForStat: 
@@ -146,7 +171,7 @@ mov r6, r2 @ amount
 
 bl GetUnitDebuffEntry 
 mov r7, r0 @ debuff entry 
-
+mov r1, r5 @ bit offset 
 ldr r2, =DebuffStatNumberOfBits_Link
 ldr r2, [r2] 
 bl UnpackData_Signed 
@@ -543,7 +568,7 @@ add r4, #1
 blh GetUnit 
 bl GetUnitDebuffEntry 
 mov r7, r0 @ debuff entry 
-
+mov r1, r5 @ bit offset 
 ldr r2, =DebuffStatNumberOfBits_Link
 ldr r2, [r2] 
 bl UnpackData_Signed 
@@ -586,7 +611,7 @@ beq NoBuff_Oath
 mov r0, r4 @ unit 
 bl GetUnitDebuffEntry 
 mov r7, r0 @ debuff entry 
-
+mov r1, r5 @ bit offset 
 ldr r2, =DebuffStatNumberOfBits_Link
 ldr r2, [r2] 
 bl UnpackData_Signed 
@@ -628,7 +653,7 @@ bne NoBuff_Rouse
 mov r0, r4 @ unit 
 bl GetUnitDebuffEntry 
 mov r7, r0 @ debuff entry 
-
+mov r1, r5 @ bit offset 
 ldr r2, =DebuffStatNumberOfBits_Link
 ldr r2, [r2] 
 bl UnpackData_Signed 

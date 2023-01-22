@@ -130,16 +130,86 @@
 
 
 
+	// Buff Skills \\ 
+
+// _ Taker: After attacking and defeating an enemy, gain +4 _ 
+// Author: Vesly 
+#define StrTakerID 85 
+#define SklTakerID 255 
+#define SpdTakerID 255 
+#define DefTakerID 255 
+#define ResTakerID 255 
+#define LukTakerID 255 
+#define MagTakerID 255 
+#define MovTakerID 255 
+
+
+
+// Hone _ : At the start of your turn, give adjacent allies up to +3 _. 
+// Author: Vesly 
+#define HoneMagID  255 
+#define HoneStrID  83
+#define HoneSklID  255 
+#define HoneSpdID  255 
+#define HoneDefID  255 
+#define HoneResID  255 
+#define HoneLukID  255 
+#define HoneMovID  255 
+
+
+// _ Oath : At the start of your turn, gain up to +4 _ if adjacent to an ally.
+// Author: Vesly 
+#define MagOathID  255 
+#define StrOathID  82
+#define SklOathID  255 
+#define SpdOathID  255 
+#define DefOathID  255 
+#define ResOathID  255 
+#define LukOathID  255 
+#define MovOathID  255 
+
+// Rouse _ : At the start of your turn, gain up to +4 _ if not adjacent to an ally.
+// Author: Vesly 
+#define RouseMagID 255 
+#define RouseStrID 81 
+#define RouseSklID 255 
+#define RouseSpdID 255 
+#define RouseDefID 255 
+#define RouseResID 255 
+#define RouseLukID 255 
+#define RouseMovID 255 
+
+// _ Initiative: Begin the chapter with +7 __. 
+// Author: Vesly 
+#define CleverInitID 255 // Mag
+#define StrongInitID 255 // Str 
+#define DeftInitID 255 // Skl 
+#define QuickInitID 255 // Spd 
+#define LuckyInitID 255 // Luk 
+#define SturdyInitID 255 // Def 
+#define CalmInitID 255 // Res 
+#define NimbleInitID 84 // Mov 
+#define SpectrumInitID 79 // All stats  
+
+
+
+
 //Debuff Skills
 
 //Seal Skills: Debuff opponent's stat by 6 after combat. (Recover 1/turn)
 //Author Unknown (Initial Commit)
-#define SealStrID 79
-#define SealSklID 81
-#define SealSpdID 82
-#define SealLukID 85
-#define SealDefID 83
-#define SealResID 84
+#define SealStrID 255
+#define SealSklID 255
+#define SealSpdID 255
+#define SealLukID 255
+#define SealDefID 255
+#define SealResID 255 
+//#define SealStrID 79
+//#define SealSklID 81
+//#define SealSpdID 82
+//#define SealLukID 85
+//#define SealDefID 83
+//#define SealResID 84
 //By Snakey1
 #define SealMagID 80
 
@@ -266,7 +336,7 @@
 
 //Canto: Can move again after certain actions.
 //By Tequila
-#define CantoID 1
+#define CantoID 255
 
 //Canto+: Can move again after attacking and other actions.
 //By Tequila

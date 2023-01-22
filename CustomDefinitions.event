@@ -1,6 +1,9 @@
 PUSH; ORG $D74D0	//{U}
 String("V0.02                 Jan 2022") ; BYTE 0; POP // this overflows into the date but I don't use the date so whatever 
 
+#define __DEBUG__
+
+
 #define FreeSpaceGFX 0x1000000 
 // currently ends at 0x138----
 #define 	FreeSpace 0x1400000

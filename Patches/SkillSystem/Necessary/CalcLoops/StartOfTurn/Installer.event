@@ -5,7 +5,7 @@ POP
 
 ALIGN 4 
 StartOfTurn_List: 
-POIN ArmorMarch_StartOfTurn VigorDanceReset StartOfTurnUnitLoop
+POIN ProcessDebuffs ArmorMarch_StartOfTurn VigorDanceReset StartOfTurnUnitLoop
 WORD 0 
 
 // this occurs *before* the code that processes debuffs, so that will have to be moved here 
@@ -20,55 +20,6 @@ FILL(256*4)
 
 #define StartOfTurnFunctionEntry(skillID, function) "PUSH; ORG StartOfTurn_SkillTable+(skillID*4); POIN function|1; POP" 
 
-
-
-
-// Hone _ : At the start of your turn, give adjacent allies up to +3 _. 
-// Author: Vesly 
-#define HoneMagID  255 
-#define HoneStrID  255 
-#define HoneSklID  255 
-#define HoneSpdID  255 
-#define HoneDefID  255 
-#define HoneResID  255 
-#define HoneLukID  255 
-#define HoneMovID  255 
-
-
-// _ Oath : At the start of your turn, gain up to +4 _ if adjacent to an ally.
-// Author: Vesly 
-#define OathMagID  255 
-#define OathStrID  255 
-#define OathSklID  255 
-#define OathSpdID  255 
-#define OathDefID  255 
-#define OathResID  255 
-#define OathLukID  255 
-#define OathMovID  255 
-
-// Rouse _ : At the start of your turn, gain up to +4 _ if not adjacent to an ally.
-// Author: Vesly 
-#define RouseMagID 255 
-#define RouseStrID 255 
-#define RouseSklID 255 
-#define RouseSpdID 255 
-#define RouseDefID 255 
-#define RouseResID 255 
-#define RouseLukID 255 
-#define RouseMovID 255 
-
-// _ Initiative: Begin the chapter with +7 __. 
-#define CleverInitID 255 // Mag
-#define StrongInitID 255 // Str 
-#define DeftInitID 255 // Skl 
-#define QuickInitID 255 // Spd 
-#define LuckyInitID 255 // Luk 
-#define SturdyInitID 255 // Def 
-#define CalmInitID 255 // Res 
-#define NimbleInitID 255 // Mov 
-
-
-
 StartOfTurnFunctionEntry(HoneMagID, HoneMag) 
 StartOfTurnFunctionEntry(HoneStrID, HoneStr) 
 StartOfTurnFunctionEntry(HoneSklID, HoneSkl) 
@@ -77,14 +28,14 @@ StartOfTurnFunctionEntry(HoneDefID, HoneDef)
 StartOfTurnFunctionEntry(HoneResID, HoneRes) 
 StartOfTurnFunctionEntry(HoneLukID, HoneLuk) 
 StartOfTurnFunctionEntry(HoneMovID, HoneMov) 
-StartOfTurnFunctionEntry(OathMagID, OathMag) 
-StartOfTurnFunctionEntry(OathStrID, OathStr) 
-StartOfTurnFunctionEntry(OathSklID, OathSkl) 
-StartOfTurnFunctionEntry(OathSpdID, OathSpd) 
-StartOfTurnFunctionEntry(OathDefID, OathDef) 
-StartOfTurnFunctionEntry(OathResID, OathRes) 
-StartOfTurnFunctionEntry(OathLukID, OathLuk) 
-StartOfTurnFunctionEntry(OathMovID, OathMov) 
+StartOfTurnFunctionEntry(MagOathID, OathMag) 
+StartOfTurnFunctionEntry(StrOathID, OathStr) 
+StartOfTurnFunctionEntry(SklOathID, OathSkl) 
+StartOfTurnFunctionEntry(SpdOathID, OathSpd) 
+StartOfTurnFunctionEntry(DefOathID, OathDef) 
+StartOfTurnFunctionEntry(ResOathID, OathRes) 
+StartOfTurnFunctionEntry(LukOathID, OathLuk) 
+StartOfTurnFunctionEntry(MovOathID, OathMov) 
 StartOfTurnFunctionEntry(RouseMagID, RouseMag) 
 StartOfTurnFunctionEntry(RouseStrID, RouseStr) 
 StartOfTurnFunctionEntry(RouseSklID, RouseSkl) 
@@ -93,6 +44,7 @@ StartOfTurnFunctionEntry(RouseDefID, RouseDef)
 StartOfTurnFunctionEntry(RouseResID, RouseRes) 
 StartOfTurnFunctionEntry(RouseLukID, RouseLuk) 
 StartOfTurnFunctionEntry(RouseMovID, RouseMov) 
+
 StartOfTurnFunctionEntry(CleverInitID	, CleverInit) 
 StartOfTurnFunctionEntry(StrongInitID	, StrongInit) 
 StartOfTurnFunctionEntry(DeftInitID		, DeftInit	) 
@@ -101,6 +53,7 @@ StartOfTurnFunctionEntry(LuckyInitID		, LuckyInit	)
 StartOfTurnFunctionEntry(SturdyInitID	, SturdyInit) 
 StartOfTurnFunctionEntry(CalmInitID		, CalmInit	) 
 StartOfTurnFunctionEntry(NimbleInitID	, NimbleInit) 
+StartOfTurnFunctionEntry(SpectrumInitID	, SpectrumInit) 
 
 
 #include "StartOfTurn_CalcLoop.lyn.event" 
