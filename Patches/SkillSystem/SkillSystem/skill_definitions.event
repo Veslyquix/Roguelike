@@ -130,11 +130,24 @@
 
 
 
+
+//Guts:  +5 Str while under any status condition. (Includes dancer rings.) 
+#define GutsID 255
+//Strong Constitution: +5 Def/Res while under any status condition. (Includes dancer rings.) 
+#define StrongConstitutionID 255
+// Shrewd Potential: Stat boosters provide +1 more than usual. 
+#define ShrewdPotentialID 85 
+
+#define HoardersBaneID 79
+// At the end of your turn, consume a vulnerary from the supply if below full health.
 	// Buff Skills \\ 
 
-// _ Taker: After attacking and defeating an enemy, gain +4 _ 
+//Eternal Vanity: Your buffed stats do not deplete each turn. 
+#define EternalVanityID 84
+
+// _ Taker: After attacking and defeating an enemy, gain +4 _. (Max +10) 
 // Author: Vesly 
-#define StrTakerID 85 
+#define StrTakerID 255
 #define SklTakerID 255 
 #define SpdTakerID 255 
 #define DefTakerID 255 
@@ -143,12 +156,10 @@
 #define MagTakerID 255 
 #define MovTakerID 255 
 
-
-
 // Hone _ : At the start of your turn, give adjacent allies up to +3 _. 
 // Author: Vesly 
 #define HoneMagID  255 
-#define HoneStrID  83
+#define HoneStrID  80
 #define HoneSklID  255 
 #define HoneSpdID  255 
 #define HoneDefID  255 
@@ -156,11 +167,10 @@
 #define HoneLukID  255 
 #define HoneMovID  255 
 
-
 // _ Oath : At the start of your turn, gain up to +4 _ if adjacent to an ally.
 // Author: Vesly 
 #define MagOathID  255 
-#define StrOathID  82
+#define StrOathID  81
 #define SklOathID  255 
 #define SpdOathID  255 
 #define DefOathID  255 
@@ -171,7 +181,7 @@
 // Rouse _ : At the start of your turn, gain up to +4 _ if not adjacent to an ally.
 // Author: Vesly 
 #define RouseMagID 255 
-#define RouseStrID 81 
+#define RouseStrID 82 
 #define RouseSklID 255 
 #define RouseSpdID 255 
 #define RouseDefID 255 
@@ -188,8 +198,8 @@
 #define LuckyInitID 255 // Luk 
 #define SturdyInitID 255 // Def 
 #define CalmInitID 255 // Res 
-#define NimbleInitID 84 // Mov 
-#define SpectrumInitID 79 // All stats  
+#define NimbleInitID 255 // Mov 
+#define SpectrumInitID 83 // All stats  
 
 
 
@@ -211,7 +221,7 @@
 //#define SealDefID 83
 //#define SealResID 84
 //By Snakey1
-#define SealMagID 80
+#define SealMagID 255
 
 //Full Metal Body: This unit is immune to all the Seal skills.
 //By Leonarth

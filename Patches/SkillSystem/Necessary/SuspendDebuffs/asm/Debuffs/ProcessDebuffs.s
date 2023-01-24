@@ -33,7 +33,13 @@ bx r3
 .type ProcessDebuffs, %function 
 ProcessDebuffs: 
 push {r4-r6, lr} 
+mov r4, r0 @ unit 
 bl GetUnitDebuffEntry
+mov r0, r4 @ unit 
+ldr r1, =EternalVanity_Link 
+ldr r1, [r1] 
+bl SkillTester 
+mov r4, r0 @ @ if true, do not deplete buffed stats 
 mov r5,r0
 
 ldr r2, =DebuffStatNumberOfBits_Link
@@ -46,7 +52,8 @@ ldr r1, [r1]
 mov r0, r5 @ unit debuff entry ram 
 mov r2, r6 
 bl UnpackData_Signed @ given r0 = address, r1 = bit offset, r2 = number of bits, return that data 
-bl GetNewTemporaryStatValue @ r0 = value for a debuffed/buffed stat 
+mov r1, r4 
+bl GetNewTemporaryStatValue @ r0 = value for a debuffed/buffed stat, r1 = if true, do not deplete buffed stats 
 mov r3, r0 @ to store back 
 mov r0, r5 
 mov r2, r6 @ # of bits 
@@ -60,7 +67,8 @@ ldr r1, [r1]
 mov r0, r5 @ unit debuff entry ram 
 mov r2, r6 
 bl UnpackData_Signed @ given r0 = address, r1 = bit offset, r2 = number of bits, return that data 
-bl GetNewTemporaryStatValue @ r0 = value for a debuffed/buffed stat 
+mov r1, r4 
+bl GetNewTemporaryStatValue @ r0 = value for a debuffed/buffed stat, r1 = if true, do not deplete buffed stats 
 mov r3, r0 @ to store back 
 mov r0, r5 
 mov r2, r6 @ # of bits 
@@ -74,7 +82,8 @@ ldr r1, [r1]
 mov r0, r5 @ unit debuff entry ram 
 mov r2, r6 
 bl UnpackData_Signed @ given r0 = address, r1 = bit offset, r2 = number of bits, return that data 
-bl GetNewTemporaryStatValue @ r0 = value for a debuffed/buffed stat 
+mov r1, r4 
+bl GetNewTemporaryStatValue @ r0 = value for a debuffed/buffed stat, r1 = if true, do not deplete buffed stats 
 mov r3, r0 @ to store back 
 mov r0, r5 
 mov r2, r6 @ # of bits 
@@ -88,7 +97,8 @@ ldr r1, [r1]
 mov r0, r5 @ unit debuff entry ram 
 mov r2, r6 
 bl UnpackData_Signed @ given r0 = address, r1 = bit offset, r2 = number of bits, return that data 
-bl GetNewTemporaryStatValue @ r0 = value for a debuffed/buffed stat 
+mov r1, r4 
+bl GetNewTemporaryStatValue @ r0 = value for a debuffed/buffed stat, r1 = if true, do not deplete buffed stats 
 mov r3, r0 @ to store back 
 mov r0, r5 
 mov r2, r6 @ # of bits 
@@ -102,7 +112,8 @@ ldr r1, [r1]
 mov r0, r5 @ unit debuff entry ram 
 mov r2, r6 
 bl UnpackData_Signed @ given r0 = address, r1 = bit offset, r2 = number of bits, return that data 
-bl GetNewTemporaryStatValue @ r0 = value for a debuffed/buffed stat 
+mov r1, r4 
+bl GetNewTemporaryStatValue @ r0 = value for a debuffed/buffed stat, r1 = if true, do not deplete buffed stats 
 mov r3, r0 @ to store back 
 mov r0, r5 
 mov r2, r6 @ # of bits 
@@ -116,7 +127,8 @@ ldr r1, [r1]
 mov r0, r5 @ unit debuff entry ram 
 mov r2, r6 
 bl UnpackData_Signed @ given r0 = address, r1 = bit offset, r2 = number of bits, return that data 
-bl GetNewTemporaryStatValue @ r0 = value for a debuffed/buffed stat 
+mov r1, r4 
+bl GetNewTemporaryStatValue @ r0 = value for a debuffed/buffed stat, r1 = if true, do not deplete buffed stats 
 mov r3, r0 @ to store back 
 mov r0, r5 
 mov r2, r6 @ # of bits 
@@ -130,7 +142,8 @@ ldr r1, [r1]
 mov r0, r5 @ unit debuff entry ram 
 mov r2, r6 
 bl UnpackData_Signed @ given r0 = address, r1 = bit offset, r2 = number of bits, return that data 
-bl GetNewTemporaryStatValue @ r0 = value for a debuffed/buffed stat 
+mov r1, r4 
+bl GetNewTemporaryStatValue @ r0 = value for a debuffed/buffed stat, r1 = if true, do not deplete buffed stats 
 mov r3, r0 @ to store back 
 mov r0, r5 
 mov r2, r6 @ # of bits 
@@ -144,7 +157,8 @@ ldr r1, [r1]
 mov r0, r5 @ unit debuff entry ram 
 mov r2, r6 
 bl UnpackData_Signed @ given r0 = address, r1 = bit offset, r2 = number of bits, return that data 
-bl GetNewTemporaryStatValue @ r0 = value for a debuffed/buffed stat 
+mov r1, r4 
+bl GetNewTemporaryStatValue @ r0 = value for a debuffed/buffed stat, r1 = if true, do not deplete buffed stats 
 mov r3, r0 @ to store back 
 mov r0, r5 
 mov r2, r6 @ # of bits 
@@ -187,6 +201,8 @@ mov r0, #0
 b GotStatValue 
 
 DecrementBuff: 
+cmp r1, #1 
+beq GotStatValue 
 ldr r2, =BuffDepletePerTurnAmount_Link
 ldr r2, [r2] 
 sub r0, r2 

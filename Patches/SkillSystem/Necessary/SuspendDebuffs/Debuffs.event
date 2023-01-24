@@ -255,7 +255,9 @@ WORD 2
 RequireDamageToDebuff_Link: 
 WORD RequireDamageToDebuff
 
-
+ALIGN 4 
+EternalVanity_Link: 
+WORD EternalVanityID 
 
 SpecRallyAmount_Link: 
 WORD 2 

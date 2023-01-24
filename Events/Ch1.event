@@ -41,6 +41,7 @@ END_MAIN
 
 
 LocationBasedEvents: // Probably cannot use these 
+House(0, HealHp, 2,2) 
 /*
 Vendor(ShopItems,2,7)
 Armory(ArmoryItems,10,26)
@@ -49,6 +50,11 @@ House(0,HouseEvent,6,24)
 Seize(10,2)
 */
 END_MAIN
+
+HealHp: 
+UseVulnerary((-1), 10)
+NoFade 
+ENDA 
 
 MiscBasedEvents:
 CauseGameOverIfLordDies
@@ -91,19 +97,19 @@ UNIT
 EnemyUnits: 
 UNIT Breguet Fighter 0x1 Level(5,Enemy,True)   [3,2] 0b 0x0 0x1 REDA3R2 [IronAxe] [0x0]
 //UNIT Breguet Fighter 0x1 Level(5,Enemy,True)   [14,8] 0b 0x0 0x1 REDA14R8 [IronAxe] [0x0]
-UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,3] 0b 0x0 0x1 REDA3R3 [IronAxe] [0x0]
-UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
-UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
-UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
-UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
-UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
-UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
-UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
-UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
-UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
-UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
-UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
-UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
+//UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,3] 0b 0x0 0x1 REDA3R3 [IronAxe] [0x0]
+//UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
+//UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
+//UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
+//UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
+//UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
+//UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
+//UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
+//UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
+//UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
+//UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
+//UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
+//UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe] [0x0]
 UNIT 
 
 PrepUnits: 

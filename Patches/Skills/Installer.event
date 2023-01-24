@@ -1,3 +1,71 @@
+#include "Extensions/ProcDefinitions.txt"
+
+#include "lyn.event/ShrewdPotential.lyn.event" 
+#include "lyn.event/Guts.lyn.event" 
+
+ALIGN 4 
+StrongConAmount_Link: 
+WORD 5 
+GutsAmount_Link:
+WORD 5 
+StrongConID_Link: 
+WORD StrongConstitutionID 
+GutsID_Link:
+WORD GutsID 
+ShrewdPotentialID_Link: 
+WORD ShrewdPotentialID 
+ShrewdPotentialAmount_Link: 
+WORD 1
+
+PUSH 
+ORG $2F840 
+jumpToHack(ShrewdPotential) 
+
+ORG $3971C
+callHackNew(EndOfPhaseCalcLoop_Hook) // will need to change this hook 
+// it gets ran twice at the end of enemy phase 
+// also heal like a vulnerary does not update hp at the end of the animation like it does in events 
+POP 
+
+#include "lyn.event/EndOfPhaseCalcLoop.lyn.event" 
+#include "UseItemEffect/Installer.event" 
+
+
+
+
+
+ALIGN 4 
+EndOfPhaseCalcLoop: 
+POIN HoardersBane 
+POIN HoardersBane2
+POIN HoardersBane3 
+POIN BreakHere 
+WORD 0 
+
+
+ALIGN 4
+EndOfPhaseCalcLoop_Proc:
+PROC_YIELD // Buffer.
+PROC_SET_NAME(EndOfPhaseCalcLoopName)
+//PROC_SLEEP(0)
+PROC_CALL_ROUTINE(EndOfPhaseCalcLoop_Init)
+PROC_LOOP_ROUTINE(EndOfPhaseCalcLoop_Main)
+
+PROC_END
+
+ALIGN 4
+EndOfPhaseCalcLoop_SomeFunctionProc:
+PROC_YIELD // Buffer.
+PROC_SET_NAME(EndOfPhaseCalcLoopName)
+PROC_SLEEP(0)
+PROC_LOOP_ROUTINE(EndOfPhaseCalcLoop_SomeFunction)
+PROC_END
+
+
+EndOfPhaseCalcLoopName:
+String("EndOfPhaseCalcLoop") ; BYTE 0
+ALIGN 4
+
 
 
 #include "lyn.event/HoneSkills.lyn.event" 
