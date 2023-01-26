@@ -166,9 +166,10 @@ b	Loop
 
 
 End:
+mov r0, #0 @ no blocking proc / animation 
 pop	{r4-r6}
-pop	{r0}
-bx	r0
+pop	{r1}
+bx	r1
 
 .align
 .ltorg

@@ -1,3 +1,4 @@
+
 //#include "CannotDie/Installer.event"
 #include "GlobalStatAdjustments/Installer.event" 
 #include "ExtendWeaponDescBox/Installer.event" 
@@ -20,7 +21,7 @@
 #include "TrapRework/TrapRework.event" 
 
 
-//#include "RelicSelect/Installer.event" 
+#include "RelicSelect/Installer.event" 
 
 
 

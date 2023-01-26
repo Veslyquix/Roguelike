@@ -1,5 +1,12 @@
 @Originally at 188A8
 .thumb
+.macro blh to, reg=r3
+  ldr \reg, =\to
+  mov lr, \reg
+  .short 0xf800
+.endm
+.equ ChapterData, 0x202BCF0 
+.equ GetUnit, 0x8019430
 .type ProcessPureWater, %function 
 .global ProcessPureWater
 ProcessPureWater: 
@@ -32,8 +39,42 @@ bx r3
 .global ProcessDebuffs
 .type ProcessDebuffs, %function 
 ProcessDebuffs: 
-push {r4-r6, lr} 
+push {r4-r7, lr} 
+mov r4, r8 
+push {r4} 
+ldr r0, =ChapterData 
+ldrb r7, [r0, #0xF] @ phase / starting deployment ID 
+mov r3, #0x40 
+add r3, r7 @ ending point 
+mov r8, r3 
+cmp r7, #0 
+beq UnitLoop 
+sub r7, #1 @ players start at 1, npcs 0x40, enemies 0x80 
+UnitLoop: 
+add r7, #1 
+cmp r7, r8  
+blt Continue 
+b DoneProcessDebuffs 
+Continue: 
+mov r0, r7 
+blh GetUnit 
 mov r4, r0 @ unit 
+
+ldr r0, [r0] 
+cmp r0, #0 
+beq UnitLoop 
+ldrb r1, [r0, #4] @ unit id 
+cmp r1, #0 
+beq UnitLoop 
+ldr r0, [r5, #0x0C] 
+ldr r1, =0x1000C @ escaped, undeployed, dead 
+tst r0, r1 
+bne UnitLoop 
+@bl IsUnitOnField @(Unit* unit)
+@cmp r0, #0 
+@beq UnitLoop 
+
+
 bl GetUnitDebuffEntry
 mov r0, r4 @ unit 
 ldr r1, =EternalVanity_Link 
@@ -177,9 +218,14 @@ ldr r2, =RalliesNumberOfBits_Link
 ldr r2, [r2] 
 bl PackData
 
-pop {r4-r6}
-pop {r3} 
-bx r3
+b UnitLoop
+DoneProcessDebuffs:
+pop {r4} 
+mov r8, r4 
+mov r0, #0 @ no blocking proc / animation 
+pop {r4-r7}
+pop {r1} 
+bx r1
 .ltorg 
 
 .global GetNewTemporaryStatValue

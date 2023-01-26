@@ -3,7 +3,7 @@
 
 
 SET_FUNC Font_ResetAllocation, (0x08003D20+1) 
-
+SET_FUNC Clean, (0x800F0C8+1) 
 
 //@ Vanilla function declarations:
 SET_FUNC PushToSecondaryOAM, 0x08002BB9

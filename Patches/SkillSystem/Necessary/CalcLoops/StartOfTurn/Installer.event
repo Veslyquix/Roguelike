@@ -1,15 +1,48 @@
 PUSH
-ORG $15428
-jumpToHack(StartOfTurn_CalcLoopHook) //unset it when the turn starts again
+ORG $59A290 // MapMain Phase Switch GFX 
+PROC_NEW_CHILD_BLOCKING(StartOfTurnCalcLoop_Proc) 
 POP
 
 ALIGN 4 
-StartOfTurn_List: 
-POIN ProcessDebuffs ArmorMarch_StartOfTurn VigorDanceReset StartOfTurnUnitLoop
+StartOfTurnCalcLoop: 
+// End of turn effects first 
+POIN HoardersBane // Effects that use an animation (eg. are blocking procs) return true 
+POIN HoardersBane2 // also heal like a vulnerary does not update hp at the end of the animation like it does in events 
+POIN HoardersBane3 
+POIN BreakHere 
+POIN ProcessDebuffs ArmorMarch_StartOfTurn VigorDanceReset // Standalone things that loop through all units 
+POIN StartOfTurnUnitLoop // Skills that have been optimized to have their effects ran from a table 
 WORD 0 
 
-// this occurs *before* the code that processes debuffs, so that will have to be moved here 
-// atm this means if you buff a unit by say +7 str, it depletes immediately after 
+
+ALIGN 4
+StartOfTurnCalcLoop_Proc:
+PROC_YIELD // Buffer.
+PROC_SET_NAME(StartOfTurnCalcLoopName)
+//PROC_SLEEP(0)
+PROC_CALL_ROUTINE(StartOfTurnCalcLoop_Init)
+PROC_LOOP_ROUTINE(StartOfTurnCalcLoop_Main) // Skipped over if there are no units that will act for that allegiance 
+PROC_NEW_CHILD_BLOCKING(0x859AF80) // Phase Switch GFX 
+
+PROC_END
+
+ALIGN 4
+StartOfTurnCalcLoop_SomeFunctionProc:
+PROC_YIELD // Buffer.
+PROC_SET_NAME(StartOfTurnCalcLoopName)
+PROC_SLEEP(0)
+PROC_LOOP_ROUTINE(StartOfTurnCalcLoop_SomeFunction)
+PROC_END
+
+
+StartOfTurnCalcLoopName:
+String("StartOfTurnCalcLoop") ; BYTE 0
+ALIGN 4
+
+ALIGN 4 
+StartOfTurn_List: 
+POIN ArmorMarch_StartOfTurn VigorDanceReset StartOfTurnUnitLoop
+WORD 0 
 
 // Below is optional but more efficient 
 // Executes a function where the unit has already been deemed to be on the field with the relevant skill 
