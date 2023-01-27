@@ -90,7 +90,7 @@ RallyCommandEffect:
 
 	mov r1, r0 @ arg r1 = user argument
 
-	adr r0, RallyCommandEffect.apply
+	adr r0, RallyCommandEffect_apply
 	add r0, #1 @ arg r0 = function
 
 	bl ForEachRalliedUnit
@@ -106,10 +106,36 @@ RallyCommandEffect:
 
 	pop {r1}
 	bx r1
+	
+.ltorg 
+.global RallyCommandEffect_NoneActive
+.type RallyCommandEffect_NoneActive, %function 
+RallyCommandEffect_NoneActive:
+	push {r4, lr}
+	mov r2, r0 @ unit 
+	@ r1 = rally bits 
+
+	adr r0, RallyCommandEffect_apply
+	add r0, #1 @ arg r0 = function
+
+	bl ForEachRalliedUnit_NoneActive
+
+	ldr r3, =StartRallyFx
+	bl  BXR3
+
+	@ldr  r0, =gActionData
+	@mov  r1, #1
+	@strb r1, [r0, #0x11]
+
+	mov r0, #0x17
+	pop {r4} 
+	pop {r1}
+	bx r1
 
 	.align
-
-RallyCommandEffect.apply:
+.global RallyCommandEffect_apply
+.type RallyCommandEffect_apply, %function 
+RallyCommandEffect_apply:
 	@ args: r0 = unit, r1 = rally bits
 
 	push {r4,lr}
@@ -237,6 +263,33 @@ RallyAuraCheck:
 
 	.pool
 	.align
+	
+RallyAuraCheck_NoneActive:
+	ldr r0, =GetUnitsInRange
+	mov ip, r0
+
+	mov r0, r2 					@ arg r0 = unit 
+	mov r1, #0                  @ arg r1= check type
+	mov r2, #RALLY_EFFECT_RANGE @ arg r2 = range
+
+	bx  ip @ jump (it will return to wherever this was called)
+
+	.pool
+	.align
+
+.global ForEachRalliedUnit_NoneActive
+.type ForEachRalliedUnit_NoneActive, %function 
+ForEachRalliedUnit_NoneActive:
+	@ Arguments: r0 = function (void(*)(struct Unit*, void*)), r1 = second argument to give to function
+	@ r2 = unit 
+	@ Returns:   nothing
+
+	push {r0-r1, r4, lr} @ note: [sp] = function, [sp+4] = second argument
+
+	bl RallyAuraCheck_NoneActive
+	cmp r0, #0 
+	beq ForEachRalliedUnit.end
+	b NextPart
 
 ForEachRalliedUnit:
 	@ Arguments: r0 = function (void(*)(struct Unit*, void*)), r1 = second argument to give to function
@@ -246,6 +299,7 @@ ForEachRalliedUnit:
 
 	bl RallyAuraCheck
 
+	NextPart: 
 	mov r4, r0
 
 ForEachRalliedUnit.lop:

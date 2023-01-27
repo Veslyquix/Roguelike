@@ -131,7 +131,7 @@ void GenerateMap(struct Map_Struct* dst)
 	// GmDataInit 0x80BC81C at BC884 calls SetRandState();
 	// 300534D
 	u16 saveRandState[3]; 
-	//GetRandState(saveRandState);
+	GetRandState(saveRandState); // commented this out by accident which was causing crits to always occur lol 
 	//int clock = GetGameClock(); 
 	//int t_start = gChapterData._u04;
 	//asm("mov r11, r11"); 

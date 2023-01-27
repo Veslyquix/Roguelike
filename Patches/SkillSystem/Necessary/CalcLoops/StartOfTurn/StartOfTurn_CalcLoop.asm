@@ -22,7 +22,7 @@
 .equ ChapterData, 0x202BCF0 
 .equ Delete6C, 0x8002D6C 
 .equ GetPhaseAbleUnitCount, 0x8024CEC 
-
+.equ NextRN_N, 0x8000C80 
 
 .global StartOfTurnCalcLoop_Init 
 .type StartOfTurnCalcLoop_Init, %function 
@@ -72,7 +72,6 @@ mov r1, #1
 str r1, [r0] @ skip loop 
 @b ExitThisProc 
 ContinueProc: 
-@mov r11, r11 
 
 ExitThisProc: 
 pop {r4} 
@@ -159,26 +158,64 @@ bx r0
 
 	.equ EnsureCameraOntoPosition,0x08015e0d
 	
-.global HoardersBane
-.type HoardersBane, %function 
-HoardersBane: 
+.global RallyChaos
+.type RallyChaos, %function 
+RallyChaos: 
 push {r4-r7, lr} 
 mov r4, r0 @ parent proc 
 
-mov r1, #25 @ X 
-mov r2, #0 @ Y 
-blh EnsureCameraOntoPosition
 
-mov r0, #1 @ has a child proc 
+ldr r3, =ChapterData 
+ldrb r0, [r3, #0xF] @ phase 
+mov r5, r0 @ starting unit deployment id 
+mov r6, #0x40 @ ending point 
+add r6, r5 @ only one allegiance 
+cmp r0, #0 
+beq RallyChaos_Loop 
+sub r5, #1 @ so we start at 0x40 / 0x80 while players start at 0x1 
+
+RallyChaos_Loop: 
+add r5, #1 
+cmp r5, r6 
+bge Break_RallyChaos 
+mov r0, r5 
+blh GetUnit 
+mov r7, r0 @ unit 
+bl IsUnitOnField 
+cmp r0, #0 
+beq RallyChaos_Loop 
+mov r0, r7 @ unit 
+ldr r1, =RallyChaosID_Link 
+ldr r1, [r1] 
+bl SkillTester 
+cmp r0, #0 
+beq RallyChaos_Loop 
+
+mov r0, #8 
+blh NextRN_N
+mov r1, #1 
+lsl r1, r0 @ some random rally bit to set  
+
+ldr r3, =0x03004E50 @ gActiveUnit 
+str r7, [r3] @ rally only works with an active unit stored here fsr 
+
+mov r0, r7
+bl RallyCommandEffect_NoneActive @ r0 = unit, r1 = rally bits 
+b Break_RallyChaos 
+b RallyChaos_Loop 
+
+Break_RallyChaos: 
+
+mov r0, #0 @ has no child proc 
 pop {r4-r7} 
 pop {r1} 
 bx r1
 .ltorg 
 
-.global HoardersBane2
-.type HoardersBane2, %function 
-HoardersBane2: 
-push {r4, lr} 
+.global HoardersBane
+.type HoardersBane, %function 
+HoardersBane: 
+push {r4-r5, lr} 
 mov r4, r0 @ parent proc 
 
 
@@ -186,6 +223,8 @@ mov r4, r0 @ parent proc
 
 mov r0, #2 
 blh  0x0800BC50   @GetUnitFromEventParam	{U}
+mov r5, r0 @ unit 
+
 ldrb r1, [r0, #0x0B] @ deployment byte 
 ldr r2, [r4, #0x34] @ end of what phase 
 mov r3, #0xC0 
@@ -207,12 +246,17 @@ mov r0, #2
 str r0, [r3, #4] 
 mov r0, #18 
 str r0, [r3, #4*6] @ slot6 HealValue 
-blh ASMC_HealLikeVulnerary
+@blh ASMC_HealLikeVulnerary
 
 mov r0, #2 
 blh  0x0800BC50   @GetUnitFromEventParam	{U}
 @mov r1, #23 
 @strb r1, [r0, #0x13] @ current hp 
+ldr r0, =0x03004E50
+str r5, [r0] 
+
+
+
 
 HoardersBane_True: 
 mov r0, #1 @ has a child proc 
@@ -221,7 +265,7 @@ HoardersBane_False:
 mov r0, #0 @ skipped this time 
 
 ExitHoardersBane: 
-pop {r4} 
+pop {r4-r5} 
 pop {r1} 
 bx r1
 .ltorg 
@@ -275,20 +319,9 @@ bge BreakLoop
 mov r0, r4 @ deployment id 
 blh GetUnit 
 mov r5, r0 @ unit 
-
-ldr r0, [r0] 
+bl IsUnitOnField @(Unit* unit)
 cmp r0, #0 
 beq UnitLoop 
-ldrb r1, [r0, #4] @ unit id 
-cmp r1, #0 
-beq UnitLoop 
-ldr r0, [r5, #0x0C] 
-ldr r1, =0x1000C @ escaped, undeployed, dead 
-tst r0, r1 
-bne UnitLoop 
-@bl IsUnitOnField @(Unit* unit)
-@cmp r0, #0 
-@beq UnitLoop 
 
 mov r0, r5 @ unit 
 ldr r1, =gAttackerSkillBuffer
@@ -325,6 +358,27 @@ pop {r1}
 bx r1 
 .ltorg 
 
+.global IsUnitOnField 
+.type IsUnitOnField, %function 
+IsUnitOnField: 
+ldr r1, [r0] 
+cmp r1, #0 
+beq RetFalse 
+ldrb r1, [r1, #4] @ unit id 
+cmp r1, #0 
+beq RetFalse
+ldr r1, [r0, #0x0C] 
+ldr r2, =0x1000C @ escaped, undeployed, dead 
+tst r1, r2 
+bne RetFalse
+RetTrue: 
+mov r0, #1 
+b Exit_IsUnitOnField 
+RetFalse: 
+mov r0, #0 
+Exit_IsUnitOnField: 
+bx lr 
+.ltorg 
 
 
 

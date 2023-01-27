@@ -138,7 +138,9 @@
 // Shrewd Potential: Stat boosters provide +1 more than usual. 
 #define ShrewdPotentialID 85 
 
-#define HoardersBaneID 79
+#define RallyChaosID 79
+
+#define HoardersBaneID 255
 // At the end of your turn, consume a vulnerary from the supply if below full health.
 	// Buff Skills \\ 
 

@@ -194,13 +194,19 @@ RallyFx_OnLoop.break:
 
 	.pool
 	.align
-
+.macro blh to, reg=r3
+  ldr \reg, =\to
+  mov lr, \reg
+  .short 0xf800
+.endm
 StartRallyFx:
+push {lr} 
 	ldr r3, =StartProc
 
 	ldr r0, =RallyFxProc @ arg r0 = proc scr
 	mov r1, #3           @ arg r1 = parent
-
+	bl BXR3 
+pop {r3} 
 BXR3:
 	bx r3
 
