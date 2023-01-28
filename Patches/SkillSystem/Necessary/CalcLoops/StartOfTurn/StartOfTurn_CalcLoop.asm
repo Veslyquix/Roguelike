@@ -200,7 +200,10 @@ ldr r3, =0x03004E50 @ gActiveUnit
 str r7, [r3] @ rally only works with an active unit stored here fsr 
 
 mov r0, r7
-bl RallyCommandEffect_NoneActive @ r0 = unit, r1 = rally bits 
+mov r11, r11 
+bl StartBuffFx
+
+@bl RallyCommandEffect_NoneActive @ r0 = unit, r1 = rally bits 
 b Break_RallyChaos 
 b RallyChaos_Loop 
 
