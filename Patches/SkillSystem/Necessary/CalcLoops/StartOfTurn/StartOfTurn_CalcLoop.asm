@@ -196,15 +196,15 @@ blh NextRN_N
 mov r1, #1 
 lsl r1, r0 @ some random rally bit to set  
 
-ldr r3, =0x03004E50 @ gActiveUnit 
-str r7, [r3] @ rally only works with an active unit stored here fsr 
+@ldr r3, =0x03004E50 @ gActiveUnit 
+@str r7, [r3] @ rally only works with an active unit stored here fsr 
 
 mov r0, r7
-mov r11, r11 
-bl StartBuffFx
+
+bl RallyCommandEffect_NoneActive
+@bl StartBuffFx
 
 @bl RallyCommandEffect_NoneActive @ r0 = unit, r1 = rally bits 
-b Break_RallyChaos 
 b RallyChaos_Loop 
 
 Break_RallyChaos: 

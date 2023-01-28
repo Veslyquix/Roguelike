@@ -59,6 +59,8 @@ RallyFx_OnInit:
 	@ add units to aura fx
 
 	ldr r3, =ForEachRalliedUnit
+	ldr r2, =gActiveUnit
+	ldr r2, [r2] @ arg r2 = active unit
 
 	ldr r0, =AddMapAuraFxUnit @ arg r0 = function
 	@ unused                  @ arg r1 = user argument
@@ -213,6 +215,7 @@ BXR3:
 
 .align 
 
+.global BuffFxProc 
 BuffFxProc:
 	.word 1, RallyFxProc.name
 
@@ -221,6 +224,7 @@ BuffFxProc:
 	.word 14, 0
 
 	.word 2, BuffFx_OnInit
+	.word 0xE, 0x12345678 // sleep 3 frames 
 	.word 4, RallyFx_OnEnd
 
 	.word 3, RallyFx_OnLoop
@@ -250,74 +254,6 @@ pop {r1}
 bx r1 
 
 
-.type GetBuffBits, %function 
-.global GetBuffBits
-GetBuffBits:
-mov r0, #1 @ some palette 
-bx lr 
-.ltorg 
-
-push {r4-r5, lr}
-@ given r0, = current unit 
-ldr r0, =CurrentUnit
-ldr r0, [r0] 
-@blh GetBuff 
-mov r4, r0 
-ldr r5, [r4] 
-mov r3, #28 @ Counter of what bits we're on  
-mov r2, #0 @ Counter 
-
-
-Loop:
-mov r0, r5 
-lsl r0, r3 
-lsr r0, #28 
-cmp r3, #0 
-ble ExitLoop 
-sub r3, #4 
-cmp r0, #0 
-beq Loop 
-add r2, #1 
-mov r1, r3 @ shift offset 
-b Loop 
-
-ExitLoop: 
-
-cmp r2, #1
-ble NoGenericPalette 
-mov r0, #9 @ Generic Palette 
-b Exit 
-NoGenericPalette: 
-
-@FEDCBA98 @ Empty Mag, Luck Res, Def Spd, Skl Str 
-lsr r1, #2 @ offset we want 
-mov r0, r1 
-
-cmp r0, #7
-blt Exit
-mov r0, #8 @ Mag is index 8 instead 6 
-
-@ldr r3, =0xFFFF0000 
-@and r3, r5 
-@ldr r2, =0x0000FFFF
-@and r2, r5 
-@
-@
-@
-@ldr r1, =0xF0F0F0F0 
-@ldr r0, =0x0F0F0F0F
-@ldr r0, =0xF00FF00F 
-@ldr r0, =0x0FF00FF0 
-
-
-Exit: 
-
-
-pop {r4-r5} 
-pop {r1}
-bx r1  
-
-	.align
 
 .equ ProcFind, 0x8002E9D
 .equ gProc_MoveUnit, 0x89A2C48
@@ -358,30 +294,36 @@ pop {r4}
 pop {r1}
 bx r1
 
-
+.global CallContinue_BuffFx
+.type CallContinue_BuffFx, %function 
+CallContinue_BuffFx:
+push {r4, lr} 
+mov r4, r0 @ proc 
+b Continue_BuffFx
 	.align
 .global BuffFx_OnInit
 	.type BuffFx_OnInit, function
 BuffFx_OnInit:
-	push {r4-r5, lr}
+	push {r4, lr}
 	@ Set [proc+2C] to 0
 	@ It will be our clock
 	mov r1, #0
 	str r1, [r0, #0x2C]
-	mov r5, r0 @ proc 
+	mov r4, r0 @ proc 
 
 
-	ldr r4, =GetBuffBits @ called later 
-	@ start map aura fx
 
 	ldr r3, =StartMapAuraFx
 	bl  BXR3
 
+Continue_BuffFx: 
 	@ add units to aura fx
 
-	ldr r3, =SelfBuff
+	ldr r3, =ForEachRalliedUnit_NoneActive
+	@ ldr r3, =SelfBuff 
 	ldr r0, =AddMapAuraFxUnit @ arg r0 = function
 	@ unused                  @ arg r1 = user argument
+	ldr r2, [r4, #0x30] @ unit 
 	bl BXR3
 
 	@ set aura fx thing speed
@@ -391,6 +333,8 @@ BuffFx_OnInit:
 	mov r0, #32 @ arg r0 = speed
 
 	bl BXR3
+	
+
 
 	ldr  r0, =gChapterData+0x41
 	ldrb r0, [r0]
@@ -407,11 +351,7 @@ BuffFx_OnInit:
 SkipSound:
 	@ TODO: use another palette for aura effect
 
-	ldr r0, [r5, #0x30] @ unit 
-
-	mov r3, r4 
-	bl BXR3 
-
+ldr r0, [r4, #0x34] @ bits 
 
 	mov r1, #0
 
@@ -449,7 +389,7 @@ SkipSound:
 
 	bl BXR3
 
-	pop {r4-r5} 
+	pop {r4} 
 	pop {r1}
 	bx r1
 

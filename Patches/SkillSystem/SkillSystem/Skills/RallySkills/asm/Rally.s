@@ -1,6 +1,10 @@
 
 	.thumb
-
+.macro blh to, reg=r3
+  ldr \reg, =\to
+  mov lr, \reg
+  .short 0xf800
+.endm
 	@ build using lyn
 	@ requires MapAuraFx functions to be visible
 
@@ -92,7 +96,8 @@ RallyCommandEffect:
 
 	adr r0, RallyCommandEffect_apply
 	add r0, #1 @ arg r0 = function
-
+	ldr r2, =gActiveUnit
+	ldr r2, [r2] @ arg r2 = active unit
 	bl ForEachRalliedUnit
 
 	ldr r3, =StartRallyFx
@@ -107,28 +112,41 @@ RallyCommandEffect:
 	pop {r1}
 	bx r1
 	
+.equ ProcFind, 0x8002E9C
 .ltorg 
 .global RallyCommandEffect_NoneActive
 .type RallyCommandEffect_NoneActive, %function 
 RallyCommandEffect_NoneActive:
-	push {r4, lr}
-	mov r2, r0 @ unit 
-	@ r1 = rally bits 
+	push {r4-r5, lr}
+	mov r4, r0 @ unit 
+	mov r5, r1 @ r1 = rally bits 
+
 
 	adr r0, RallyCommandEffect_apply
 	add r0, #1 @ arg r0 = function
-
+	mov r2, r4 @ unit 
 	bl ForEachRalliedUnit_NoneActive
 
-	ldr r3, =StartRallyFx
+	ldr r0, =BuffFxProc
+	blh ProcFind 
+	cmp r0, #0 
+	beq NewProc 
+	
+	str r4, [r0, #0x30] 
+	str r5, [r0, #0x34] 
+	bl CallContinue_BuffFx
+	
+	b ExitRallyCommandEffect_NoneActive
+	
+	NewProc: 
+	mov r0, r4 @ unit 
+	mov r1, r5 @ bits 
+	ldr r3, =StartBuffFx
 	bl  BXR3
 
-	@ldr  r0, =gActionData
-	@mov  r1, #1
-	@strb r1, [r0, #0x11]
-
+	ExitRallyCommandEffect_NoneActive: 
 	mov r0, #0x17
-	pop {r4} 
+	pop {r4-r5} 
 	pop {r1}
 	bx r1
 
@@ -284,8 +302,8 @@ ForEachRalliedUnit_NoneActive:
 	@ r2 = unit 
 	@ Returns:   nothing
 
-	push {r0-r1, r4, lr} @ note: [sp] = function, [sp+4] = second argument
-
+	push {r0-r1, r4-r5, lr} @ note: [sp] = function, [sp+4] = second argument
+	mov r5, r2 @ unit 
 	bl RallyAuraCheck_NoneActive
 	cmp r0, #0 
 	beq ForEachRalliedUnit.end
@@ -295,8 +313,8 @@ ForEachRalliedUnit:
 	@ Arguments: r0 = function (void(*)(struct Unit*, void*)), r1 = second argument to give to function
 	@ Returns:   nothing
 
-	push {r0-r1, r4, lr} @ note: [sp] = function, [sp+4] = second argument
-
+	push {r0-r1, r4-r5, lr} @ note: [sp] = function, [sp+4] = second argument
+	mov r5, r2 @ unit 
 	bl RallyAuraCheck
 
 	NextPart: 
@@ -316,10 +334,9 @@ ForEachRalliedUnit.lop:
 	@ implied @ ret r0 = unit
 
 	ldr r3, [sp]
-
 	@ implied        @ arg r0 = unit
+	@mov r0, r5 @ unit 
 	ldr r1, [sp, #4] @ arg r1 = extra data
-
 	bl BXR3
 
 	add r4, #1
@@ -327,7 +344,7 @@ ForEachRalliedUnit.lop:
 	b ForEachRalliedUnit.lop
 
 ForEachRalliedUnit.end:
-	pop {r1-r2, r4}
+	pop {r1-r2, r4-r5}
 
 	pop {r1}
 	bx r1
@@ -366,7 +383,8 @@ RallyPreviewFx_OnInit:
 
 	ldr r0, =AddMapAuraFxUnit @ arg r0 = function
 	@ unused                  @ arg r1 = user argument
-
+	ldr r2, =gActiveUnit
+	ldr r2, [r2] @ arg r2 = active unit
 	bl ForEachRalliedUnit
 
 	@ set map aura fx palette
