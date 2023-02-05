@@ -100,12 +100,11 @@ void CreatorIdle(Struct_SelectRelicProc* proc)
 
 const struct ProcInstruction ProcInstruction_SelectRelic[] =
 {
-	
     PROC_CALL_ROUTINE(LockGameLogic),
 	//PROC_CALL_ROUTINE(LockGameGraphicsLogic),
 	PROC_CALL_ROUTINE(MU_AllDisable), 
 	PROC_YIELD,
-	PROC_CALL_ROUTINE(0x8013DA5) // Fade out black 
+	//PROC_CALL_ROUTINE(0x8013DA5) // Fade out black 
 	
 	PROC_LABEL(2),
 	PROC_CALL_ROUTINE(SelectRelic_StartMenu),
@@ -170,8 +169,6 @@ static const struct MenuDefinition MenuDef_ConfirmCharacter =
 extern int Clean(Proc* proc); 
 void SelectRelic_ASMC(Proc* proc) // ASMC 
 {
-	Clean(proc); 
-	//gLCDIOBuffer->dispControl = gLCDIOBuffer->dispControl | 0xFF<<8; 
 	Struct_SelectRelicProc* charProc = ProcStartBlocking(ProcInstruction_SelectRelic, proc);
 }
 

@@ -1,4 +1,4 @@
-
+#include "ConversationViewer/Installer.event" 
 #include "RNGRandomizer/Installer.event" 
 //#include "CannotDie/Installer.event"
 #include "GlobalStatAdjustments/Installer.event" 
