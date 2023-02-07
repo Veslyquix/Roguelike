@@ -22,7 +22,7 @@ POIN HoardersBane // also heal like a vulnerary does not update hp at the end of
 POIN BreakHere 
 POIN ProcessDebuffs ArmorMarch_StartOfTurn VigorDanceReset // Standalone things that loop through all units 
 POIN StartOfTurnUnitLoop // Skills that have been optimized to have their effects ran from a table 
-POIN RallyChaos // 
+POIN CallRallyChaosProc // 
 WORD 0 
 
 
@@ -59,15 +59,32 @@ PROC_SLEEP(0)
 PROC_LOOP_ROUTINE(StartOfTurnCalcLoop_SomeFunction)
 PROC_END
 
+ALIGN 4
+RallyChaosProc: // Block this proc if you'd like to show animations 
+PROC_YIELD // Buffer.
+PROC_SET_NAME(RallyChaosName)
+PROC_SLEEP(0)
+PROC_CALL_ROUTINE(RallyChaosInit) 
+PROC_LABEL(0)
+PROC_CALL_ROUTINE(RallyChaosFunc)
+PROC_LOOP_ROUTINE(RallyChaosIdle)
+PROC_LABEL(1) // Destructor 
+PROC_END
 
 StartOfTurnCalcLoopName:
 String("StartOfTurnCalcLoop") ; BYTE 0
+ALIGN 4
+
+RallyChaosName:
+String("RallyChaos") ; BYTE 0
 ALIGN 4
 
 ALIGN 4 
 StartOfTurn_List: 
 POIN ArmorMarch_StartOfTurn VigorDanceReset StartOfTurnUnitLoop
 WORD 0 
+
+
 
 // Below is optional but more efficient 
 // Executes a function where the unit has already been deemed to be on the field with the relevant skill 
@@ -112,6 +129,7 @@ StartOfTurnFunctionEntry(SturdyInitID	, SturdyInit)
 StartOfTurnFunctionEntry(CalmInitID		, CalmInit	) 
 StartOfTurnFunctionEntry(NimbleInitID	, NimbleInit) 
 StartOfTurnFunctionEntry(SpectrumInitID	, SpectrumInit) 
+//StartOfTurnFunctionEntry(PlotArmorID	, PlotArmor) 
 
 
 #include "StartOfTurn_CalcLoop.lyn.event" 

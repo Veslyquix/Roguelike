@@ -134,7 +134,8 @@ RallyCommandEffect_NoneActive:
 	
 	str r4, [r0, #0x30] 
 	str r5, [r0, #0x34] 
-	bl CallContinue_BuffFx
+	@bl CallContinue_BuffFx
+	bl BuffFx_OnInit 
 	
 	b ExitRallyCommandEffect_NoneActive
 	

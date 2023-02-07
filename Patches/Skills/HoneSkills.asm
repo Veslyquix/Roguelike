@@ -13,6 +13,15 @@
 @ Rouse _ : At the start of your turn, gain up to +4 _ if not adjacent to an ally.
 @ _ Init: Begin the chapter with +7 _. 
 
+
+@ Cannot die. When they would die, they instead are debuffed by -5 in all stats. (Stackable) 
+@.global PlotArmor
+@.type PlotArmor, %function 
+@PlotArmor: 
+@push {r4-r5, lr} 
+
+
+
 .global CleverInit 
 .type CleverInit, %function 
 CleverInit: 

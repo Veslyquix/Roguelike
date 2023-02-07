@@ -1,3 +1,5 @@
+
+#include "ReplaceWepsByDifficulty/Installer.event" 
 #include "ConversationViewer/Installer.event" 
 #include "RNGRandomizer/Installer.event" 
 //#include "CannotDie/Installer.event"

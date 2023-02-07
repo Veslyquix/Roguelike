@@ -2,7 +2,7 @@ INLINE CharLevelUpSkillTable,Skill List Address
 None,0
 Eirika,SethSkillList|IsPointer
 Seth,SethSkillList|IsPointer
-Gilliam,0
+Gilliam,SethSkillList|IsPointer
 Franz,0
 Moulder,0
 Vanessa,0

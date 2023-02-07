@@ -44,14 +44,8 @@ ORG FreeSpaceBLRange //defined in custom definitions
   Unset_Attack_Flag:
   #incbin "SkillSystem/Internals/unset_attack_flag.dmp"
 
-  #ifdef USE_STRMAG_SPLIT
-    
-    #ifndef USE_SAVE_EXPANSION
-	  #define USE_SAVE_EXPANSION // Force use of EMS with Str/Mag Split
-	#endif // USE_SAVE_EXPANSION
-	
+  #ifdef USE_STRMAG_SPLIT	
 	#include "ExternalHacks/StrMagSplit/BLRange.event"
-  
   #endif // USE_STRMAG_SPLIT
 	
 #undef inBLRange
@@ -88,9 +82,7 @@ POP
   
   // Strength/Magic Split
   #ifdef USE_STRMAG_SPLIT
-  
 	#include "ExternalHacks/StrMagSplit/_MasterAsmInstaller.event"
-	
   #endif // USE_STRMAG_SPLIT
   
   //Modular EXP
@@ -103,7 +95,7 @@ POP
   #include "ExternalHacks/EscapeArrive/EscapeArrive.event"
   
   //Debuffs
-  #include "Necessary/SuspendDebuffs/Debuffs.event"
+  #include "Necessary/Debuffs/Debuffs.event"
 
   //Menu Semitransparency
   #include "QualityOfLife/SemitransparencyChanges.event"
@@ -189,27 +181,5 @@ POP
   
   #include "Necessary/CalcLoops/CalcLoops.event"
 
-  #ifdef STAIRS_ASM
-    #ifndef USE_SAVE_EXPANSION
-	  #define USE_SAVE_EXPANSION // Force use of EMS with Stairs (for saving the stair debuff byte in suspend).
-	#endif // USE_SAVE_EXPANSION
-  #endif // STAIRS_ASM
-  
-  // Save/Suspend Expansion
-  #ifdef USE_SAVE_EXPANSION
 
-    // Use new EMS-based expansion
-
-    MESSAGE "Using EMS Save/Suspend Expansion"
-
-    #include "Necessary/ExpandedModularSave/ExModularSave.event"
-
-  #else // USE_SAVE_EXPANSION
-
-    // Use legacy suspend expansion (for compatibility)
-
-    MESSAGE "Using Legacy Suspend Expansion"
-
-    #include "Necessary/SuspendDebuffs/SuspendExpansion.event"
-
-  #endif // USE_SAVE_EXPANSION
+  #include "Necessary/ExpandedModularSave/ExModularSave.event"

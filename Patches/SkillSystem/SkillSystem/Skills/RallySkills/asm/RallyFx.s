@@ -224,7 +224,7 @@ BuffFxProc:
 	.word 14, 0
 
 	.word 2, BuffFx_OnInit
-	.word 0xE, 0x12345678 // sleep 3 frames 
+	@.short 0xE, 0x33, 0,0 // sleep 3 frames 
 	.word 4, RallyFx_OnEnd
 
 	.word 3, RallyFx_OnLoop

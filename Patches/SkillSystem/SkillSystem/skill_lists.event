@@ -2,6 +2,7 @@
 ALIGN 4 
 SethSkillList: 
 //BYTE 21 1 
+BYTE 1 RallyChaosID 
 BYTE 21 RallyChaosID 
 //BYTE 21 RallyMagID 
 BYTE 21 StrOathID 
