@@ -40,20 +40,27 @@ struct MapAuraFxUnitProc
 static void MapAuraFx_Unit_OnInit(struct MapAuraFxUnitProc* proc);
 static void MapAuraFx_Unit_OnLoop(struct MapAuraFxUnitProc* proc);
 static void MapAuraFx_Unit_OnEnd(struct MapAuraFxUnitProc* proc);
+static void MapAuraFx_EnsureCameraOntoPosition(struct MapAuraFxUnitProc* proc);
 
 static const struct ProcInstruction sProc_MapAuraFx_Unit[] = {
 	PROC_SET_NAME("Map Aura Fx Unit"),
 
 	PROC_SLEEP(0),
-
+	//PROC_CALL_ROUTINE(MapAuraFx_EnsureCameraOntoPosition), 
+//PROC_SLEEP(15),
 	PROC_CALL_ROUTINE(MapAuraFx_Unit_OnInit),
 	PROC_SET_DESTRUCTOR(MapAuraFx_Unit_OnEnd),
-
+	
 	PROC_LOOP_ROUTINE(MapAuraFx_Unit_OnLoop),
 
 	PROC_END
 };
 
+void MapAuraFx_EnsureCameraOntoPosition(struct MapAuraFxUnitProc* proc)
+{
+	EnsureCameraOntoPosition(proc, proc->pUnit->xPos, proc->pUnit->yPos);
+
+} 
 static void UnpackGraphics(void)
 {
 	static const void* const gfx = (const void* const) (0x08A032AC);

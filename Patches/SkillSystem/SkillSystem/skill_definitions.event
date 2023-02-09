@@ -136,7 +136,7 @@
 //Strong Constitution: +5 Def/Res while under any status condition. (Includes dancer rings.) 
 #define StrongConstitutionID 255
 // Shrewd Potential: Stat boosters provide +1 more than usual. 
-#define ShrewdPotentialID 85 
+#define ShrewdPotentialID 255 
 
 #define RallyChaosID 79
 
@@ -193,7 +193,7 @@
 
 // _ Initiative: Begin the chapter with +7 __. 
 // Author: Vesly 
-#define CleverInitID 255 // Mag
+#define CleverInitID 83 // Mag
 #define StrongInitID 255 // Str 
 #define DeftInitID 255 // Skl 
 #define QuickInitID 255 // Spd 
@@ -201,7 +201,7 @@
 #define SturdyInitID 255 // Def 
 #define CalmInitID 255 // Res 
 #define NimbleInitID 255 // Mov 
-#define SpectrumInitID 83 // All stats  
+#define SpectrumInitID 85 // All stats  
 
 
 

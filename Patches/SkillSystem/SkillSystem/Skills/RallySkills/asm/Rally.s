@@ -125,6 +125,7 @@ RallyCommandEffect_NoneActive:
 	adr r0, RallyCommandEffect_apply
 	add r0, #1 @ arg r0 = function
 	mov r2, r4 @ unit 
+	mov r1, #RALLY_EFFECT_RANGE
 	bl ForEachRalliedUnit_NoneActive
 
 	ldr r0, =BuffFxProc
@@ -142,6 +143,7 @@ RallyCommandEffect_NoneActive:
 	NewProc: 
 	mov r0, r4 @ unit 
 	mov r1, r5 @ bits 
+	mov r2, #RALLY_EFFECT_RANGE 
 	ldr r3, =StartBuffFx
 	bl  BXR3
 
@@ -157,19 +159,25 @@ RallyCommandEffect_NoneActive:
 RallyCommandEffect_apply:
 	@ args: r0 = unit, r1 = rally bits
 
-	push {r4,lr}
+	push {r4-r5,lr}
 	mov r4,r1
 	@ r0 = unit struct 
 	bl GetUnitDebuffEntry
-
+	mov r5, r0 @ debuff entry 
 	ldr r1, =RalliesOffset_Link
 	ldr r1, [r1] 
 	ldr r2, =RalliesNumberOfBits_Link
 	ldr r2, [r2] 
-	mov r3, r4 @ data to store 
+	bl UnpackData 
+	mov r3, r0 @ data 
+	mov r0, r5 @ debuff entry 
+	ldr r1, =RalliesOffset_Link
+	ldr r1, [r1] 
+	ldr r2, =RalliesNumberOfBits_Link
+	ldr r2, [r2] 
+	orr r3, r4 @ data to store 
 	bl PackData 
-		
-	pop {r4}
+	pop {r4-r5}
 	pop {r0}
 	bx r0
 
@@ -288,8 +296,9 @@ RallyAuraCheck_NoneActive:
 	mov ip, r0
 
 	mov r0, r2 					@ arg r0 = unit 
+	mov r2, r1 					@ arg r2 = range
 	mov r1, #0                  @ arg r1= check type
-	mov r2, #RALLY_EFFECT_RANGE @ arg r2 = range
+
 
 	bx  ip @ jump (it will return to wherever this was called)
 
@@ -300,7 +309,7 @@ RallyAuraCheck_NoneActive:
 .type ForEachRalliedUnit_NoneActive, %function 
 ForEachRalliedUnit_NoneActive:
 	@ Arguments: r0 = function (void(*)(struct Unit*, void*)), r1 = second argument to give to function
-	@ r2 = unit 
+	@ r2 = unit, r1 = rally effect range 
 	@ Returns:   nothing
 
 	push {r0-r1, r4-r5, lr} @ note: [sp] = function, [sp+4] = second argument

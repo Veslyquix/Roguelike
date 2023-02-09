@@ -358,22 +358,98 @@ bx r1
 .ltorg 
 
 
+.type CallBuffAnimationSkillLoop, %function 
+.global CallBuffAnimationSkillLoop
+CallBuffAnimationSkillLoop: 
+push {lr} 
+mov r1, r0 @ to block 
+ldr r0, =BuffAnimationSkillProc
+blh ProcStartBlocking 
+mov r0, #1 @ has blocking proc 
+pop {r1} 
+bx r1 
+.ltorg 
 
 
+.global BuffAnimationIdle
+.type BuffAnimationIdle, %function 
+BuffAnimationIdle: 
+push {r4, lr} 
+mov r4, r0 @ parent proc 
+ldr r0, [r4, #0x30] 
+cmp r0, #0 
+bne DestructBuffAnimation 
+bl FindMapAuraProc
+cmp r0, #0 
+bne ContinueIdleBuffAnimation 
+mov r0, r4 @ proc 
+mov r1, #0 @ wait for rally anim 
+blh ProcGoto 
+@ProcGoto((Proc*)proc,1);
+b ContinueIdleBuffAnimation 
+DestructBuffAnimation: 
+mov r0, r4 @ proc 
+mov r1, #1 @ label 
+blh ProcGoto 
 
-.type StartOfTurnUnitLoop, %function 
-.global StartOfTurnUnitLoop 
-StartOfTurnUnitLoop: 
+ContinueIdleBuffAnimation:
+pop {r4}  
+pop {r0} 
+bx r0 
+.ltorg 
+
+.global BuffAnimationSkillInit
+.type BuffAnimationSkillInit, %function 
+BuffAnimationSkillInit: 
+mov r1, #0 
+str r1, [r0, #0x2C] @ unit deployment byte & mid-loop counter 
+str r1, [r0, #0x30] @ destructor = false 
+str r1, [r0, #0x34] @ skill buffer 
+bx lr 
+.ltorg 
+
+.type Buff_EnsureCamera, %function 
+.global Buff_EnsureCamera 
+Buff_EnsureCamera: 
+push {r4, lr} 
+mov r4, r0 @ proc 
+add r4, #0x2c 
+ldrb r0, [r4] 
+blh GetUnit 
+ldrb r1, [r0, #0x10] @ xx 
+ldrb r2, [r0, #0x11] @ yy 
+mov r0, #0 
+@mov r0, r4 @ proc 
+blh EnsureCameraOntoPosition 
+mov r0, #0 
+pop {r4} 
+pop {r1} 
+bx r1 
+.ltorg 
+
+.type BuffAnimationSkillLoop, %function 
+.global BuffAnimationSkillLoop
+BuffAnimationSkillLoop: 
 push {r4-r7, lr} 
+mov r4, r0 @ proc 
+add r4, #0x2C 
+ldrb r7, [r4, #1] @ buffer ? 
+cmp r7, #0 
+beq UnitLoop 
+ldr r6, [r4, #8] @ buffer itself 
+ldrb r0, [r4] 
+blh GetUnit 
+mov r5, r0 @ unit 
+b BufferLoop @ we just came out of pausing for some animation 
 @ loop through units 
 @ check for relevant skill(s) 
 @ run a function for the skill 
-mov r4, #0 
 UnitLoop: 
-add r4, #1 
-cmp r4, #0xC0 
+ldrb r0, [r4] 
+add r0, #1 
+cmp r0, #0xC0 
 bge BreakLoop 
-mov r0, r4 @ deployment id 
+strb r0, [r4] @ deployment id 
 blh GetUnit 
 mov r5, r0 @ unit 
 bl IsUnitOnField @(Unit* unit)
@@ -384,35 +460,46 @@ mov r0, r5 @ unit
 ldr r1, =gAttackerSkillBuffer
 bl MakeSkillBuffer @(Unit* unit, SkillBuffer* buffer)
 mov r6, r0 @ skill buffer 
+str r6, [r4, #8] @ buffer 
 @ possibly need to remove duplicate skills here 
 @ /*00*/  u8 lastUnitChecked;
 @ /*01*/  u8 skills[11];
-mov r7, #0 
 BufferLoop: 
 add r7, #1 
 cmp r7, #BufferSize @ max size 
-bgt UnitLoop 
+bgt GotoUnitLoop 
 ldrb r0, [r6, r7] 
 cmp r0, #0 @ should not have any gaps 
-beq UnitLoop 
+beq GotoUnitLoop 
 ldr r3, =StartOfTurn_SkillTable
 lsl r0, #2 @ 4 bytes per POIN 
 add r3, r0 
 ldr r0, [r3] @ specific entry 
 cmp r0, #0 
 beq BufferLoop @ do nothing if not a function 
+strb r7, [r4, #1] @ we're in the buffer loop atm 
+
 mov lr, r0 
 mov r0, r5 @ unit 
 .short 0xF800 @ execute the function 
-b BufferLoop 
+
+@ need to pause here and resume after animation 
+b ExitAnimationSkillLoop 
+
+GotoUnitLoop: 
+mov r7, #0 
+strb r7, [r4, #1] @ not in buffer loop atm 
+b UnitLoop 
 
 
 BreakLoop: 
+mov r0, #1 @ break loop 
+str r0, [r4, #4] @ +0x30 as destructor 
 
-mov r0, #0 @ no blocking proc / animation 
+ExitAnimationSkillLoop:
 pop {r4-r7} 
-pop {r1} 
-bx r1 
+pop {r0} 
+bx r0 
 .ltorg 
 
 .global IsUnitOnField 

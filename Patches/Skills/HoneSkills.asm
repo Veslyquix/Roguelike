@@ -22,11 +22,29 @@
 
 
 
+.equ StrAnim, 0x01 
+.equ SklAnim, 0x02 
+.equ SpdAnim, 0x04 
+.equ DefAnim, 0x08 
+.equ ResAnim, 0x10 
+.equ LukAnim, 0x20 
+.equ MovAnim, 0x40 
+.equ SpecAnim, 0x80 
+.equ MagAnim, 0x1
+
+
 .global CleverInit 
 .type CleverInit, %function 
 CleverInit: 
 push {lr} 
 @ given r0 = unit 
+push {r0} 
+@ r0 = unit 
+mov r1, #MagAnim @ bits 
+lsl r1, #8 
+mov r2, #0 @ range (self) 
+bl StartBuffFx
+pop {r0} 
 ldr r1, =DebuffStatBitOffset_Mag @ bit offset 
 ldr r1, [r1] 
 ldr r2, =CleverInitAmount_Link
@@ -41,6 +59,12 @@ bx r0
 StrongInit: 
 push {lr} 
 @ given r0 = unit 
+push {r0} 
+@ r0 = unit 
+mov r1, #StrAnim @ bits 
+mov r2, #0 @ range (self) 
+bl StartBuffFx
+pop {r0} 
 ldr r1, =DebuffStatBitOffset_Str @ bit offset 
 ldr r1, [r1] 
 ldr r2, =StrongInitAmount_Link
@@ -55,6 +79,12 @@ bx r0
 DeftInit: 
 push {lr} 
 @ given r0 = unit 
+push {r0} 
+@ r0 = unit 
+mov r1, #SklAnim @ bits 
+mov r2, #0 @ range (self) 
+bl StartBuffFx
+pop {r0} 
 ldr r1, =DebuffStatBitOffset_Skl @ bit offset 
 ldr r1, [r1] 
 ldr r2, =DeftInitAmount_Link
@@ -69,6 +99,12 @@ bx r0
 QuickInit: 
 push {lr} 
 @ given r0 = unit 
+push {r0} 
+@ r0 = unit 
+mov r1, #SpdAnim @ bits 
+mov r2, #0 @ range (self) 
+bl StartBuffFx
+pop {r0} 
 ldr r1, =DebuffStatBitOffset_Spd @ bit offset 
 ldr r1, [r1] 
 ldr r2, =QuickInitAmount_Link
@@ -83,6 +119,12 @@ bx r0
 LuckyInit: 
 push {lr} 
 @ given r0 = unit 
+push {r0} 
+@ r0 = unit 
+mov r1, #LukAnim @ bits 
+mov r2, #0 @ range (self) 
+bl StartBuffFx
+pop {r0} 
 ldr r1, =DebuffStatBitOffset_Luk @ bit offset 
 ldr r1, [r1] 
 ldr r2, =LuckyInitAmount_Link
@@ -97,6 +139,12 @@ bx r0
 SturdyInit: 
 push {lr} 
 @ given r0 = unit 
+push {r0} 
+@ r0 = unit 
+mov r1, #DefAnim @ bits 
+mov r2, #0 @ range (self) 
+bl StartBuffFx
+pop {r0} 
 ldr r1, =DebuffStatBitOffset_Def @ bit offset 
 ldr r1, [r1] 
 ldr r2, =SturdyInitAmount_Link
@@ -113,6 +161,12 @@ bx r0
 CalmInit: 
 push {lr} 
 @ given r0 = unit 
+push {r0} 
+@ r0 = unit 
+mov r1, #ResAnim @ bits 
+mov r2, #0 @ range (self) 
+bl StartBuffFx
+pop {r0} 
 ldr r1, =DebuffStatBitOffset_Res @ bit offset 
 ldr r1, [r1] 
 ldr r2, =CalmInitAmount_Link
@@ -127,6 +181,12 @@ bx r0
 NimbleInit: 
 push {lr} 
 @ given r0 = unit 
+push {r0} 
+@ r0 = unit 
+mov r1, #MovAnim @ bits 
+mov r2, #0 @ range (self) 
+bl StartBuffFx
+pop {r0} 
 ldr r1, =DebuffStatBitOffset_Mov @ bit offset 
 ldr r1, [r1] 
 ldr r2, =NimbleInitAmount_Link
@@ -140,22 +200,63 @@ bx r0
 .type SpectrumInit, %function 
 SpectrumInit: 
 push {r4, lr} 
-mov r4, r0 @ unit 
-bl CleverInit 
+mov r4, r0 @ unit
+
+mov r1, #SpecAnim @ bits 
+mov r2, #0 @ range (self) 
+bl StartBuffFx
+
+mov r0, r4 @ unit 
+ldr r1, =DebuffStatBitOffset_Mag @ bit offset 
+ldr r1, [r1] 
+ldr r2, =SturdyInitAmount_Link
+ldr r2, [r2] 
+bl InitiativeForStat
 mov r0, r4 
-bl StrongInit 
+ldr r1, =DebuffStatBitOffset_Str @ bit offset 
+ldr r1, [r1] 
+ldr r2, =SturdyInitAmount_Link
+ldr r2, [r2] 
+bl InitiativeForStat
 mov r0, r4 
-bl DeftInit 
+ldr r1, =DebuffStatBitOffset_Skl @ bit offset 
+ldr r1, [r1] 
+ldr r2, =SturdyInitAmount_Link
+ldr r2, [r2] 
+bl InitiativeForStat
 mov r0, r4 
-bl QuickInit 
+ldr r1, =DebuffStatBitOffset_Spd @ bit offset 
+ldr r1, [r1] 
+ldr r2, =SturdyInitAmount_Link
+ldr r2, [r2] 
+bl InitiativeForStat
 mov r0, r4 
-bl SturdyInit 
+ldr r1, =DebuffStatBitOffset_Def @ bit offset 
+ldr r1, [r1] 
+ldr r2, =SturdyInitAmount_Link
+ldr r2, [r2] 
+bl InitiativeForStat
 mov r0, r4 
-bl CalmInit 
+ldr r1, =DebuffStatBitOffset_Res @ bit offset 
+ldr r1, [r1] 
+ldr r2, =CalmInitAmount_Link
+ldr r2, [r2] 
+bl InitiativeForStat
 mov r0, r4 
-bl LuckyInit 
+ldr r1, =DebuffStatBitOffset_Luk @ bit offset 
+ldr r1, [r1] 
+ldr r2, =LuckyInitAmount_Link
+ldr r2, [r2] 
+bl InitiativeForStat
 mov r0, r4 
-bl NimbleInit 
+ldr r1, =DebuffStatBitOffset_Mov @ bit offset 
+ldr r1, [r1] 
+ldr r2, =NimbleInitAmount_Link
+ldr r2, [r2] 
+bl InitiativeForStat
+
+
+
 pop {r4} 
 pop {r0} 
 bx r0 
@@ -178,6 +279,7 @@ mov r4, r0 @ unit
 mov r5, r1 @ bit offset 
 mov r6, r2 @ amount 
 
+mov r0, r4 
 bl GetUnitDebuffEntry 
 mov r7, r0 @ debuff entry 
 mov r1, r5 @ bit offset 
@@ -217,6 +319,7 @@ ldr r1, =DebuffStatBitOffset_Str @ bit offset
 ldr r1, [r1] 
 ldr r2, =HoneStrAmount_Link 
 ldr r2, [r2] 
+mov r3, #StrAnim 
 bl HoneStat 
 pop {r0} 
 bx r0 
@@ -231,6 +334,7 @@ ldr r1, =DebuffStatBitOffset_Str @ bit offset
 ldr r1, [r1] 
 ldr r2, =OathStrAmount_Link 
 ldr r2, [r2] 
+mov r3, #StrAnim 
 bl OathStat 
 pop {r0} 
 bx r0 
@@ -245,6 +349,7 @@ ldr r1, =DebuffStatBitOffset_Str @ bit offset
 ldr r1, [r1] 
 ldr r2, =RouseStrAmount_Link 
 ldr r2, [r2] 
+mov r3, #StrAnim 
 bl RouseStat 
 pop {r0} 
 bx r0 
@@ -260,6 +365,8 @@ ldr r1, =DebuffStatBitOffset_Mag @ bit offset
 ldr r1, [r1] 
 ldr r2, =HoneMagAmount_Link 
 ldr r2, [r2] 
+mov r3, #MagAnim
+lsl r3, #8  
 bl HoneStat 
 pop {r0} 
 bx r0 
@@ -274,6 +381,8 @@ ldr r1, =DebuffStatBitOffset_Mag @ bit offset
 ldr r1, [r1] 
 ldr r2, =OathMagAmount_Link 
 ldr r2, [r2] 
+mov r3, #MagAnim
+lsl r3, #8  
 bl OathStat 
 pop {r0} 
 bx r0 
@@ -288,6 +397,8 @@ ldr r1, =DebuffStatBitOffset_Mag @ bit offset
 ldr r1, [r1] 
 ldr r2, =RouseMagAmount_Link 
 ldr r2, [r2] 
+mov r3, #MagAnim
+lsl r3, #8  
 bl RouseStat 
 pop {r0} 
 bx r0 
@@ -303,6 +414,7 @@ ldr r1, =DebuffStatBitOffset_Skl @ bit offset
 ldr r1, [r1] 
 ldr r2, =HoneSklAmount_Link 
 ldr r2, [r2] 
+mov r3, #SklAnim 
 bl HoneStat 
 pop {r0} 
 bx r0 
@@ -317,6 +429,7 @@ ldr r1, =DebuffStatBitOffset_Skl @ bit offset
 ldr r1, [r1] 
 ldr r2, =OathSklAmount_Link 
 ldr r2, [r2] 
+mov r3, #SklAnim 
 bl OathStat 
 pop {r0} 
 bx r0 
@@ -331,6 +444,7 @@ ldr r1, =DebuffStatBitOffset_Skl @ bit offset
 ldr r1, [r1] 
 ldr r2, =RouseSklAmount_Link 
 ldr r2, [r2] 
+mov r3, #SklAnim 
 bl RouseStat 
 pop {r0} 
 bx r0 
@@ -346,6 +460,7 @@ ldr r1, =DebuffStatBitOffset_Spd @ bit offset
 ldr r1, [r1] 
 ldr r2, =HoneSpdAmount_Link 
 ldr r2, [r2] 
+mov r3, #SpdAnim 
 bl HoneStat 
 pop {r0} 
 bx r0 
@@ -360,6 +475,7 @@ ldr r1, =DebuffStatBitOffset_Spd @ bit offset
 ldr r1, [r1] 
 ldr r2, =OathSpdAmount_Link 
 ldr r2, [r2] 
+mov r3, #SpdAnim 
 bl OathStat 
 pop {r0} 
 bx r0 
@@ -374,6 +490,7 @@ ldr r1, =DebuffStatBitOffset_Spd @ bit offset
 ldr r1, [r1] 
 ldr r2, =RouseSpdAmount_Link 
 ldr r2, [r2] 
+mov r3, #SpdAnim 
 bl RouseStat 
 pop {r0} 
 bx r0 
@@ -390,6 +507,7 @@ ldr r1, =DebuffStatBitOffset_Def @ bit offset
 ldr r1, [r1] 
 ldr r2, =HoneDefAmount_Link 
 ldr r2, [r2] 
+mov r3, #DefAnim 
 bl HoneStat 
 pop {r0} 
 bx r0 
@@ -404,6 +522,7 @@ ldr r1, =DebuffStatBitOffset_Def @ bit offset
 ldr r1, [r1] 
 ldr r2, =OathDefAmount_Link 
 ldr r2, [r2] 
+mov r3, #DefAnim 
 bl OathStat 
 pop {r0} 
 bx r0 
@@ -418,6 +537,7 @@ ldr r1, =DebuffStatBitOffset_Def @ bit offset
 ldr r1, [r1] 
 ldr r2, =RouseDefAmount_Link 
 ldr r2, [r2] 
+mov r3, #DefAnim 
 bl RouseStat 
 pop {r0} 
 bx r0 
@@ -433,6 +553,7 @@ ldr r1, =DebuffStatBitOffset_Res @ bit offset
 ldr r1, [r1] 
 ldr r2, =HoneResAmount_Link 
 ldr r2, [r2] 
+mov r3, #ResAnim 
 bl HoneStat 
 pop {r0} 
 bx r0 
@@ -447,6 +568,7 @@ ldr r1, =DebuffStatBitOffset_Res @ bit offset
 ldr r1, [r1] 
 ldr r2, =OathResAmount_Link 
 ldr r2, [r2] 
+mov r3, #ResAnim 
 bl OathStat 
 pop {r0} 
 bx r0 
@@ -461,6 +583,7 @@ ldr r1, =DebuffStatBitOffset_Res @ bit offset
 ldr r1, [r1] 
 ldr r2, =RouseResAmount_Link 
 ldr r2, [r2] 
+mov r3, #ResAnim 
 bl RouseStat 
 pop {r0} 
 bx r0 
@@ -477,6 +600,7 @@ ldr r1, =DebuffStatBitOffset_Luk @ bit offset
 ldr r1, [r1] 
 ldr r2, =HoneLukAmount_Link 
 ldr r2, [r2] 
+mov r3, #LukAnim 
 bl HoneStat 
 pop {r0} 
 bx r0 
@@ -491,6 +615,7 @@ ldr r1, =DebuffStatBitOffset_Luk @ bit offset
 ldr r1, [r1] 
 ldr r2, =OathLukAmount_Link 
 ldr r2, [r2] 
+mov r3, #LukAnim 
 bl OathStat 
 pop {r0} 
 bx r0 
@@ -505,6 +630,7 @@ ldr r1, =DebuffStatBitOffset_Luk @ bit offset
 ldr r1, [r1] 
 ldr r2, =RouseLukAmount_Link 
 ldr r2, [r2] 
+mov r3, #LukAnim 
 bl RouseStat 
 pop {r0} 
 bx r0 
@@ -520,6 +646,7 @@ ldr r1, =DebuffStatBitOffset_Mov @ bit offset
 ldr r1, [r1] 
 ldr r2, =HoneMovAmount_Link 
 ldr r2, [r2] 
+mov r3, #MovAnim 
 bl HoneStat 
 pop {r0} 
 bx r0 
@@ -534,6 +661,7 @@ ldr r1, =DebuffStatBitOffset_Mov @ bit offset
 ldr r1, [r1] 
 ldr r2, =OathMovAmount_Link 
 ldr r2, [r2] 
+mov r3, #MovAnim 
 bl OathStat 
 pop {r0} 
 bx r0 
@@ -548,6 +676,8 @@ ldr r1, =DebuffStatBitOffset_Mov @ bit offset
 ldr r1, [r1] 
 ldr r2, =RouseMovAmount_Link 
 ldr r2, [r2] 
+mov r3, #MovAnim 
+mov r3, #MovAnim 
 bl RouseStat 
 pop {r0} 
 bx r0 
@@ -558,9 +688,16 @@ bx r0
 
 HoneStat: 
 push {r4-r7, lr} 
-@mov r4, r0 @ unit 
+mov r4, r0 @ unit 
 mov r5, r1 @ bit offset 
 mov r6, r2 @ amount 
+mov r7, r8 
+push {r7} 
+mov r8, r3 @ rally anim bits 
+mov r3, r9 
+push {r3} 
+mov r9, r4 @ unit 
+mov r0, r4 @ unit 
 
 mov r1, #0 @ can trade 
 mov r2, #1 @ adjacent 
@@ -575,6 +712,7 @@ cmp r0, #0
 beq NoMoreHone 
 add r4, #1 
 blh GetUnit 
+mov r9, r0 
 bl GetUnitDebuffEntry 
 mov r7, r0 @ debuff entry 
 mov r1, r5 @ bit offset 
@@ -583,21 +721,30 @@ ldr r2, [r2]
 bl UnpackData_Signed 
 cmp r0, r6 @ old value vs new value 
 bgt NoBuff 
+mov r3, r6 
 cmp r0, #0 
 bge UseNewValue 
-add r6, r0 @ negative, so reduce the debuff 
+add r3, r0 @ negative, so reduce the debuff 
 UseNewValue: 
 mov r0, r7 @ debuff entry 
 mov r1, r5 @ bit offset 
 ldr r2, =DebuffStatNumberOfBits_Link
 ldr r2, [r2] 
-mov r3, r6 @ value 
+@ r3 = value 
 bl PackData_Signed 
+mov r0, r9 @ unit 
+mov r1, r8 @ rally anim bits 
+mov r2, #0 @ range adjacent 
+bl StartBuffFx
+
 NoBuff: @ current stat is higher than what we'd set it to 
 b AreaLoop 
 
 NoMoreHone: 
-
+pop {r3} 
+mov r9, r3 
+pop {r7} 
+mov r8, r7 
 pop {r4-r7} 
 pop {r0} 
 bx r0 
@@ -610,7 +757,11 @@ push {r4-r7, lr}
 mov r4, r0 @ unit 
 mov r5, r1 @ bit offset 
 mov r6, r2 @ amount 
+mov r7, r8 
+push {r7} 
+mov r8, r3 @ anim bits 
 
+mov r0, r4 @ unit 
 mov r1, #0 @ can trade 
 mov r2, #1 @ adjacent 
 bl GetUnitsInRange @(Unit* unit, int allyOption, int range)
@@ -636,9 +787,16 @@ ldr r2, =DebuffStatNumberOfBits_Link
 ldr r2, [r2] 
 mov r3, r6 @ value 
 bl PackData_Signed 
+
+mov r0, r4 @ unit 
+mov r1, r8 @ rally anim bits 
+mov r2, #0 @ range self 
+bl StartBuffFx
+
 NoBuff_Oath: @ current stat is higher than what we'd set it to 
 
-
+pop {r7} 
+mov r8, r7 
 pop {r4-r7} 
 pop {r0} 
 bx r0 
@@ -652,6 +810,10 @@ push {r4-r7, lr}
 mov r4, r0 @ unit 
 mov r5, r1 @ bit offset 
 mov r6, r2 @ amount 
+mov r7, r8 
+push {r7} 
+mov r8, r3 @ anim bits 
+
 
 mov r1, #0 @ can trade 
 mov r2, #1 @ adjacent 
@@ -678,9 +840,16 @@ ldr r2, =DebuffStatNumberOfBits_Link
 ldr r2, [r2] 
 mov r3, r6 @ value 
 bl PackData_Signed 
+
+mov r0, r4 @ unit 
+mov r1, r8 @ rally anim bits 
+mov r2, #0 @ range self 
+bl StartBuffFx
+
 NoBuff_Rouse: @ current stat is higher than what we'd set it to 
 
-
+pop {r7} 
+mov r8, r7 
 pop {r4-r7} 
 pop {r0} 
 bx r0 

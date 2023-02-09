@@ -25,10 +25,6 @@ LOAD1 1 StartingUnits
 ENUN 
 LOAD1 1 EnemyUnits 
 ENUN 
-LOAD1 1 EnemyUnits 
-ENUN 
-LOAD1 1 EnemyUnits 
-ENUN 
 //ASMC TestFunc 
 FADU 44 
 ASMC ReplaceWeaponsByDifficulty
@@ -100,23 +96,28 @@ UNIT Gilliam Knight 0x1 Level(5,Ally,True)   [2,3] 0b 0x0 0x1 REDA2R3 [SilverLan
 UNIT Tethys Dancer 0x1 Level(5,Ally,True)   [1,3] 0b 0x0 0x1 REDA1R3 [Vulnerary] [0x0]
 UNIT 
 
+//UNIT Eirika Lord 0x1 Level(5,Ally,True)   [2,2] 0b 0x0 0x1 REDA19R2 [Rapier] [0x0]
+//UNIT Seth Paladin 0x1 Level(5,Ally,True)   [2,4] 0b 0x0 0x1 REDA2R19 [SilverLance] [0x0]
+//UNIT Gilliam Knight 0x1 Level(5,Ally,True)   [2,3] 0b 0x0 0x1 REDA22R18 [SilverLance] [0x0]
+//UNIT Tethys Dancer 0x1 Level(5,Ally,True)   [1,3] 0b 0x0 0x1 REDA1R3 [Vulnerary] [0x0]
+
 // give enemy bosses death quotes to set flag 2 
 EnemyUnits: 
 UNIT Breguet Fighter 0x1 Level(5,Enemy,True)   [3,2] 0b 0x0 0x1 REDA3R2 [Hammer] [0x0]
 //UNIT Breguet Fighter 0x1 Level(5,Enemy,True)   [14,8] 0b 0x0 0x1 REDA14R8 [IronAxe] [0x0]
 UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,3] 0b 0x0 0x1 REDA3R3 [IronAxe,IronAxe,IronAxe,IronAxe] [0x0]
-UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe,IronAxe,IronAxe,IronAxe] [0x0]
-UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe,IronAxe,IronAxe,IronAxe] [0x0]
-UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe,IronAxe,IronAxe,IronAxe] [0x0]
-UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe,IronAxe,IronAxe,IronAxe] [0x0]
-UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe,IronAxe,IronAxe,IronAxe] [0x0]
-UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe,IronAxe,IronAxe,IronAxe] [0x0]
-UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe,IronAxe,IronAxe,IronAxe] [0x0]
-UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe,IronAxe,IronAxe,IronAxe] [0x0]
-UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe,IronAxe,IronAxe,IronAxe] [0x0]
-UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe,IronAxe,IronAxe,IronAxe] [0x0]
-UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe,IronAxe,IronAxe,IronAxe] [0x0]
-UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe,IronAxe,IronAxe,IronAxe] [0x0]
+//UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe,IronAxe,IronAxe,IronAxe] [0x0]
+//UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe,IronAxe,IronAxe,IronAxe] [0x0]
+//UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe,IronAxe,IronAxe,IronAxe] [0x0]
+//UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe,IronAxe,IronAxe,IronAxe] [0x0]
+//UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe,IronAxe,IronAxe,IronAxe] [0x0]
+//UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe,IronAxe,IronAxe,IronAxe] [0x0]
+//UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe,IronAxe,IronAxe,IronAxe] [0x0]
+//UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe,IronAxe,IronAxe,IronAxe] [0x0]
+//UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe,IronAxe,IronAxe,IronAxe] [0x0]
+//UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe,IronAxe,IronAxe,IronAxe] [0x0]
+//UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe,IronAxe,IronAxe,IronAxe] [0x0]
+//UNIT 0x70 Fighter 0x1 Level(5,Enemy,True)   [3,4] 0b 0x0 0x1 REDA3R4 [IronAxe,IronAxe,IronAxe,IronAxe] [0x0]
 UNIT 
 
 PrepUnits: 
