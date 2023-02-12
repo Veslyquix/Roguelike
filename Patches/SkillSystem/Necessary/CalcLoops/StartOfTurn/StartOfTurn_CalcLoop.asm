@@ -505,6 +505,8 @@ bx r0
 .global IsUnitOnField 
 .type IsUnitOnField, %function 
 IsUnitOnField: 
+cmp r0, #0 
+beq RetFalse 
 ldr r1, [r0] 
 cmp r1, #0 
 beq RetFalse 

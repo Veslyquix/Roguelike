@@ -7,8 +7,20 @@
   .short 0xf800
 .endm
 .equ ActionStruct, 0x203A958 
+.equ EventEngine, 0x800D07C
+.equ MemorySlot,0x30004B8
+.equ StrAnim, 0x01 
+.equ SklAnim, 0x02 
+.equ SpdAnim, 0x04 
+.equ DefAnim, 0x08 
+.equ ResAnim, 0x10 
+.equ LukAnim, 0x20 
+.equ MovAnim, 0x40 
+.equ SpecAnim, 0x80 
+.equ MagAnim, 0x1 @ <<8 
+
 @ After defeating an enemy, gain +X Str. 
-@ Config for amount and whether to be stackable or not. 
+@ Config for amount
 @ each function looks identical to this except with the relevant skill, so they're lower down 
 .global StrTaker 
 .type StrTaker, %function 
@@ -16,17 +28,19 @@ StrTaker:
 push {lr} 
 mov r0, r4 @ unit 
 ldr r1, =StrTakerID @ skill ID 
-sub sp, #8 
+sub sp, #12 
 mov r3, sp 
 str r5, [r3, #0]
 ldr r2, =StrTakerBuffAmount_Link
 ldr r2, [r2] 
 str r2, [r3, #4] 
+mov r2, #StrAnim 
+str r2, [r3, #8] 
 
 ldr r2, =DebuffStatBitOffset_Str @ bit offset 
 ldr r2, [r2] 
 bl PossiblyApplyTaker 
-add sp, #8 
+add sp, #12 
 End_StrTaker:  
 pop {r0} 
 bx r0 
@@ -34,11 +48,16 @@ bx r0
 
 PossiblyApplyTaker: 
 push {r4-r7, lr} 
+mov r7, r8 
+push {r7} 
 
 mov r4, r0 @ unit struct A 
 lsl r5, r1, #24 
 lsr r5, #24 @ skill id 
 mov r6, r2 @ bit offset 
+ldr r2, [r3, #8] @ animation to use 
+mov r8, r2 @ save for later 
+
 ldr r7, [r3, #4] @ buff amount 
 
 @mov r0, r4 @ unit struct A 
@@ -87,8 +106,17 @@ ldr r2, [r2]
 mov r0, r4 @ debuff entry 
 bl PackData_Signed 
 
-EndTaker: 
+ldr r3, =MemorySlot 
+mov r2, r8 @ anim 
+str r2, [r3, #4*3] @ s3 as anim to show 
 
+ldr r0, =ShowBuffEvent 
+mov r1, #1 @ EV_TYPE_CUTSCENE 
+blh EventEngine 
+
+EndTaker: 
+pop {r7} 
+mov r8, r7 
 pop {r4-r7} 
 pop {r0} 
 bx r0 
@@ -135,16 +163,18 @@ SklTaker:
 push {lr} 
 mov r0, r4 @ unit 
 ldr r1, =SklTakerID @ skill ID 
-sub sp, #8 
+sub sp, #12 
 mov r3, sp 
 str r5, [r3, #0]
 ldr r2, =SklTakerBuffAmount_Link
 ldr r2, [r2] 
 str r2, [r3, #4] 
+mov r2, #SklAnim 
+str r2, [r3, #8] 
 ldr r2, =DebuffStatBitOffset_Skl @ bit offset 
 ldr r2, [r2] 
 bl PossiblyApplyTaker 
-add sp, #8 
+add sp, #12 
 End_SklTaker:  
 pop {r0} 
 bx r0 
@@ -156,16 +186,18 @@ SpdTaker:
 push {lr} 
 mov r0, r4 @ unit 
 ldr r1, =SpdTakerID @ skill ID 
-sub sp, #8 
+sub sp, #12 
 mov r3, sp 
 str r5, [r3, #0]
 ldr r2, =SpdTakerBuffAmount_Link
 ldr r2, [r2] 
 str r2, [r3, #4] 
+mov r2, #SpdAnim 
+str r2, [r3, #8] 
 ldr r2, =DebuffStatBitOffset_Spd @ bit offset 
 ldr r2, [r2] 
 bl PossiblyApplyTaker 
-add sp, #8 
+add sp, #12 
 End_SpdTaker:  
 pop {r0} 
 bx r0 
@@ -177,16 +209,18 @@ DefTaker:
 push {lr} 
 mov r0, r4 @ unit 
 ldr r1, =DefTakerID @ skill ID 
-sub sp, #8 
+sub sp, #12 
 mov r3, sp 
 str r5, [r3, #0]
 ldr r2, =DefTakerBuffAmount_Link
 ldr r2, [r2] 
 str r2, [r3, #4] 
+mov r2, #DefAnim 
+str r2, [r3, #8] 
 ldr r2, =DebuffStatBitOffset_Def @ bit offset 
 ldr r2, [r2] 
 bl PossiblyApplyTaker 
-add sp, #8 
+add sp, #12 
 End_DefTaker:  
 pop {r0} 
 bx r0 
@@ -199,16 +233,18 @@ ResTaker:
 push {lr} 
 mov r0, r4 @ unit 
 ldr r1, =ResTakerID @ skill ID 
-sub sp, #8 
+sub sp, #12 
 mov r3, sp 
 str r5, [r3, #0]
 ldr r2, =ResTakerBuffAmount_Link
 ldr r2, [r2] 
 str r2, [r3, #4] 
+mov r2, #ResAnim 
+str r2, [r3, #8] 
 ldr r2, =DebuffStatBitOffset_Res @ bit offset 
 ldr r2, [r2] 
 bl PossiblyApplyTaker 
-add sp, #8 
+add sp, #12 
 End_ResTaker:  
 pop {r0} 
 bx r0 
@@ -221,16 +257,18 @@ LukTaker:
 push {lr} 
 mov r0, r4 @ unit 
 ldr r1, =LukTakerID @ skill ID 
-sub sp, #8 
+sub sp, #12 
 mov r3, sp 
 str r5, [r3, #0]
 ldr r2, =LukTakerBuffAmount_Link
 ldr r2, [r2] 
 str r2, [r3, #4] 
+mov r2, #LukAnim 
+str r2, [r3, #8] 
 ldr r2, =DebuffStatBitOffset_Luk @ bit offset 
 ldr r2, [r2] 
 bl PossiblyApplyTaker 
-add sp, #8 
+add sp, #12 
 End_LukTaker:  
 pop {r0} 
 bx r0 
@@ -243,16 +281,19 @@ MagTaker:
 push {lr} 
 mov r0, r4 @ unit 
 ldr r1, =MagTakerID @ skill ID 
-sub sp, #8 
+sub sp, #12 
 mov r3, sp 
 str r5, [r3, #0]
 ldr r2, =MagTakerBuffAmount_Link
 ldr r2, [r2] 
 str r2, [r3, #4] 
+mov r2, #MagAnim 
+lsl r2, #8 @ 0x100 
+str r2, [r3, #8] 
 ldr r2, =DebuffStatBitOffset_Mag @ bit offset 
 ldr r2, [r2] 
 bl PossiblyApplyTaker 
-add sp, #8 
+add sp, #12 
 End_MagTaker:  
 pop {r0} 
 bx r0 
@@ -264,16 +305,18 @@ MovTaker:
 push {lr} 
 mov r0, r4 @ unit 
 ldr r1, =MovTakerID @ skill ID 
-sub sp, #8 
+sub sp, #12 
 mov r3, sp 
 str r5, [r3, #0]
 ldr r2, =MovTakerBuffAmount_Link
 ldr r2, [r2] 
 str r2, [r3, #4] 
+mov r2, #MovAnim 
+str r2, [r3, #8] 
 ldr r2, =DebuffStatBitOffset_Mov @ bit offset 
 ldr r2, [r2] 
 bl PossiblyApplyTaker 
-add sp, #8 
+add sp, #12 
 End_MovTaker:  
 pop {r0} 
 bx r0 

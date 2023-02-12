@@ -5,10 +5,10 @@ SethSkillList:
 //BYTE 1 RallyChaosID 
 //BYTE 21 RallyChaosID 
 //BYTE 1 RallyMagID 
-BYTE 21 StrOathID 
-BYTE 21 RouseStrID 
+BYTE 21 StrTakerID 
+//BYTE 21 RouseStrID 
 //BYTE 21 CleverInitID 
-BYTE 21 SpectrumInitID 
+//BYTE 21 SpectrumInitID 
 
 BYTE 00 00 
 ALIGN 4 

@@ -4,6 +4,16 @@
 #include "lyn.event/Guts.lyn.event" 
 
 ALIGN 4 
+ShowBuffEvent: 
+SVAL s1 (-1) // active unit 
+//SVAL s3 1 // str // This event is called from asm that stores a value to s3 
+SVAL s4 0 // range (self) 
+ASMC BuffFx_ASMC 
+NoFade 
+ENDA 
+
+
+ALIGN 4 
 StrongConAmount_Link: 
 WORD 5 
 GutsAmount_Link:

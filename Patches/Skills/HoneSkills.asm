@@ -19,8 +19,8 @@
 @.type PlotArmor, %function 
 @PlotArmor: 
 @push {r4-r5, lr} 
-
-
+.equ MemorySlot, 0x30004B8
+.equ GetUnitByEventParameter, 0x0800BC50
 
 .equ StrAnim, 0x01 
 .equ SklAnim, 0x02 
@@ -31,6 +31,57 @@
 .equ MovAnim, 0x40 
 .equ SpecAnim, 0x80 
 .equ MagAnim, 0x1
+.global BuffFx_ASMC
+.type BuffFx_ASMC, %function 
+BuffFx_ASMC: 
+push {r4, lr} 
+ldr r0, =MemorySlot 
+ldr r0, [r0, #4] @ slot 1 as unit 
+blh GetUnitByEventParameter 
+mov r4, r0 
+bl IsUnitOnField 
+cmp r0, #0 
+beq Exit_StrBuffFx 
+ldr r3, =MemorySlot 
+ldr r1, [r3, #4*3] @ s3 as bitfield to use for the anim (see StrAnim, SklAnim, etc.) 
+ldr r2, [r3, #4*4] @ s4 as range (0 for self) 
+mov r3, #2 
+lsl r3, #8 @ 0x200 
+cmp r1, r3 
+bge Exit_StrBuffFx @ ensure slot3 was valid 
+mov r0, r4 
+bl StartBuffFx 
+
+Exit_StrBuffFx: 
+pop {r4} 
+pop {r0} 
+bx r0 
+.ltorg 
+
+
+.ltorg 
+
+IsUnitOnField: 
+cmp r0, #0 
+beq RetFalse 
+ldr r1, [r0] 
+cmp r1, #0 
+beq RetFalse 
+ldrb r1, [r1, #4] @ unit id 
+cmp r1, #0 
+beq RetFalse
+ldr r1, [r0, #0x0C] 
+ldr r2, =0x1000C @ escaped, undeployed, dead 
+tst r1, r2 
+bne RetFalse
+RetTrue: 
+mov r0, #1 
+b Exit_IsUnitOnField 
+RetFalse: 
+mov r0, #0 
+Exit_IsUnitOnField: 
+bx lr 
+.ltorg 
 
 
 .global CleverInit 

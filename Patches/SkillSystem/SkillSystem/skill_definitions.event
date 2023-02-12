@@ -145,11 +145,11 @@
 	// Buff Skills \\ 
 
 //Eternal Vanity: Your buffed stats do not deplete each turn. 
-#define EternalVanityID 84
+#define EternalVanityID 255
 
 // _ Taker: After attacking and defeating an enemy, gain +4 _. (Max +10) 
 // Author: Vesly 
-#define StrTakerID 255
+#define StrTakerID 84
 #define SklTakerID 255 
 #define SpdTakerID 255 
 #define DefTakerID 255 
