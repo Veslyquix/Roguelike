@@ -224,9 +224,7 @@ BuffFxProc:
 	.word 14, 0
 
 	.word 2, BuffFx_OnInit
-	@.short 0xE, 0x33, 0,0 // sleep 3 frames 
 	.word 4, RallyFx_OnEnd
-
 	.word 3, RallyFx_OnLoop
 
 	.word 2, UnlockGame
@@ -257,53 +255,10 @@ bx r1
 
 
 .equ ProcFind, 0x8002E9D
-.equ gProc_MoveUnit, 0x89A2C48
 
-.type SelfBuff, %function 
-.global SelfBuff 
-SelfBuff:
-	@ Arguments: nothing
-	@ Returns:   nothing
-push {r4, lr} 
-mov r4, r0 @ proc 
-ldr r0, =gProc_MoveUnit
-blh ProcFind 
-cmp r0, #0 
-beq SkipHidingInProc
-@mov r4, r0 @ gProc_MoveUnit 
-add r0, #0x40 @this is what MU_Hide does @MU_Hide, 0x80797D5
-mov r1, #1 
-strb r1, [r0] @ store back 0 to show active MMS again aka @MU_Show, 0x80797DD
-
-SkipHidingInProc: 
-ldr r4, [r4, #0x30] @ unit 
-
-ldr r1, [r4, #0x0C] @ Unit state 
-mov r2, #1 @ Hide 
-bic r1, r2 @ Show SMS 
-str r1, [r4, #0x0C] 
-blh 0x08019FA0   //UpdateUnitMapAndVision
-blh 0x0801A1A0   //UpdateTrapHiddenStates
-blh  0x080271a0   @SMS_UpdateFromGameData
-blh  0x08019c3c   @UpdateGameTilesGraphics
-
-mov r0, r4 @ Unit 
-blh AddMapAuraFxUnit
-
-pop {r4}
-
-pop {r1}
-bx r1
-
-.global CallContinue_BuffFx
-.type CallContinue_BuffFx, %function 
-CallContinue_BuffFx:
-push {r4, lr} 
-mov r4, r0 @ proc 
-b Continue_BuffFx
 	.align
 .global BuffFx_OnInit
-	.type BuffFx_OnInit, function
+.type BuffFx_OnInit, function
 BuffFx_OnInit:
 	push {r4, lr}
 	@ Set [proc+2C] to 0
@@ -311,13 +266,9 @@ BuffFx_OnInit:
 	mov r1, #0
 	str r1, [r0, #0x2C]
 	mov r4, r0 @ proc 
-
-
-
 	ldr r3, =StartMapAuraFx
 	bl  BXR3
 
-Continue_BuffFx: 
 
 ldr r0, [r4, #0x38] @ range of units to buff 
 mov r1, #0xF 
