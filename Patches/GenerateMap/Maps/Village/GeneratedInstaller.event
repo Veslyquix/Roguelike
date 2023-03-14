@@ -13,6 +13,11 @@ POIN BuildingDRT_data
 POIN BuildingDR_data 
 POIN BuildingDT_data 
 POIN BuildingD_data 
+POIN Chunk1_data 
+POIN Chunk2_data 
+POIN Chunk3_data 
+POIN Chunk4_data 
+POIN Chunk5_data 
 POIN CliffLeft1_data 
 POIN CliffLeft2_data 
 POIN CliffRight1_data 
@@ -79,6 +84,21 @@ BuildingDT_data:
 ALIGN 4 
 BuildingD_data: 
 #incbin "BuildingD_data.dmp" 
+ALIGN 4 
+Chunk1_data: 
+#incbin "Chunk1_data.dmp" 
+ALIGN 4 
+Chunk2_data: 
+#incbin "Chunk2_data.dmp" 
+ALIGN 4 
+Chunk3_data: 
+#incbin "Chunk3_data.dmp" 
+ALIGN 4 
+Chunk4_data: 
+#incbin "Chunk4_data.dmp" 
+ALIGN 4 
+Chunk5_data: 
+#incbin "Chunk5_data.dmp" 
 ALIGN 4 
 CliffLeft1_data: 
 #incbin "CliffLeft1_data.dmp" 
@@ -199,4 +219,4 @@ YellowHouse_data:
 } 
 ALIGN 4 
 Village_NumberOfMapPieces: 
-WORD 47 
+WORD 52 

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="7" height="7" tilewidth="16" tileheight="16" infinite="0" nextlayerid="2" nextobjectid="1">
+ <tileset firstgid="1" name="../TilesetPreviews/UpdatedVillage" tilewidth="16" tileheight="16" tilecount="1024" columns="32">
+  <image source="UpdatedVillage.png" trans="ffffff" width="512" height="512"/>
+ </tileset>
+ <layer id="1" name="Tile Layer 1" width="7" height="7">
+  <properties>
+   <property name="Anims1" value="UpdatedVillageAnimations"/>
+   <property name="ChapterID" value="Debug2Ch"/>
+   <property name="Main" value=""/>
+   <property name="MapID" value="Debug2Map"/>
+   <property name="ObjectType" value="UpdatedVillageObj"/>
+   <property name="PaletteID" value="UpdatedVillagePal"/>
+   <property name="TileConfig" value="UpdatedVillageConf"/>
+  </properties>
+  <data>
+   <tile gid="813"/>
+   <tile gid="815"/>
+   <tile gid="815"/>
+   <tile gid="846"/>
+   <tile gid="371"/>
+   <tile gid="372"/>
+   <tile gid="814"/>
+   <tile gid="877"/>
+   <tile gid="804"/>
+   <tile gid="805"/>
+   <tile gid="806"/>
+   <tile gid="519"/>
+   <tile gid="453"/>
+   <tile gid="877"/>
+   <tile gid="877"/>
+   <tile gid="836"/>
+   <tile gid="837"/>
+   <tile gid="838"/>
+   <tile gid="453"/>
+   <tile gid="519"/>
+   <tile gid="877"/>
+   <tile gid="877"/>
+   <tile gid="522"/>
+   <tile gid="519"/>
+   <tile gid="485"/>
+   <tile gid="485"/>
+   <tile gid="587"/>
+   <tile gid="877"/>
+   <tile gid="845"/>
+   <tile gid="815"/>
+   <tile gid="846"/>
+   <tile gid="181"/>
+   <tile gid="183"/>
+   <tile gid="845"/>
+   <tile gid="846"/>
+   <tile gid="420"/>
+   <tile gid="586"/>
+   <tile gid="458"/>
+   <tile gid="485"/>
+   <tile gid="490"/>
+   <tile gid="196"/>
+   <tile gid="129"/>
+   <tile gid="129"/>
+   <tile gid="129"/>
+   <tile gid="235"/>
+   <tile gid="236"/>
+   <tile gid="129"/>
+   <tile gid="266"/>
+   <tile gid="452"/>
+  </data>
+ </layer>
+</map>

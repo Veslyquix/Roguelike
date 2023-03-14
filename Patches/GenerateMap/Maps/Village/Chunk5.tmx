@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="7" height="4" tilewidth="16" tileheight="16" infinite="0" nextlayerid="2" nextobjectid="1">
+ <tileset firstgid="1" name="../TilesetPreviews/UpdatedVillage" tilewidth="16" tileheight="16" tilecount="1024" columns="32">
+  <image source="UpdatedVillage.png" trans="ffffff" width="512" height="512"/>
+ </tileset>
+ <layer id="1" name="Tile Layer 1" width="7" height="4">
+  <properties>
+   <property name="Anims1" value="UpdatedVillageAnimations"/>
+   <property name="ChapterID" value="Debug2Ch"/>
+   <property name="Main" value=""/>
+   <property name="MapID" value="Debug2Map"/>
+   <property name="ObjectType" value="UpdatedVillageObj"/>
+   <property name="PaletteID" value="UpdatedVillagePal"/>
+   <property name="TileConfig" value="UpdatedVillageConf"/>
+  </properties>
+  <data>
+   <tile gid="452"/>
+   <tile gid="225"/>
+   <tile gid="143"/>
+   <tile gid="196"/>
+   <tile gid="675"/>
+   <tile gid="613"/>
+   <tile gid="676"/>
+   <tile gid="673"/>
+   <tile gid="610"/>
+   <tile gid="674"/>
+   <tile gid="331"/>
+   <tile gid="707"/>
+   <tile gid="645"/>
+   <tile gid="708"/>
+   <tile gid="705"/>
+   <tile gid="642"/>
+   <tile gid="706"/>
+   <tile gid="227"/>
+   <tile gid="208"/>
+   <tile gid="273"/>
+   <tile gid="225"/>
+   <tile gid="194"/>
+   <tile gid="266"/>
+   <tile gid="129"/>
+   <tile gid="290"/>
+   <tile gid="235"/>
+   <tile gid="236"/>
+   <tile gid="452"/>
+  </data>
+ </layer>
+</map>
