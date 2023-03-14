@@ -30,7 +30,7 @@ FADU 44
 ASMC ReplaceWeaponsByDifficulty
 //StartOfTurnCalcLoop_Init
 
-//ASMC SelectRelic_ASMC
+ASMC SelectRelic_ASMC
 NoFade 
 ENDA 
 

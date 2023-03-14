@@ -4,7 +4,7 @@
 
 SET_FUNC Font_ResetAllocation, (0x08003D20+1) 
 SET_FUNC Clean, (0x800F0C8+1) 
-
+SET_DATA gCurrentTextString, 0x202A6AC
 //@ Vanilla function declarations:
 SET_FUNC PushToSecondaryOAM, 0x08002BB9
 SET_FUNC RegisterObjectTileGraphics, 0x8012FF5

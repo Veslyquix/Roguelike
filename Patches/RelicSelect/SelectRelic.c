@@ -88,12 +88,10 @@ void CreatorIdle(Struct_SelectRelicProc* proc)
 {
 	//return; 
 
-	//ObjInsertSafe(0, 
-	//ObjInsertSafe(int node, u16 xBase, u16 yBase, const struct ObjData* pData, u16 tileBase);
 
-	PushToSecondaryOAM(3<<14|104, 40, &gObj_32x32, 0xB198); //|27<<12);
-	//PushToSecondaryOAM(3<<14|64, 8, &gObj_32x32, 0xB198);
-//blh PushToSecondaryOAM, r4 
+	// Draw whatever's in VRAM for some object (eg. if we wanted a 64x64 img to display) 
+	//PushToSecondaryOAM(3<<14|104, 40, &gObj_32x32, 0xB198); //|27<<12);
+
 
 
 }
@@ -174,9 +172,9 @@ void SelectRelic_ASMC(Proc* proc) // ASMC
 
 void SelectRelic_StartMenu(struct Struct_SelectRelicProc* proc)
 {
-	proc->entry[0] = HashByte(0, RelicMaxLink);
-	proc->entry[1] = HashByte(1, RelicMaxLink);
-	proc->entry[2] = HashByte(2, RelicMaxLink);
+	proc->entry[0] = HashByte(0, RelicMaxLink)+1;
+	proc->entry[1] = HashByte(1, RelicMaxLink)+1;
+	proc->entry[2] = HashByte(2, RelicMaxLink)+1;
 	
 	int c = 3; 
 	while (proc->entry[1] == proc->entry[0]) {
@@ -252,26 +250,51 @@ static void DrawMultiline(TextHandle* handles, char* string, int lines) // There
     }
 }
 
+extern u16 SkillDescTable[0xFF]; 
+#define SKILL_ICON(aSkillId) ((1 << 8) + (aSkillId))
+static void DrawSelectRelicCommandDrawIdle(struct MenuCommandProc* command)
+{
+	Struct_SelectRelicProc* selectRelicProc = (Struct_SelectRelicProc*)ProcFind(&ProcInstruction_SelectRelic);
+	u16* const out = gBg0MapBuffer + TILEMAP_INDEX(command->xDrawTile, command->yDrawTile);
+	DrawIcon(out + TILEMAP_INDEX(0, 0), SKILL_ICON(selectRelicProc->entry[command->commandDefinitionIndex]), TILEREF(0, 4));
+}
 
+extern u8 gCurrentTextString[0xFF]; 
 static void DrawSelectRelicCommands(struct MenuProc* menu, struct MenuCommandProc* command)
 {
 	u16* const out = gBg0MapBuffer + TILEMAP_INDEX(command->xDrawTile, command->yDrawTile);
 	//Text_SetColorId(&command->text, TEXT_COLOR_GREEN);
-	
 	Struct_SelectRelicProc* selectRelicProc = (Struct_SelectRelicProc*)ProcFind(&ProcInstruction_SelectRelic);
+	u8 skillID = selectRelicProc->entry[command->commandDefinitionIndex];
 	
-	char* string = GetStringFromIndex(RelicNameTable[selectRelicProc->entry[command->commandDefinitionIndex]].name);
-	u32 width = (Text_GetStringTextWidth(string)+8)/8;
+	//char* string = GetStringFromIndex(RelicNameTable[selectRelicProc->entry[command->commandDefinitionIndex]].name);
+	char* string = GetStringFromIndex(SkillDescTable[skillID]);
+	//string = gCurrentTextString; 
+	for (u8 i = 0; i<0xFF; i++)
+	{
+		if ((gCurrentTextString[i] == 0x3A) | ( gCurrentTextString[i] == 0 ) ) { 
+			gCurrentTextString[i] = 0; 
+			break; 
+		} 
+	}
+	
+	u32 width = (Text_GetStringTextWidth(gCurrentTextString)+25)/8;
 	Text_InitClear(&command->text, width);
-	Text_DrawString(&command->text, string); 
-	Text_SetXCursor(&command->text, 0);
-	
-	
+	Text_SetXCursor(&command->text, 17);
+	Text_DrawString(&command->text, gCurrentTextString); 
 
+	
+	
+	//ObjInsertSafe(0, 
+	//ObjInsertSafe(int node, u16 xBase, u16 yBase, const struct ObjData* pData, u16 tileBase);
+    command->onCycle = DrawSelectRelicCommandDrawIdle;
+		
 	Text_Display(&command->text, out);
 	
 	EnableBgSyncByMask(BG0_SYNC_BIT);
 }
+
+
 
 static void DrawDesc(struct MenuProc* menu, struct MenuCommandProc* command)
 {
@@ -295,7 +318,10 @@ static void DrawDesc(struct MenuProc* menu, struct MenuCommandProc* command)
 	
 	
 	
-	char* string = GetStringFromIndex(RelicNameTable[proc->entry[menu->commandIndex]].desc);
+	//char* string = GetStringFromIndex(RelicNameTable[proc->entry[menu->commandIndex]].desc);
+	u8 skillID = proc->entry[command->commandDefinitionIndex];
+	char* string = GetStringFromIndex(SkillDescTable[skillID]);
+	
 	int lines = GetNumLines(string);
 	TextHandle handles[lines];
 	for ( int i = 0 ; i < lines ; i++ )
@@ -314,12 +340,12 @@ static void DrawDesc(struct MenuProc* menu, struct MenuCommandProc* command)
 	
 	EnableBgSyncByMask(BG0_SYNC_BIT);
 	
+	/*
+	// Prepare some image 
 	Decompress(RelicNameTable[proc->entry[proc->currOptionIndex]].img, &gGenericBuffer[400]);
-//CpuFastSet(gGenericBuffer[], 0x6013000, unsigned config)
-//CpuFastSet(gGenericBuffer[], 0x6013000, 0x20)
 	RegisterObjectTileGraphics(&gGenericBuffer[400], (void*)0x6013300, 8, 8); 
 	CopyToPaletteBuffer(RelicNameTable[proc->entry[proc->currOptionIndex]].pal, 27*32, 32); 
-
+	*/
 	
 }
 
@@ -458,7 +484,7 @@ static const struct MenuCommandDefinition MenuCommands_CharacterProc3[] =
 
 static const struct MenuDefinition MenuDef_SelectRelic3 =
 {
-    .geometry = { 1, 5, 12 },
+    .geometry = { 1, 5, 14 },
 	.style = 0,
     .commandList = MenuCommands_CharacterProc3,
 	._u14 = 0,
