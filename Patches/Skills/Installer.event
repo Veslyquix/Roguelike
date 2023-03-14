@@ -1,7 +1,7 @@
 #include "Extensions/ProcDefinitions.txt"
 
-#include "lyn.event/ShrewdPotential.lyn.event" 
-#include "lyn.event/Guts.lyn.event" 
+#include "dmp/ShrewdPotential.lyn.event" 
+#include "dmp/Guts.lyn.event" 
 
 ALIGN 4 
 ShowBuffEvent: 
@@ -38,7 +38,7 @@ POP
 
 
 
-#include "lyn.event/HoneSkills.lyn.event" 
+#include "dmp/HoneSkills.lyn.event" 
 
 ALIGN 4 
 CleverInitAmount_Link: 
@@ -115,7 +115,7 @@ WORD 10 // Won't buff above 10.
 
 
 
-#include "lyn.event/TakerSkills.lyn.event" 
+#include "dmp/TakerSkills.lyn.event" 
 
 
 ALIGN 4 
