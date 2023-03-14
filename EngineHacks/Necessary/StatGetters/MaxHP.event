@@ -4,8 +4,7 @@
 #include "_Common.event"
 
 pMaxHPModifiers: // Maximum HP
-	POIN prAddUnitMaxHP HalfHpFunc prAddEquipHP prItemPassiveHp
-	POIN RelicsHP	
+	POIN prAddUnitMaxHP HalfHpFunc prAddEquipHP prItemPassiveHp RelicsHP
 	#ifdef DEBUFFS_MIN_ZERO
 	POIN prMinZero
 	#endif

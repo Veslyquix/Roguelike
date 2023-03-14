@@ -16,7 +16,7 @@
 
 PUSH
   //Include essential fixes and autopatches
-  //#include "_FE8EssentialFixes.event"
+  #include "_FE8EssentialFixes.event"
   
   // Debug Startup Screen
   #ifdef __DEBUG__
@@ -45,19 +45,16 @@ ORG FreeSpaceBLRange //defined in custom definitions
   #incbin "SkillSystem/Internals/unset_attack_flag.dmp"
 
   #ifdef USE_STRMAG_SPLIT
-    
-    #ifndef USE_SAVE_EXPANSION
-	  #define USE_SAVE_EXPANSION // Force use of EMS with Str/Mag Split
-	#endif // USE_SAVE_EXPANSION
-	
 	#include "ExternalHacks/StrMagSplit/BLRange.event"
-  
   #endif // USE_STRMAG_SPLIT
 	
 #undef inBLRange
 POP
 
 ////////////////////////////////FREE SPACE OUT OF BL RANGE
+
+  // Display damage numbers in battle animations.
+  #include "ExternalHacks/AnimNumbers/AnimNumbers.event"
 
   //HP Bars (and effective weapon warning)
   #include "QualityOfLife/HpBars/HpBars.event"
@@ -79,9 +76,18 @@ POP
 
   //Negative Stat Boosts
   #include "Necessary/NegativeStatBoosts/NegativeStatBoosts.event"
+
+  //Trap Rework (Dragon Veins & Heal Tiles)
+  //#include "ExternalHacks/TrapRework/TrapRework.event"
   
   //Proper Range Getters
   #include "ExternalHacks/ProperRangeGetters/ProperRangeGetters/ProperRangeGetters.event"
+
+  //Leadership Stars
+  #include "ExternalHacks/LeadershipStars/LeadershipStars.event"
+  
+  //Biorhythm
+  #include "ExternalHacks/Biorhythm/Biorhythm.event"
 
   //Modular Stat Screen
   #include "Necessary/ModularStatScreen/ModularStatScreen.event"
@@ -93,17 +99,29 @@ POP
 	
   #endif // USE_STRMAG_SPLIT
   
+  //Anima Triangle
+  #include "ExternalHacks/AnimaTriangle/AnimaTriangle.event"
+  
   //Modular EXP
   #include "ExternalHacks/ModularEXP/ModularEXP.event"
   
   //Portrait Selection
   #include "ExternalHacks/PortraitSelectASM/PortraitSelectionASM.event"
+	
+  //Stairs
+  #include "ExternalHacks/Stairs/Stairs.event"
 
+  //Raid
+  #include "ExternalHacks/Raid/Raid.event"
+  
   //Escape-Arrive
   #include "ExternalHacks/EscapeArrive/EscapeArrive.event"
   
   //Debuffs
-  #include "Necessary/SuspendDebuffs/Debuffs.event"
+  #include "Necessary/Debuffs/Debuffs.event"
+
+  //Stat Screens palette by allegiance
+  #include "ExternalHacks/StatScreenAllegiance/StatScreenAllegiance.event"
 
   //Menu Semitransparency
   #include "QualityOfLife/SemitransparencyChanges.event"
@@ -134,6 +152,10 @@ POP
   #include "ExternalHacks/Freeze/Freeze.event"
   #include "ExternalHacks/Freeze/EventFreeze.event"
   
+  //Reaver Split
+  ALIGN 4
+  #include "ExternalHacks/ReaverSplit/ReaverSplit.event"
+  
   //Cannot Crit
   ALIGN 4
   #include "ExternalHacks/CannotCrit/CannotCrit.event"
@@ -154,9 +176,18 @@ POP
   #ifdef CRIT_CAP
     #include "ExternalHacks/CritCap/CritCap.event"
   #endif
+
+  //Item Effect Revamp by Teraspark
+  #include "Necessary/ItemEffectRevamp/IERevamp_Installer.event"
   
   //Durability-Based Items, for Skill Scrolls
-  //#include "Necessary/DurabilityBasedItems/DurabilityBasedItems.event"
+  #include "Necessary/DurabilityBasedItems/DurabilityBasedItems.event"
+  
+  //Generic routines that other things may rely on 
+  #include "Necessary/Routines/Installer.event" 
+
+  // Gaiden Magic 2.0
+  #include "ExternalHacks/GaidenMagic/GaidenMagic.event"
   
   #ifdef INSTALL_AoE
 	#include "ExternalHacks/AoE/Installer.event"
@@ -184,32 +215,12 @@ POP
   #include "Necessary/IconRework/IconRework.event"   // Allows using standard Icon routines to draw skill icons
   #include "Necessary/PopupRework/PopupRework.event" // Allows to expand on vanilla popups by adding components
   
-  #include "Necessary/UnitMenu/UnitMenu.event"
+  //#include "Necessary/UnitMenu/UnitMenu.event"
   #include "Necessary/Popups.event"
   
   #include "Necessary/CalcLoops/CalcLoops.event"
 
-  #ifdef STAIRS_ASM
-    #ifndef USE_SAVE_EXPANSION
-	  #define USE_SAVE_EXPANSION // Force use of EMS with Stairs (for saving the stair debuff byte in suspend).
-	#endif // USE_SAVE_EXPANSION
-  #endif // STAIRS_ASM
-  
   // Save/Suspend Expansion
-  #ifdef USE_SAVE_EXPANSION
-
-    // Use new EMS-based expansion
-
     MESSAGE "Using EMS Save/Suspend Expansion"
-
     #include "Necessary/ExpandedModularSave/ExModularSave.event"
 
-  #else // USE_SAVE_EXPANSION
-
-    // Use legacy suspend expansion (for compatibility)
-
-    MESSAGE "Using Legacy Suspend Expansion"
-
-    #include "Necessary/SuspendDebuffs/SuspendExpansion.event"
-
-  #endif // USE_SAVE_EXPANSION

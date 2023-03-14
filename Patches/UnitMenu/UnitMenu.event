@@ -89,25 +89,95 @@ UnitMenuTable:
     MenuCommand(UM_EditSkill, UM_EditSkillDesc, OrangeText, $04F449, SkillDebugCommand_OnSelect)
   #endif
 
-POIN 0x0D7E9C;SHORT 0x067A 0x06CC;BYTE 0x00 0x4E 0x00 0x00;POIN 0x022FDD 0x00 0x023021 0x00 0x00 0x00 //00  Seize
-POIN 0x0D7E94;SHORT 0x067B 0x06C0;BYTE 0x00 0x4F 0x00 0x00;POIN 0x0249AD 0x00 0x022B31 0x00 0x022C31 0x022C99 //01  Attack
-POIN 0x0D7E94;SHORT 0x067B 0x06C0;BYTE 0x00 0x50 0x00 0x00;POIN 0x024A29 0x00 0x022B31 0x00 0x022C31 0x022C99 //02  Attack
-POIN 0x0D7E8C;SHORT 0x067C 0x06C1;BYTE 0x00 0x51 0x00 0x00;POIN 0x023A55 0x00 0x023ACD 0x00 0x023B3D 0x023B85 //03  Staff
-POIN 0x0D7E84;SHORT 0x0691 0x06D6;BYTE 0x04 0x52 0x00 0x00;POIN 0x0248C5 0x00 0x024921 0x00 0x00 0x00 //04  Ride
-POIN 0x0D7E78;SHORT 0x0692 0x06D7;BYTE 0x04 0x53 0x00 0x00;POIN 0x02494D 0x00 0x024981 0x00 0x00 0x00 //05  Exit
-POIN 0x0D7E6C;SHORT 0x067D 0x06C3;BYTE 0x00 0x54 0x00 0x00;POIN 0x023159 0x00 0x0231D1 0x00 0x00 0x00 //06  Play
-POIN 0x0D7E64;SHORT 0x067E 0x06C2;BYTE 0x00 0x55 0x00 0x00;POIN 0x023195 0x00 0x0231D1 0x00 0x00 0x00 //07  Dance
-POIN 0x0D7E5C;SHORT 0x067F 0x06C4;BYTE 0x00 0x56 0x00 0x00;POIN 0x02418D 0x00 0x0241DD 0x00 0x00 0x00 //08  Steal
-POIN 0x0D7E54;SHORT 0x0693 0x06DD;BYTE 0x00 0x57 0x00 0x00;POIN 0x0243D9 0x00 0x0244B9 0x00 0x00 0x00 //09  Summon
-POIN 0x0D7E4C;SHORT 0x0693 0x06DD;BYTE 0x00 0x58 0x00 0x00;POIN 0x0244FD 0x00 0x024549 0x00 0x00 0x00 //0A  Summon
-POIN 0x0D7E40;SHORT 0x0694 0x06DE;BYTE 0x00 0x59 0x00 0x00;POIN 0x023E7D 0x00 0x023EB5 0x00 0x00 0x00 //0B  Pick
-POIN 0x0D7E38;SHORT 0x0680 0x06C9;BYTE 0x00 0x5A 0x00 0x00;POIN 0x023C81 0x00 0x023CC5 0x00 0x00 0x00 //0C  Talk
+  MenuCommand(0x67A, 0x6CC, BlueText, $22FDC, $23020)
+  // UM_Seize
+  #ifdef ESCAPE_ARRIVE
+    MenuCommand(ArriveName, ArriveDesc, BlueText, ArriveCommandUsability, ArriveCommandEffect)
+    MenuCommand(EscapeName, EscapeDesc, BlueText, EscapeCommandUsability, EscapeCommandEffect)
+  #endif // ESCAPE_ARIVE
+  
+  #ifdef DRAGON_VEINS
+  MenuCommand(UMText_DV, UMText_DVDesc, GreenText, VeinUsability, VeinEffect)
+  #endif // DRAGON_VEINS
+  
+  // UM_Attack
+  MenuCommand(0x67b, 0x6c0, NormalText, $249ac, AttackEffect, $22c31, $22c99) //to clear flags
+  // UM_Attack_B
+  MenuCommand(0x67b, 0x6c0, NormalText, $24a28, AttackEffect, $22c31, $22c99)
+  #ifdef GAIDEN_MAGIC
+	MenuCommand(UM_GaidenBlackMagic,UM_GaidenMagicDesc,NormalText,GaidenBlackMagicUMUsability,GaidenBlackMagicUMEffect,GaidenBlackMagicUMHover,GaidenMagicUMUnhover)
+	MenuCommand(UM_GaidenWhiteMagic,UM_GaidenMagicDesc,NormalText,GaidenWhiteMagicUMUsability,GaidenWhiteMagicUMEffect,GaidenWhiteMagicUMHover,GaidenMagicUMUnhover)
+  #endif // GAIDEN_MAGIC
+  #ifdef COMBAT_ARTS
+	MenuCommand(UM_CombatArts, UM_CombatArtsDesc, NormalText, CombatArtsUsability, CombatArtsEffect, $22c31, $22c99)
+  #else // COMBAT_ARTS
+	//Lunge
+	MenuCommand(UM_Lunge, UM_LungeDesc, NormalText, LungeUsability, LungeEffect, $22c31, $22c99)
+
+	//Mercy
+	MenuCommand(UM_Mercy, UM_MercyDesc, NormalText, MercyUsability, MercyEffect, $22c31, $22c99)
+
+	//Gamble
+	MenuCommand(UM_Gamble, UM_GambleDesc, NormalText, GambleUsability, GambleEffect, $22c31, $22c99)
+
+	//Capture
+	MenuCommand(UM_Capture, UM_CaptureDesc, NormalText, Capture_Usability, Capture_Effect_Func, $22c31, $22c99)
+  #endif // COMBAT_ARTS
+
+  UM_Staff
+  UM_Ride
+  UM_Exit
+  UM_Play
+  
+  //UM_Dance
+  MenuCommand(0x67E,0x6C2,NormalText,NewDanceUsability,0x231D0)
+
+#ifdef INSTALL_AoE
+#define MenuCommand_BPress(name,description,colour,usability,effect, unknown2) "WORD $80d7d94; SHORT name description; BYTE colour $4e; SHORT 0; POIN usability|1; WORD 0; POIN effect|1; POIN 0 0 unknown2|1"
+  MenuCommand_BPress(UM_AoEName, UM_AoEDesc, NormalText, AoE_AreAnyUsable, AoE_Effect, AoE_ClearGraphics)
+#endif 
 
 
-POIN 0x0D7E30;SHORT 0x0681 0x06CA;BYTE 0x00 0x5B 0x00 0x00;POIN 0x023D15 0x00 0x023D65 0x00 0x00 0x00 //0D  Support
-POIN 0x0D7E28;SHORT 0x0682 0x06CB;BYTE 0x00 0x5C 0x00 0x00;POIN 0x023041 0x00 0x0230C1 0x00 0x00 0x00 //0E  Visit
-POIN 0x0D7E20;SHORT 0x0683 0x06CE;BYTE 0x00 0x5D 0x00 0x00;POIN 0x023E1D 0x00 0x023E59 0x00 0x00 0x00 //0F  Chest
-POIN 0x0D7E18;SHORT 0x0684 0x06CD;BYTE 0x00 0x5E 0x00 0x00;POIN 0x023DB5 0x00 0x023DF5 0x00 0x00 0x00 //10  Door
+
+  UM_Steal
+  
+  //UM_Summon
+  MenuCommand(0x693,0x6DD,NormalText,NewSummonUsability,0x244B8)
+  
+  UM_Summon_DK
+  UM_Pick
+
+#ifndef COMBAT_ARTS
+
+#ifdef HAX_RALLIES
+  // Rally preview conflicts with window semitransparency changes
+  // So we only add that in if it is disabled
+#ifdef SEMITRANSPARENCY_CHANGES
+  MenuCommand(UM_Rally, UM_RallyDesc, NormalText, RallyCommandUsability, RallyCommandEffect)
+#else
+  MenuCommand(UM_Rally, UM_RallyDesc, NormalText, RallyCommandUsability, RallyCommandEffect, RallyCommandSwitchIn, RallyCommandSwitchOut)
+#endif
+
+#endif // HAX_RALLIES
+
+#endif // COMBAT_ARTS
+
+  // UM_Talk
+  MenuCommand(0x680, 0x6c9, GreenText, 0x23c81, 0x23cc5)
+  // UM_Support
+  MenuCommand(0x681, 0x6ca, GreenText, 0x23d15, 0x23d65)
+  UM_Visit
+  
+  #ifdef RAID
+    MenuCommand(RaidNameText,RaidDescText,NormalText,RaidUsability,RaidEffect)
+  #endif // RAID
+  
+  #ifdef STAIRS_ASM
+	MenuCommand(StairsNameText,StairsDescText,GreenText,StairsUsability,StairsEffect)
+  #endif // STAIRS_ASM
+  
+  UM_Chest
+  UM_Door
 
  MenuCommand(UM_Shop, UM_ShopDesc, NormalText, ShopTrapUsability, ShopTrapEffect) //Attack
  MenuCommand(UM_Chest2, UM_ChestDesc2, NormalText, ChestTrapUsability, ChestTrapEffect) //Attack
@@ -118,92 +188,41 @@ POIN 0x0D7E18;SHORT 0x0684 0x06CD;BYTE 0x00 0x5E 0x00 0x00;POIN 0x023DB5 0x00 0x
  MenuCommand(UM_Shop, UM_ShopDesc, NormalText, SecretShopTrapUsability, SecretShopTrapEffect) //Attack
 
 
-POIN 0x0D7E0C;SHORT 0x0685 0x06CF;BYTE 0x00 0x5F 0x00 0x00;POIN 0x023FD9 0x00 0x024015 0x00 0x00 0x00 //11  Armory
-POIN 0x0D7E00;SHORT 0x0686 0x06D0;BYTE 0x00 0x60 0x00 0x00;POIN 0x024035 0x00 0x024071 0x00 0x00 0x00 //12  Vendor
-POIN 0x0D7DF4;SHORT 0x0687 0x06D1;BYTE 0x00 0x61 0x00 0x00;POIN 0x024091 0x00 0x0240CD 0x00 0x00 0x00 //13  Secret
-POIN 0x0D7DE8;SHORT 0x0688 0x06D2;BYTE 0x00 0x62 0x00 0x00;POIN 0x0240ED 0x00 0x024145 0x00 0x00 0x00 //14  Arena
-POIN 0x0D7DE0;SHORT 0x0689 0x06C5;BYTE 0x00 0x63 0x00 0x00;POIN 0x0228A5 0x00 0x0228DD 0x00 0x00 0x00 //15  Rescue
-POIN 0x0D7DD4;SHORT 0x068A 0x06C6;BYTE 0x00 0x64 0x00 0x00;POIN 0x022911 0x00 0x022949 0x00 0x00 0x00 //16  Drop
-POIN 0x0D7DC8;SHORT 0x068B 0x06C8;BYTE 0x04 0x65 0x00 0x00;POIN 0x02298D 0x00 0x0229D5 0x00 0x00 0x00 //17  Take
-POIN 0x0D7DBC;SHORT 0x068C 0x06C7;BYTE 0x04 0x66 0x00 0x00;POIN 0x0229F5 0x00 0x022A3D 0x00 0x00 0x00 //18  Give
-POIN 0x0D7DB0;SHORT 0x068D 0x06D3;BYTE 0x00 0x67 0x00 0x00;POIN 0x0232B9 0x00 0x0232E9 0x00 0x00 0x00 //19  Item
-POIN 0x0D7DA8;SHORT 0x068E 0x06D4;BYTE 0x04 0x68 0x00 0x00;POIN 0x022F35 0x00 0x022F89 0x00 0x00 0x00 //1A  Trade
-POIN 0x0D7D9C;SHORT 0x068F 0x06D5;BYTE 0x04 0x69 0x00 0x00;POIN 0x023F65 0x00 0x023FB9 0x00 0x00 0x00 //1B  Supply
-//POIN 0x0D7D94;SHORT 0x0695 0x06BF;BYTE 0x00 0x6B 0x00 0x00;POIN 0x04F449 0x00 0x022739 0x00 0x00 0x00 //1C  Wait
-
-
-
-/*
-  UM_Visit
-  
-  MenuCommand(0x67A, 0x6CC, BlueText, $22FDC, $23020)
-
-  UM_Attack
-  //MenuCommand(0x67b, 0x6c0, NormalText, $249ac, AttackEffect, $22c31, $22c99) //to clear flags
-  // UM_Attack_Ballista 
-  MenuCommand(0x67b, 0x6c0, NormalText, $24a28, AttackEffect, $22c31, $22c99)
- 
- 
-  UM_Staff
-  UM_Ride
-  UM_Exit
-  UM_Play
-  
-  //UM_Dance
-  //MenuCommand(0x67E,0x6C2,NormalText,NewDanceUsability,0x231D0)
-
-  // UM_Talk
-  MenuCommand(0x680, 0x6c9, GreenText, 0x23c81, 0x23cc5)
-  UM_Chest
-  UM_Door
   UM_Armory
-
+  UM_Vendor
   UM_Secret
   UM_Arena
-
-
-  UM_Steal
+  	
+  #ifndef COMBAT_ARTS
+	// Shove & cie
+	MenuCommand(UM_Shove,      UM_ShoveDesc,      NormalText, prShoveCommand_Usability,      prShoveCommand_Effect)
+	MenuCommand(UM_Smite,      UM_SmiteDesc,      NormalText, prSmiteCommand_Usability,      prSmiteCommand_Effect)
+	MenuCommand(UM_Pivot,      UM_PivotDesc,      NormalText, prPivotCommand_Usability,      prPivotCommand_Effect)
+	MenuCommand(UM_Reposition, UM_RepositionDesc, NormalText, prRepositionCommand_Usability, prRepositionCommand_Effect)
+	MenuCommand(UM_Swap,       UM_SwapDesc,       NormalText, prSwapCommand_Usability,       prSwapCommand_Effect)
+	MenuCommand(UM_Swarp,      UM_SwarpDesc,      NormalText, prSwarpCommand_Usability,      prSwarpCommand_Effect)
+  #endif // COMBAT_ARTS
   
-  //UM_Summon
-  //MenuCommand(0x693,0x6DD,NormalText,NewSummonUsability,0x244B8)
-  
-  UM_Summon_DK
-  UM_Pick
-
-#ifndef COMBAT_ARTS
-
-
-  // UM_Support
-  MenuCommand(0x681, 0x6ca, GreenText, 0x23d15, 0x23d65)
-
-  
- 
-  
-  
+  UM_Rescue
+  UM_Give
+  UM_Take
   // MenuCommand(0x689, 0x6c5, 0, 0x228a4, RescueEffect) //rescue
   // MenuCommand(UMText_Transfer,UMText_TransferDesc,GreenText,TransferUsability,TransferTarget) //transfer
   // MenuCommand(UMText_Switch,UMText_SwitchDesc,GreenText,SwitchUsability,SwitchCommand)   //switch
+  UM_Drop
+
+  #ifdef __DEBUG__
+    MenuCommand(UM_EditSkill, UM_EditSkillDesc, OrangeText, $04F449, SkillDebugCommand_OnSelect)
+  #endif
 
   UM_Item
-
-    //UM_Call, UM_CallDesc 
-    MenuCommand(UM_Call, UM_CallDesc, GreenText, CallCommandUsability, CallCommandEffect)
-  //UM_Rest, UM_RestDesc 
-  
   UM_Trade
-  
-
   
   //UM_Supply
   MenuCommand(0x68F,0x6D5,GreenText,NewSupplyUsability,0x23FB8)
-//MenuCommand(UM_Promote, UM_PromoteDesc, GreenText, PromoteUsability, PromoteEffect) 
-
-*/
-
+  
 // Wait (edited to show an arrow) 
 //BYTE 0x94 0x7D 0xD 0x8 0x95 0x6 0xBF 0x6 0x0 0x6B 0x0 0x0 0x49 0xF4 0x4 0x8; POIN DisplayedWaitmarkIfSubMenu+1; BYTE 0x39 0x27 0x2 0x8 0 0 0 0 0 0 0 0 0 0 0 0	//	待機 wait
-
-  
   UM_Wait
 
   UM_Separator 

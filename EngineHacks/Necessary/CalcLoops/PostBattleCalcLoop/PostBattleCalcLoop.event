@@ -11,11 +11,9 @@ PostCombatLoop:
 POIN PostCombatSkills
 
 PostCombatSkills: //I like having savage blow as the first one because it makes the activation sound play first
-POIN Canto StrTaker SklTaker SpdTaker DefTaker ResTaker LukTaker MagTaker MovTaker 
-/*
 POIN SavageBlow BreathOfLife Despoil Lifetaker Fury PoisonStrike GrislyWound//lifetaker should probably go after any messages because it can mess with the palette a bit
-POIN CantoPlus Galeforce ReMove Powerstaff CulturedPostCombat Gridmaster //this order for canto and friends is the only one I tested
-*/
+POIN StrTaker SklTaker SpdTaker DefTaker ResTaker LukTaker MagTaker MovTaker 
+POIN Canto CantoPlus Galeforce ReMove Powerstaff CulturedPostCombat Gridmaster //this order for canto and friends is the only one I tested
 WORD 0 //Terminator
 
 PROTECT $1D308 $1D314

@@ -25,14 +25,13 @@
 #define ENABLE_SLAYER_AND_EFFECTIVENESS_REWORK
 
 // If uncommented, a full str/split will be implemented without replacing any stats
-// USE_SAVE_EXPANSION will be used even if commented
 // TODO: Define an item ID for Spirit Dust (Mag statbooster) in "Strmag/Str Mag Split/Installer.event". Energy Ring is used by default!
 // Item icon for Spirit Dust is included! Define your icon ID in "Strmag/_Master Asm Installer.event". Default is Green Note.
-// #define USE_STRMAG_SPLIT
+//#define USE_STRMAG_SPLIT
 
-// If uncommented, will use a full (EMS-based) save expansion instead of the "old" suspend expansion
-// Enabling this *will* break saves, but allows for higher stats and other things.
-// #define USE_SAVE_EXPANSION
+// If uncommented, the statscreen will have a moving background similar to FE6 and FE7.
+// Customization of graphical assets is possible in Necessary/ModularStatScreen/Background/Graphics/Graphics.event.
+// #define SCROLLING_STATSCREEN_BACKGROUND
 
 //If uncommented, will enable Battle Stats with Animations Off.
 #define BATTLE_STATS
@@ -48,6 +47,10 @@
 
 //If uncommented, will enable Display Weapon Rank on Level Up.
 #define WRANK_ON_LEVELUP
+
+//If uncommented, will use Trap Rework.
+//This is automatically used if Dragon Veins or Heal Tiles are uncommented.
+#define TRAP_REWORK
 
 //If uncommented, will enable Dragon Veins.
 #define DRAGON_VEINS
@@ -150,6 +153,9 @@
 //If uncommented, AdvWeaponLocks will be implemented.
 //This is a rewrite of venno's array-based weapon locks.
 // #define ADV_WEAPON_LOCKS
+//If uncommented, AdvWeaponLocks will use only the lowest bit of the weapon ability word's 4th byte rather than the entire thing.
+//Requires additional configuration in WeaponLockArray/AdvWeaponLocks.event.
+// #define CONSOLIDATED_ADV_WEAPON_LOCKS
 
 //If uncommented, Status-Inflicting Weapons will be implemented.
 //Setting weapon effect 0xD will apply the effect ID at item data +0x22.
@@ -196,6 +202,12 @@
 
 // If uncommented all boss kills will play critical hit animations.
 // #define FLASHY_MODE
+
+// If uncommented, the unit load buffer will be repointed.
+// The location it is repointed to is also defined here. The default location is
+// the area that stores turn count information, and WILL break turn counts.
+// #define REPOINT_UNIT_LOAD_BUFFER
+// #define NewUnitLoadBufferLoc 0x203ED40
 
 // =================================
 // = SKILL BEHAVIOUR CONFIGURATION =
@@ -311,6 +323,12 @@
 //	This list can be edited, and is located in
 //	SkillSystem/Skills/WeaponUsabilitySkills/WeaponUsabilitySkills.event.
 
+// If true, Hoarders Bane will consume vulneraries from your inventory and the supply (as long as your party can access the supply). 
+// If false, it will only consume vulneraries from your inventory. 
+#define HOARDERS_BANE_USE_CONVOY True
+
+// If true, enemies/npcs with Canto+ will retreat to their safest tile with any remaining movement after their action. 
+#define CANTO_AI True
 
 // ================================
 // = GROWTH DISPLAY CONFIGURATION =

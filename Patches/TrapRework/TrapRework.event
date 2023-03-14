@@ -1,15 +1,6 @@
-#define TRAP_REWORK 
 #ifndef TRAP_REWORK
-
-#ifdef DRAGON_VEINS
-	#define TRAP_REWORK
-#endif // DRAGON_VEINS
-
-#ifdef HEAL_TILES
-	#define TRAP_REWORK
-#endif // HEAL_TILES
-
-#endif // TRAP_REWORK
+#define TRAP_REWORK 
+#endif 
 
 #ifdef TRAP_REWORK
 

@@ -17,14 +17,14 @@
   
   #include "DisplayGrowthsOptions/DisplayGrowthsOptions.event"
   #include "WeaponRankStatScreen/WeaponRankStatScreen.event"
+  #include "Background/Background.event"
  
   PUSH
     ORG 0x205b24 //24 for stat screen
-      //POIN MSS_page1|1 MSS_page2|1 MSS_page3|1 MSS_page4|1
-      POIN MSS_page1|1 MSS_page2|1 MSS_page3|1
+      POIN MSS_page1|1 MSS_page2|1 MSS_page3|1 MSS_page4|1
 
-    //ORG $88690
-    //  BYTE 4 //make 4 pages
+    ORG $88690
+      BYTE 4 //make 4 pages
 	  
     ORG $88650
       POIN NewPageNameGraphic
@@ -140,7 +140,11 @@
   #ifdef LEADERSHIP_STARS
 	#include "pages/mss_page1_skills_leadership.lyn.event"
   #else // LEADERSHIP_STARS
-    #include "pages/mss_page1.lyn.event"
+    #ifdef BIORHYTHM
+	  #include "pages/mss_page1_skills_biorhythm.lyn.event"
+	#else // BIORHYTHM
+	  #include "pages/mss_page1_skills.lyn.event"
+	#endif // BIORHYTHM
   #endif // LEADERSHIP_STARS
   
   #else // USE_STRMAG_SPLIT
@@ -209,7 +213,7 @@
 
   ALIGN 4
   NewPageNameLayout:
-    POIN $a008bc $a008d0 $a008de $a008bc
+    POIN $a008bc $a008d0 $a008de $a008d0
 
   ALIGN 4
   NewPageNameTiles:

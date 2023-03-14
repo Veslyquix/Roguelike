@@ -52,16 +52,12 @@ SHORT $7891 $78D2 $0608
 
 //Make attacks at 2-15 range not use long-range anims by default (by Sme)
 //use the Uncounterable flag for long-range anims instead
-PUSH
   ORG $57314
   BYTE 0xF
-POP
 
 //Disallow using ballistae while cantoing
-PUSH
   ORG $248DE
   SHORT $2187
-POP
 
 //Break HP Cap for Players/NPCs (credit Solum)
   // ORG $181ee
@@ -189,7 +185,6 @@ ORG $12F52
   
   uncompHelper:
   jumpToHack(AntiHuffmanFreeSpace) //FEditor uses r2 instead of r3, but it shouldn't matter.
-  
   ORG 0x464470
   AntiHuffmanFreeSpace: //Can be relocated as necessary.
   BYTE 0x80 0x23 0x1B 0x06 0xC0 0x1A 0x02 0x78 0x0A 0x70 0x01 0x31 0x01 0x30 0x00 0x2A 0xF9 0xD1 0x70 0x47

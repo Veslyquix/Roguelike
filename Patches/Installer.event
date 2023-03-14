@@ -5,14 +5,13 @@
 //#include "CannotDie/Installer.event"
 #include "GlobalStatAdjustments/Installer.event" 
 #include "ExtendWeaponDescBox/Installer.event" 
-#include "Skills/Installer.event" 
+
 // randomize map(s) 
 #include "GenerateMap/Installer.event" 
 
 // for randomizing classes 
 #include "Randomize/Installer.event" // for now, only save the game seed 
 
-#include "SkillSystem/_MasterHackInstaller.event"
 #include "Date/Installer.event" 
 #include "FillAIRangeMapFix/Installer.event" 
 #include "Fixes/QoL_Testing.event" 

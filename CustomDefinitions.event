@@ -1,8 +1,7 @@
 PUSH; ORG $D74D0	//{U}
 String("V0.02                 Jan 2022") ; BYTE 0; POP // this overflows into the date but I don't use the date so whatever 
 
-//#define __DEBUG__
-//PROTECT $2F884 
+
 
 #define FreeSpaceGFX 0x1000000 
 // currently ends at 0x138----
@@ -27,11 +26,13 @@ String("V0.02                 Jan 2022") ; BYTE 0; POP // this overflows into th
 
 #include "Maps/Definitions.event" 
 #include "Defs/Installer.event" 
-#include "Patches/SkillSystem/SkillSystem/skill_definitions.event"
+#include "EngineHacks/SkillSystem/skill_definitions.event"
 
 #define NewFlagsRam 0x3005250 // vanilla global flags 
 #define StartTimeSeedRam 0x30017b0 // - b3 used in RandomizeClass 
 // originally from valni records 
+
+#define SkillScroll 0xBC
 
 
 //First free SMS is 107

@@ -6,7 +6,6 @@
 	//Graphics is prepared with MAKE_HACK_gfx 
 	// this is because gfx are slow to install 
 	
-	
 	ORG FreeSpace
 
 	#include "repointedTextTable.event"
@@ -19,6 +18,8 @@
 	
 	// Maps 
 	#include "Maps/SplitPList.event" 
+	
+	#include "EngineHacks/_MasterHackInstaller.event" 
 	
 	// hacks 
 	#include "Patches/Installer.event" 

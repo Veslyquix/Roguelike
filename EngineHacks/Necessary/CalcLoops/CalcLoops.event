@@ -1,8 +1,6 @@
 
 #include "EXPCalcLoop/EXPCalcLoop.event"
 
-#include "StartOfTurn/Installer.event" 
-
 //#include "MugLoadingCalcLoop/MugLoadingCalcLoop.event"
 
 #include "PostActionCalcLoop/PostActionCalcLoop.event"
@@ -22,4 +20,8 @@
 #include "SkillActivationChanceCalcLoop/SkillActivationChanceCalcLoop.event"
 
 #include "HPRestorationCalcLoop/HPRestorationCalcLoop.event"
+
+#include "TurnLoop/Installer.event" 
+
+#include "RangeCalcLoop/RangeCalcLoop.event"
 

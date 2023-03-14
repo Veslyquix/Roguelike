@@ -44,7 +44,7 @@ END_MAIN
 
 
 LocationBasedEvents: // Probably cannot use these 
-House(0, HealHp, 2,2) 
+//House(0, HealHp, 2,2) 
 /*
 Vendor(ShopItems,2,7)
 Armory(ArmoryItems,10,26)
@@ -54,10 +54,6 @@ Seize(10,2)
 */
 END_MAIN
 
-HealHp: 
-UseVulnerary((-1), 10)
-NoFade 
-ENDA 
 
 MiscBasedEvents:
 CauseGameOverIfLordDies
