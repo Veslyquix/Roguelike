@@ -190,6 +190,8 @@ Proc_Eclipse:
 #incbin "Eclipse/proc_eclipse.dmp"
 POIN SkillTester
 WORD EclipseID
+WORD CounterID
+WORD CountermagicID
 
 ALIGN 4
 Proc_Corrosion:
@@ -216,11 +218,11 @@ POIN SkillTester
 WORD VengeanceID
 
 #include "CombatArts/CombatArtProcSkills.event"
-/*
+
 ALIGN 4
 Proc_CmbArtHpCost:
 #include "CmbArtHpCost/CmbArtHpCost.lyn.event"
-*/
+
 
 //When animations are on, do the fancy palette swapping thing (pink for poison, etc) CURRENTLY DOESN'T WORK
 //PUSH

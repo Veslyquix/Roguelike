@@ -19,5 +19,5 @@
   #include "DebugSkillEdit/DebugSkillEdit.event"
 #endif
 
-//#include "SkillScrolls/SkillScrolls.event"
+#include "SkillScrolls/SkillScrolls.event"
 

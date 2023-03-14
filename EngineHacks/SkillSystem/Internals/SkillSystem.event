@@ -68,6 +68,9 @@ SHORT 0 //nop the 0x200000
 ORG $17ef4
 jumpToHack(HookUnitLoading)
 
+ORG $2B3EC
+jumpToHack(Rerun_Battle_Calcs)
+
 ORG $22862
 BL(Unset_Attack_Flag) //this is in masterhackinstaller
 
@@ -322,14 +325,6 @@ BYTE SaviorID//works, but changes are not displayed in the pre-battle numbers (t
 BYTE ForeignPrincessID
 */
 BYTE 0x00//terminator
-ALIGN 4
-
-ALIGN 4
-SkillDescGetter: //given skill number, get description text ID
-#incbin skillDescGetter.dmp
-POIN SkillDescTable
-POIN Skill_Getter
-WORD SS_SkillsDefaultRText
 
 ALIGN 4
 SkillAdder: //given chardata in r0, skill in r1, add skill if possible
