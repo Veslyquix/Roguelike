@@ -1,0 +1,87 @@
+
+ALIGN 4 
+EarlyGameNumberOfPossibleLoads: 
+WORD 8 
+
+ALIGN 4 
+EarlyGameUnitTable: 
+POIN TwoSame 
+POIN TwoDiverse 
+POIN ThreeSame 
+POIN ThreeSemi 
+POIN ThreeDiverse 
+POIN FourSame 
+POIN FourSemi 
+POIN FourDiverse 
+WORD 0 
+
+// 
+TwoSame: 
+UNIT 0x70 Fighter 0x1 Level(1,Enemy,True)   [0,0] 0b 0x0 0x1 REDA0R0 [IronAxe] [0x0]
+UNIT 0x70 Fighter 0x1 Level(1,Enemy,True)   [1,1] 0b 0x0 0x1 REDA1R1 [IronAxe] [0x0]
+UNIT 
+
+TwoDiverse: 
+UNIT 0x70 Fighter 0x1 Level(1,Enemy,True)   [0,0] 0b 0x0 0x1 REDA0R0 [IronAxe] [0x0]
+UNIT 0x70 Pirate 0x1 Level(1,Enemy,True)   [1,1] 0b 0x0 0x1 REDA1R1 [IronAxe] [0x0]
+UNIT 
+
+ThreeSame: 
+UNIT 0x70 Fighter 0x1 Level(1,Enemy,True)   [0,0] 0b 0x0 0x1 REDA0R0 [IronAxe] [0x0]
+UNIT 0x70 Fighter 0x1 Level(1,Enemy,True)   [1,1] 0b 0x0 0x1 REDA1R1 [IronAxe] [0x0]
+UNIT 0x70 Fighter 0x1 Level(1,Enemy,True)   [2,2] 0b 0x0 0x1 REDA2R2 [IronAxe] [0x0]
+UNIT 
+
+ThreeSemi: 
+UNIT 0x70 Fighter 0x1 Level(1,Enemy,True)   [0,0] 0b 0x0 0x1 REDA0R0 [IronAxe] [0x0]
+UNIT 0x70 Pirate 0x1 Level(1,Enemy,True)   [1,1] 0b 0x0 0x1 REDA1R1 [IronAxe] [0x0]
+UNIT 0x70 Fighter 0x1 Level(1,Enemy,True)   [2,2] 0b 0x0 0x1 REDA2R2 [IronAxe] [0x0]
+UNIT 
+
+ThreeDiverse: 
+UNIT 0x70 Fighter 0x1 Level(1,Enemy,True)   [0,0] 0b 0x0 0x1 REDA0R0 [IronAxe] [0x0]
+UNIT 0x70 Pirate 0x1 Level(1,Enemy,True)   [1,1] 0b 0x0 0x1 REDA1R1 [IronAxe] [0x0]
+UNIT 0x70 Mercenary 0x1 Level(1,Enemy,True)   [2,2] 0b 0x0 0x1 REDA2R2 [IronSword] [0x0]
+UNIT 
+
+
+FourSame: 
+UNIT 0x70 Fighter 0x1 Level(1,Enemy,True)   [0,0] 0b 0x0 0x1 REDA0R0 [IronAxe] [0x0]
+UNIT 0x70 Fighter 0x1 Level(1,Enemy,True)   [1,1] 0b 0x0 0x1 REDA1R1 [IronAxe] [0x0]
+UNIT 0x70 Fighter 0x1 Level(1,Enemy,True)   [2,2] 0b 0x0 0x1 REDA2R2 [IronAxe] [0x0]
+UNIT 0x70 Fighter 0x1 Level(1,Enemy,True)   [2,2] 0b 0x0 0x1 REDA3R3 [IronAxe] [0x0]
+UNIT 
+
+FourSemi: 
+UNIT 0x70 Fighter 0x1 Level(1,Enemy,True)   [0,0] 0b 0x0 0x1 REDA0R0 [IronAxe] [0x0]
+UNIT 0x70 Pirate 0x1 Level(1,Enemy,True)   [1,1] 0b 0x0 0x1 REDA1R1 [IronAxe] [0x0]
+UNIT 0x70 Pirate 0x1 Level(1,Enemy,True)   [2,2] 0b 0x0 0x1 REDA2R2 [IronAxe] [0x0]
+UNIT 0x70 Fighter 0x1 Level(1,Enemy,True)   [2,2] 0b 0x0 0x1 REDA3R3 [IronAxe] [0x0]
+UNIT 
+
+FourDiverse: 
+UNIT 0x70 Fighter 0x1 Level(1,Enemy,True)   [0,0] 0b 0x0 0x1 REDA0R0 [IronAxe] [0x0]
+UNIT 0x70 Mercenary 0x1 Level(1,Enemy,True)   [1,1] 0b 0x0 0x1 REDA1R1 [IronSword] [0x0]
+UNIT 0x70 Pirate 0x1 Level(1,Enemy,True)   [2,2] 0b 0x0 0x1 REDA2R2 [IronAxe] [0x0]
+UNIT 0x70 Archer 0x1 Level(1,Enemy,True)   [2,2] 0b 0x0 0x1 REDA3R3 [IronBow] [0x0]
+UNIT 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

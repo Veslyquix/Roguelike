@@ -27,10 +27,13 @@ LOAD1 1 EnemyUnits
 ENUN 
 //ASMC TestFunc 
 FADU 44 
-ASMC ReplaceWeaponsByDifficulty
-//StartOfTurnCalcLoop_Init
+//ASMC ReplaceWeaponsByDifficulty
 
-ASMC SelectRelic_ASMC
+
+//ASMC SelectRelic_ASMC
+
+RandomizeEnemyCoords(Range(0,0,4,4), Range(5,5,9,9))
+
 NoFade 
 ENDA 
 

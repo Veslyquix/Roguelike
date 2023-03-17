@@ -1,4 +1,4 @@
-
+#include "ASMCs/Installer.event" 
 #include "ReplaceWepsByDifficulty/Installer.event" 
 #include "ConversationViewer/Installer.event" 
 #include "RNGRandomizer/Installer.event" 
