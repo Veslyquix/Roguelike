@@ -1,0 +1,83 @@
+#include "eastdlib.event" 
+#ifndef callHackNew 
+	#define callHackNew(offset) 		"BYTE $01 $4B $9E $46 $00 $F8 $01 $E0; POIN (offset|0x1)"
+#endif 
+
+//#define ENABLE_100_GROWTH
+
+PUSH 
+ORG $39722 
+SHORT $2100 // Berserked units won't attack their own allegiance 
+
+ORG $397F6
+SHORT $46C0 // Everyone acts berserked at the end of the turn if they haven't moved 
+
+ORG $5A8412 
+BYTE 4 // Default safety as 4 
+
+ORG $5A8395 
+BYTE 66 // Recovery mode at 66% hp, stop recovery mode at 80% 
+
+ORG $D81F0 // Ai3 = 0x30 
+BYTE 1 1 1 0 1 1 4 2 // Default AI3 to be more cautious 
+
+ORG $30DA6 
+BYTE $d0 $22 // Autocursor off 
+
+ORG $16B06
+SHORT $E003 // items always have the unbreakable bitflag 
+ORG $17574
+jumpToHack(GetItemAttributesWithUnbreakable)
+
+ORG $AD8 
+BYTE 0x09 0xF0 0x16 // Ensure Debug Menu does not show up 
+
+// RNG Randomizer 
+ORG 0x1336
+BYTE 0x08 0xB4 // push r3
+jumpToHack(RNGBodyFE8)
+
+ORG 0x0A4C
+jumpToHack(bootHackBodyFE8)
+
+ORG 0xC3C
+jumpToHack(resumeHackBodyFE8)
+
+ORG $83ECC 
+jumpToHack(ResetPlayerAI|1)
+
+#ifdef ENABLE_100_GROWTH
+ORG $2A2D8 // this is right after check for lvl up 
+callHackNew(OneHundredGrowth)
+#endif 
+
+ORG $D2F7C // overwrite vsprintf (debug print text) 
+ResetPlayerAI: // also gives a vuln to all players that don't have one 
+BYTE $04 $1C $10 $4B $10 $4A $31 $20 $18 $60 $48 $33 $93 $42 $00 $DA $FA $E7 $10 $B4 $0D $4B $0E $4A $03 $24 $24 $02 $6C $21 $0C $43 $00 $21 $02 $39 $48 $33 $93 $42 $09 $DC $02 $31 $0A $29 $F7 $DA $58 $5C $6C $28 $F4 $D0 $00 $28 $F7 $D1 $5C $52 $F0 $E7 $10 $BC $04 $4B $18 $47 $8C $BE $02 $02 $9C $CC $02 $02 $6A $BE $02 $02 $8A $CC $02 $02 $D5 $3E $08 $08
+ALIGN 4
+RNGBodyFE8:
+BYTE $08 $BC $11 $48 $00 $68 $00 $28 $07 $D0 $10 $48 $00 $78 $00 $28 $07 $D1 $0C $48 $00 $F0 $0D $F8 $03 $E0 $0D $48 $00 $78 $00 $28 $F3 $D1 $0C $48 $00 $68 $00 $28 $01 $D0 $00 $F0 $02 $F8 $04 $48 $00 $47 $00 $47 $C0 $46 $C0 $46 $C0 $46 $C0 $46 $C0 $46 $C0 $46 $43 $13 $00 $08 $65 $0C $00 $08 $EC $A4 $03 $02 $FF $BC $02 $02 $6A $4E $00 $03 $B8 $4C $02 $02
+ALIGN 4
+bootHackBodyFE8:
+BYTE $44 $42 $04 $43 $E4 $0F $20 $1C $01 $B4 $06 $4B $07 $48 $18 $60 $05 $4B $07 $48 $18 $70 $01 $BC $01 $4B $18 $47 $C0 $46 $C0 $46 $55 $0A $00 $08 $EC $A4 $03 $02 $6A $4E $00 $03 $FF $FF $FF $FF $FF $00 $00 $00
+ALIGN 4
+resumeHackBodyFE8:
+BYTE $01 $88 $51 $80 $50 $88 $90 $80 $01 $B4 $06 $4B $07 $48 $18 $60 $05 $4B $06 $48 $18 $70 $01 $BC $01 $4B $18 $47 $C0 $46 $C0 $46 $45 $0C $00 $08 $EC $A4 $03 $02 $6A $4E $00 $03 $00 $00 $00 $00
+ALIGN 4 
+GetItemAttributesWithUnbreakable: 
+BYTE $89 $00 $03 $48 $00 $68 $09 $18 $88 $68 $08 $21 $08 $43 $70 $47 $80 $75 $01 $08
+#ifdef ENABLE_100_GROWTH
+ALIGN 4 
+OneHundredGrowth:
+BYTE $00 $B5 $30 $1C $16 $4B $9E $46 $00 $F8 $38 $1C $14 $4B $9E $46 $00 $F8 $14 $4B $18 $7A $70 $21 $C9 $18 $09 $78 $88 $42 $0A $DD $73 $22 $9B $18 $01 $20 $18 $70 $58 $70 $98 $70 $D8 $70 $18 $71 $58 $71 $98 $71 $D8 $71 $0C $4B $18 $7A $70 $21 $C9 $18 $09 $78 $88 $42 $0A $DD $73 $22 $9B $18 $01 $20 $18 $70 $58 $70 $98 $70 $D8 $70 $18 $71 $58 $71 $98 $71 $D8 $71 $01 $BC $00 $47 $00 $00 $C8 $44 $0A $08 $EC $A4 $03 $02 $6C $A5 $03 $02
+#endif 
+POP 
+
+
+
+
+
+
+
+
+
