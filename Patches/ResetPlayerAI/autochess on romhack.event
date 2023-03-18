@@ -1,4 +1,5 @@
 #include "eastdlib.event" 
+#include "Extensions/AI Assembly.txt" 
 #ifndef callHackNew 
 	#define callHackNew(offset) 		"BYTE $01 $4B $9E $46 $00 $F8 $01 $E0; POIN (offset|0x1)"
 #endif 
@@ -12,8 +13,8 @@ SHORT $2100 // Berserked units won't attack their own allegiance
 ORG $397F6
 SHORT $46C0 // Everyone acts berserked at the end of the turn if they haven't moved 
 
-ORG $5A8412 
-BYTE 4 // Default safety as 4 
+//ORG $5A8412 
+//BYTE 4 // Default safety as 4 
 
 ORG $5A8395 
 BYTE 66 // Recovery mode at 66% hp, stop recovery mode at 80% 
@@ -31,6 +32,56 @@ jumpToHack(GetItemAttributesWithUnbreakable)
 
 ORG $AD8 
 BYTE 0x09 0xF0 0x16 // Ensure Debug Menu does not show up 
+
+ORG $D8538 // Ensure door keys may be used in every chapter 
+BYTE 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0
+BYTE 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0
+BYTE 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0
+BYTE 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0
+BYTE 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0
+BYTE 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0 7 0 0 0
+
+ORG $5A8184 
+BYTE 0x23 // MoveTowards Gate 0x0B, Throne 0x1F, Gate 0x23
+
+// in 803F018 after pressing F8 and setting r0 to 1, it runs away 
+// gAiScriptEndedFlag = 0x30017C8 as True/False 
+// 803CDE6
+// 803F13C
+
+ORG $5A8690 // Non-promoted AI2 
+//Routine_AI(
+BYTE 0x18 0x00 0x8 0x00; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Move towards opponents even when blocked with safety 8 
+ConditionalGoto(4, EQ, 1)
+BYTE 0x03 0x00 0xFF 0; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Exit0 
+Label(1)
+BYTE 0x13 0x00 0x8 0x00; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Move towards opponents with safety 8 
+BYTE 0x03 0x00 0xFF 1; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Exit1 
+
+//GetEnemyInHalfMoveRange
+//ConditionalGoto(0, LE, 1)
+//RunAway 
+//BYTE 0x03 0x00 0xFF 0; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Exit0
+//Label(1)
+////Routine_AI(0x803CDD5, 0) // FindSafestTile 
+//BYTE 0x13 0x00 0x8 0x00; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Move towards opponents even when blocked with safety 8 
+//BYTE 0x03 0x00 0xFF 1; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Exit1 
+
+
+ORG $5A8790 // Lord AI2
+BYTE 0x11 0x00 0x8 0x00; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Run away 
+BYTE 0x03 0x00 0xFF 0; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Exit0
+
+
+ORG $5A85D0 // Promoted / Jeigan AI 
+//BYTE 0x12 0x00 0x8 0x00; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Move towards opponents with safety 8 
+BYTE 0x18 0x00 0xFF 0x00; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Move towards opponents even when blocked with safety 8 
+ConditionalGoto(4, EQ, 1)
+BYTE 0x03 0x00 0xFF 0; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Exit0 
+Label(1)
+BYTE 0x12 0x00 0xFF 0x00; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Move towards opponents with safety 8 
+BYTE 0x03 0x00 0xFF 1; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Exit1 
+
 
 // RNG Randomizer 
 ORG 0x1336
@@ -53,7 +104,7 @@ callHackNew(OneHundredGrowth)
 
 ORG $D2F7C // overwrite vsprintf (debug print text) 
 ResetPlayerAI: // also gives a vuln to all players that don't have one 
-BYTE $04 $1C $10 $4B $10 $4A $31 $20 $18 $60 $48 $33 $93 $42 $00 $DA $FA $E7 $10 $B4 $0D $4B $0E $4A $03 $24 $24 $02 $6C $21 $0C $43 $00 $21 $02 $39 $48 $33 $93 $42 $09 $DC $02 $31 $0A $29 $F7 $DA $58 $5C $6C $28 $F4 $D0 $00 $28 $F7 $D1 $5C $52 $F0 $E7 $10 $BC $04 $4B $18 $47 $8C $BE $02 $02 $9C $CC $02 $02 $6A $BE $02 $02 $8A $CC $02 $02 $D5 $3E $08 $08
+#incbin "ResetPlayerAI.dmp"
 ALIGN 4
 RNGBodyFE8:
 BYTE $08 $BC $11 $48 $00 $68 $00 $28 $07 $D0 $10 $48 $00 $78 $00 $28 $07 $D1 $0C $48 $00 $F0 $0D $F8 $03 $E0 $0D $48 $00 $78 $00 $28 $F3 $D1 $0C $48 $00 $68 $00 $28 $01 $D0 $00 $F0 $02 $F8 $04 $48 $00 $47 $00 $47 $C0 $46 $C0 $46 $C0 $46 $C0 $46 $C0 $46 $C0 $46 $43 $13 $00 $08 $65 $0C $00 $08 $EC $A4 $03 $02 $FF $BC $02 $02 $6A $4E $00 $03 $B8 $4C $02 $02

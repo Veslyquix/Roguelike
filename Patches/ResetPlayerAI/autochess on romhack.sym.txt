@@ -1,0 +1,5 @@
+ResetPlayerAI=$D2F7C
+RNGBodyFE8=$D3060
+bootHackBodyFE8=$D30B8
+resumeHackBodyFE8=$D30EC
+GetItemAttributesWithUnbreakable=$D311C

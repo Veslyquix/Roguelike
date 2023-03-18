@@ -1,0 +1,13 @@
+Loop=$14
+GotoNextUnit=$0E
+Break=$86
+PromotedAI=$2E
+LordAI=$38
+AnyEnemiesAliveLoop=$3C
+EnemiesAreAlive=$7C
+SetSeizeFlag=$6C
+MoveTowardsThrone=$74
+BreakUnitLoop=$C0
+NPC_AI_Loop=$8A
+UnitLoop=$A2
+InvLoop=$AC
