@@ -151,8 +151,46 @@ ldr r3, =0x8083ED5
 bx r3 
 .ltorg 
 
-@blh 0x80
-@ at 803F13C it stores the number of units within half range 
+.global IfUnsafeRunAway
+.type IfUnsafeRunAway, %function 
+IfUnsafeRunAway:
+push {r4, lr} 
 
+ldr r0, =0x803CE18 
+mov lr, r0 
+ldr r0, =0x3004E50 
+ldr r0, [r0] 
+add r0, #0x42
+.short 0xf800 
+
+ldr r0, =0x203AA96
+ldrb r1, [r0, #1] @ yy 
+ldrb r0, [r0] @ xx 
+
+ldr		r2,=0x202E4F0	@Load the location in the table of tables of the map you want
+ldr		r2,[r2]			@Offset of map's table of row pointers
+lsl		r1,#0x2			@multiply y coordinate by 4
+add		r2,r1			@so that we can get the correct row pointer
+ldr		r2,[r2]			@Now we're at the beginning of the row data
+add		r2,r0			@add x coordinate
+ldrb	r0,[r2]			@load datum at those coordinates
+
+cmp r0, #0xF 
+blt DoNothing 
+mov r11, r11 
+
+ldr r0, =0x803CDD4 @ AI Script Function ASM 11 ( Run away ) 
+mov lr, r0 
+ldr r0, =0x3004E50 
+ldr r0, [r0] 
+add r0, #0x42
+.short 0xf800 
+
+DoNothing: 
+mov r0, #1
+pop {r4} 
+pop {r1} 
+bx r1 
+.ltorg 
 
 

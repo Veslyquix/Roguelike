@@ -49,13 +49,27 @@ BYTE 0x23 // MoveTowards Gate 0x0B, Throne 0x1F, Gate 0x23
 // 803CDE6
 // 803F13C
 
+// in 0x803CE18 calls AiGetClosestUnit 803A924 
+// Which calls are units allied at 803A9bC 
+// r0=85A813C
+// [202D29C]!?? 
+
+// [3007CA8+C] [3007CE0]!!
+// [3007C28+C]!!
+// in 803BA08 AiTryMoveTowards r10 is the Safety 
+// at 3BB5C and 3BB1E 
+// In IsAiTileSafeEnough at 0x803E448 
+// if Safety in Movemap2 at coord is worse than Safety from AI2, 
+// then try next AI2 option 
+
 ORG $5A8690 // Non-promoted AI2 
 //Routine_AI(
 BYTE 0x18 0x00 0x8 0x00; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Move towards opponents even when blocked with safety 8 
 ConditionalGoto(4, EQ, 1)
 BYTE 0x03 0x00 0xFF 0; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Exit0 
 Label(1)
-BYTE 0x13 0x00 0x8 0x00; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Move towards opponents with safety 8 
+//BYTE 0x13 0x00 0x8 0x00; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Move towards opponents with safety 8 
+Routine_AI(IfUnsafeRunAway, 0)
 BYTE 0x03 0x00 0xFF 1; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Exit1 
 
 //GetEnemyInHalfMoveRange
@@ -104,7 +118,7 @@ callHackNew(OneHundredGrowth)
 
 ORG $D2F7C // overwrite vsprintf (debug print text) 
 ResetPlayerAI: // also gives a vuln to all players that don't have one 
-#incbin "ResetPlayerAI.dmp"
+#include "ResetPlayerAI.lyn.event"
 ALIGN 4
 RNGBodyFE8:
 BYTE $08 $BC $11 $48 $00 $68 $00 $28 $07 $D0 $10 $48 $00 $78 $00 $28 $07 $D1 $0C $48 $00 $F0 $0D $F8 $03 $E0 $0D $48 $00 $78 $00 $28 $F3 $D1 $0C $48 $00 $68 $00 $28 $01 $D0 $00 $F0 $02 $F8 $04 $48 $00 $47 $00 $47 $C0 $46 $C0 $46 $C0 $46 $C0 $46 $C0 $46 $C0 $46 $43 $13 $00 $08 $65 $0C $00 $08 $EC $A4 $03 $02 $FF $BC $02 $02 $6A $4E $00 $03 $B8 $4C $02 $02

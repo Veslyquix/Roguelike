@@ -1,5 +1,6 @@
 ResetPlayerAI=$D2F7C
-RNGBodyFE8=$D3060
-bootHackBodyFE8=$D30B8
-resumeHackBodyFE8=$D30EC
-GetItemAttributesWithUnbreakable=$D311C
+IfUnsafeRunAway=$D3061
+RNGBodyFE8=$D30B0
+bootHackBodyFE8=$D3108
+resumeHackBodyFE8=$D313C
+GetItemAttributesWithUnbreakable=$D316C
