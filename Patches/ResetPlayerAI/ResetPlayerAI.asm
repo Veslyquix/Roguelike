@@ -171,6 +171,15 @@ ldr r2, =0x85A8870
 str r2, [r1] 
 blh 0x803C5DC @ AiScript_Exec
 
+
+ldr r0, =gMapMovement 
+ldr r0, [r0] 
+mov r1, #0xFF 
+blh BmMapFill
+ldr r0, =gCurrentUnit 
+ldr r0, [r0] 
+blh FillMovementMapForUnit 
+
 @ did the attack function make a decision? 
 ldr r0, =0x203AA94 
 ldrb r0, [r0, #0xA] @ AiData.decisionBool 
@@ -199,13 +208,20 @@ bne SkipRunToLord
 ldr r0, =0x203AA94 
 mov r1, #0 @ no decision made 
 strb r1, [r0, #0xA] @ AiData.decisionBool @ no decision, so it should do AI2 instead 
+b SkipEventStuff
 SkipRunToLord: @returns r0 as t/f that we made a decision 
+bl TryEventInRange
+SkipEventStuff: 
 mov r0, #1 
 pop {r4} 
 pop {r1} 
 bx r1 
 .ltorg 
 .equ EventEngine, 0x800D07C
+.equ BmMapFill, 0x80197E4
+.equ gMapMovement, 0x0202E4E0
+.equ FillMovementMapForUnit, 0x801A38C
+
 .global CallAttack05
 .type CallAttack05, %function 
 CallAttack05: 
@@ -219,6 +235,15 @@ ldr r1, =0x30017D0 @ gpAiScriptCurrent
 ldr r2, =0x85A8870 
 str r2, [r1] 
 blh 0x803C5DC @ AiScript_Exec
+
+
+ldr r0, =gMapMovement 
+ldr r0, [r0] 
+mov r1, #0xFF 
+blh BmMapFill
+ldr r0, =gCurrentUnit 
+ldr r0, [r0] 
+blh FillMovementMapForUnit 
 
 @ did the attack function make a decision? 
 @ldr r1, =0x30017C8 @ s8 gAiScriptEndedFlag 
@@ -243,6 +268,9 @@ lsr r0, #1
 bl IsTargetCoordTooUnsafe
 cmp r0, #1 
 bne DontRunInsteadOfAttack
+
+
+
 ldr r0, =0x3004E50 
 ldr r0, [r0] 
 bl CanUnitRunToSafety 
@@ -268,17 +296,33 @@ pop {r1}
 bx r1 
 .ltorg 
 
-
+@ doors are adjacent 
+@ SET_FUNC IsThereClosedChestAt, 0x80831AD
+@SET_FUNC IsThereClosedDoorAt, 0x80831F1
+.equ AiDecision, 0x203AA94
+.equ TryAddClosedDoorToTargetList, 0x8025794 
+.equ ForEachAdjacentPos, 0x8024FA4
+.equ RunLocationEvents, 0x80840C4
+.equ gActionData, 0x203A958 
+.equ CheckEventId, 0x8083da8
+.equ UseKeyOrLockpick, 0x802F510 
+.equ gCurrentUnit, 0x3004E50 
+.equ CpPerform_TalkWait, 0x803A274
+.equ GetUnit, 0x8019430
 TryEventInRange: 
 push {r4-r7, lr} 
+mov r4, r8 
+mov r5, r9 
+mov r6, r10 
+mov r7, r11 
+push {r4-r7} 
 
-mov r4, r0 @ unit 
-@ village, chest, door, talk 
+
 
 ldr r0, =0x202BCF0 
 ldrb r0, [r0, #0xE] @ chapter ID 
 blh 0x80346B0 @ GetChapterEventsPointer
-mov r5, r0 
+mov r11, r0 
 
 
 mov r7, #0 @ yy 
@@ -288,12 +332,13 @@ ldrh r2, [r3]
 sub r2, #1 @ xx max 
 ldrh r3, [r3, #2] 
 sub r3, #1 @ yy max 
-
+mov r8, r2 @ xx max 
+mov r9, r3 @ yy max 
 
 
 ldr		r4,=0x202E4E0	@ movement map 
 ldr		r4,[r4]			@Offset of map's table of row pointers
-
+mov r10, r4 
 
 
 
@@ -301,77 +346,506 @@ NextTile_Y_Event:
 mov r6, #0 
 sub r6, #1 
 add r7, #1 
-cmp r7, r3 
-bgt Exit_Event
+cmp r7, r9
+bgt Goto_Exit_Event
 
 NextTile_X_Event: 
 add r6, #1 
-cmp r6, r2 
+cmp r6, r8 
 bgt NextTile_Y_Event 
 
 
 lsl r0, r7, #2 
-add r0, r4
+add r0, r10
 ldr r0, [r0] 
 add r0, r6 @ xx 
 ldrb r0, [r0] 
 cmp r0, #0xFF 
 beq NextTile_X_Event
+cmp r0, #0 
+beq NextTile_X_Event 
+ldr r1, =gCurrentUnit 
+ldr r1, [r1] 
+ldr r2, [r1, #4] @ class 
+ldrb r2, [r2, #0x12] @ base mov 
+ldrb r1, [r1, #0x1D] @ bonus mov 
+add r1, r2 
+mov r11, r11 
+cmp r0, r1 
+bgt NextTile_X_Event 
 
-push {r2-r3} 
-ldr r3, [r5, #8] @ LocationBasedEvents 
-mov r2, #0 
-sub r2, #12 
+.equ UnitMap, 0x202E4D8
+@ check unit map here 
+ldr		r1,=UnitMap	@Load the location in the table of tables of the map you want
+ldr		r1,[r1]			@Offset of map's table of row pointers
+lsl		r0, r7,#0x2			@multiply y coordinate by 4
+add		r1,r0			@so that we can get the correct row pointer
+ldr		r1,[r1]			@Now we're at the beginning of the row data
+add		r1,r6			@add x coordinate
+ldrb	r0,[r1]			@load datum at those coordinates
+
+cmp r0, #0 
+beq GotoNoUnitHere 
+blh GetUnit 
+ldr r0, [r0] 
+cmp r0, #0 
+beq GotoNoUnitHere 
+ldrb r0, [r0, #4] 
+
+mov r5, r11 @ 
+ldr r5, [r5, #4] @ TalkEvents 
+sub r5, #16 
+TalkEventLoop: 
+add r5, #16 
+ldr r1, [r5] 
+cmp r1, #0 
+beq NextTile_X_Event
+ldrb r1, [r5, #9] @ talk to this unit 
+cmp r0, r1 
+bne TalkEventLoop 
+ldr r2, =gCurrentUnit 
+ldr r2, [r2] 
+ldr r2, [r2] @ unit table 
+ldrb r2, [r2, #4] 
+ldrb r1, [r5, #8] 
+cmp r1, r2 
+bne GotoTalkEventLoop 
+push {r0-r1} 
+@ we found a match 
+ldrb r0, [r5, #2] @ flag 
+blh CheckEventId 
+mov r2, r0 
+pop {r0-r1} 
+cmp r2, #0 
+bne TalkEventLoop 
+b CheckCoords 
+GotoNoUnitHere:
+b NoUnitHere 
+Goto_Exit_Event:
+b Exit_Event 
+GotoTalkEventLoop:
+b TalkEventLoop 
+
+CheckCoords: 
+@ check adjacent coords 
+sub r6, #1 
+cmp r6, #0 
+blt CheckRight 
+lsl r1, r7, #2 
+add r1, r10
+ldr r1, [r1] 
+add r1, r6 @ xx 
+ldrb r1, [r1] 
+cmp r1, #0xFF 
+beq CheckRight 
+ldr		r2,=UnitMap	@Load the location in the table of tables of the map you want
+ldr		r2,[r2]			@Offset of map's table of row pointers
+lsl		r1, r7,#0x2			@multiply y coordinate by 4
+add		r2,r1			@so that we can get the correct row pointer
+ldr		r2,[r2]			@Now we're at the beginning of the row data
+add		r2,r6			@add x coordinate
+ldrb	r1,[r2]			@load datum at those coordinates
+cmp r1, #0 
+beq FoundValidCoordMove 
+ldr r2, =gCurrentUnit 
+ldr r2, [r2] 
+ldrb r2, [r2, #0x0B] 
+cmp r1, r2 
+beq FoundValidCoordMove 
+
+CheckRight: 
+add r6, #2
+cmp r6, r8 
+bgt CheckUp 
+lsl r1, r7, #2 
+add r1, r10
+ldr r1, [r1] 
+add r1, r6 @ xx 
+ldrb r1, [r1] 
+cmp r1, #0xFF 
+beq CheckUp
+ldr		r2,=UnitMap	@Load the location in the table of tables of the map you want
+ldr		r2,[r2]			@Offset of map's table of row pointers
+lsl		r1, r7,#0x2			@multiply y coordinate by 4
+add		r2,r1			@so that we can get the correct row pointer
+ldr		r2,[r2]			@Now we're at the beginning of the row data
+add		r2,r6			@add x coordinate
+ldrb	r1,[r2]			@load datum at those coordinates
+cmp r1, #0 
+beq FoundValidCoordMove 
+ldr r2, =gCurrentUnit 
+ldr r2, [r2] 
+ldrb r2, [r2, #0x0B] 
+cmp r1, r2 
+beq FoundValidCoordMove 
+CheckUp:
+sub r6, #1
+sub r7, #1
+cmp r7, #0 
+blt CheckDown 
+lsl r1, r7, #2 
+add r1, r10
+ldr r1, [r1] 
+add r1, r6 @ xx 
+ldrb r1, [r1] 
+cmp r1, #0xFF 
+beq CheckDown
+ldr		r2,=UnitMap	@Load the location in the table of tables of the map you want
+ldr		r2,[r2]			@Offset of map's table of row pointers
+lsl		r1, r7,#0x2			@multiply y coordinate by 4
+add		r2,r1			@so that we can get the correct row pointer
+ldr		r2,[r2]			@Now we're at the beginning of the row data
+add		r2,r6			@add x coordinate
+ldrb	r1,[r2]			@load datum at those coordinates
+cmp r1, #0 
+beq FoundValidCoordMove 
+ldr r2, =gCurrentUnit 
+ldr r2, [r2] 
+ldrb r2, [r2, #0x0B] 
+cmp r1, r2 
+beq FoundValidCoordMove 
+CheckDown: 
+add r7, #2
+cmp r7, r9 
+bgt NoUnitHere 
+lsl r1, r7, #2 
+add r1, r10
+ldr r1, [r1] 
+add r1, r6 @ xx 
+ldrb r1, [r1] 
+cmp r1, #0xFF 
+beq NoUnitHere 
+ldr		r2,=UnitMap	@Load the location in the table of tables of the map you want
+ldr		r2,[r2]			@Offset of map's table of row pointers
+lsl		r1, r7,#0x2			@multiply y coordinate by 4
+add		r2,r1			@so that we can get the correct row pointer
+ldr		r2,[r2]			@Now we're at the beginning of the row data
+add		r2,r6			@add x coordinate
+ldrb	r1,[r2]			@load datum at those coordinates
+cmp r1, #0 
+beq FoundValidCoordMove 
+ldr r2, =gCurrentUnit 
+ldr r2, [r2] 
+ldrb r2, [r2, #0x0B] 
+cmp r1, r2 
+beq FoundValidCoordMove 
+b NoUnitHere 
+
+FoundValidCoordMove: 
+ldr r2, =gCurrentUnit 
+ldr r2, [r2] 
+ldr r2, [r2] @ char table 
+ldrb r1, [r2, #4] @ unit id 
+
+ldr r2, =AiDecision 
+strb r7, [r2, #3] @ yy 
+strb r6, [r2, #2] @ xx 
+.equ GetUnitByCharId, 0x801829C
+blh GetUnitByCharId 
+ldrb r1, [r0, #0x0B] 
+ldr r2, =AiDecision 
+
+strb r1, [r2, #8] @ xOther 
+strb r1, [r2, #9] @ yOther 
+mov r1, #0 
+strb r1, [r2, #6] @ targetIndex 
+
+strb r1, [r2, #0x07] @ usedItemSlot is Actor Deployment Byte 
+@strb r0, [r2, #0x08] @ xOther (but in this case the target's unit id) 
+
+
+mov r1, #0x8 @ talk
+strb r1, [r2] 
+strb r1, [r2, #0xB] @ talk
+mov r1, #1 
+strb r1, [r2, #0xA] @ took decision bool 
+ldr r1, =gCurrentUnit 
+ldr r1, [r1] 
+ldrb r1, [r1, #0x0B] @ unit 
+strb r1, [r2, #1] @ unit index 
+strb r1, [r2, #7] @ usedItemSlot is Deployment byte of actor 
+
+@ldr r1, =gActionData 
+@strb r0, [r1, #0x12] @ inventory slot # (0-4) 
+@strb r6, [r1, #0x0E] @ xx 
+@mov r0, #0x14 @ chest 
+@strb r0, [r1, #0x11] @ action type: chest 
+@
+@strb r7, [r1, #0x0F] @ yy 
+@ldr r0, =gCurrentUnit 
+@ldr r0, [r0] 
+@ldrb r0, [r0, #0x0B] @ unit 
+@strb r0, [r1, #1] @ unit index 
+
+b Exit_Event 
+
+
+NoUnitHere: 
+
+
+mov r5, r11 
+ldr r5, [r5, #8] @ LocationBasedEvents 
+mov r4, #0 
+sub r4, #12 
 LocationBasedEventsLoop:
-add r2, #12 
-ldr r0, [r3, r2] 
+add r4, #12 
+
+ldr r0, [r5, r4] 
 cmp r0, #0 
 beq BreakLocationLoop 
-mov r0, r3 
-add r0, r2 
-ldrb r1, [r0, #9] @ yy 
-ldrb r0, [r0, #8] @ xx 
-cmp r0, r6 
+
+
+mov r0, r5 
+add r0, r4 
+ldrb r1, [r0, #8] @ xx
+cmp r1, r6 
 bne LocationBasedEventsLoop 
+ldrb r1, [r0, #9] @ yy 
 cmp r1, r7 
 bne LocationBasedEventsLoop
+ldrb r1, [r0, #0] 
+cmp r1, #6 @ Visit Village 
+bne TryChest
+ldrb r1, [r0, #0xA] @ type 
+cmp r1, #0x10 
+bne LocationBasedEventsLoop 
+ldrb r0, [r0, #2] @ completion flag 
+blh CheckEventId
+cmp r0, #0 
+bne LocationBasedEventsLoop 
 
-@ check unit map here 
 
-ldr r0, =0x203AA96
-strb r7, [r0, #1] @ yy 
-strb r6, [r0] @ xx 
 ldr r0, =0x203AA94 
+strb r7, [r0, #3] @ yy 
+strb r6, [r0, #2] @ xx 
 mov r1, #0x0 @ wait
 strb r1, [r0] 
 strb r1, [r0, #0xB] @ visit 
 mov r1, #1 
 strb r1, [r0, #0xA] @ took decision bool 
-ldr r1, =0x3004E50 
+ldr r1, =gCurrentUnit 
 ldr r1, [r1] 
 ldrb r1, [r1, #0x0B] @ unit 
 strb r1, [r0, #1] @ unit index 
 
-mov r0, r3 
-add r0, r2 
-ldr r0, [r0, #4] @ event 
-mov r1, #1 
-blh EventEngine 
-pop {r2-r3} 
+ldr r0, =gActionData 
+strb r1, [r0, #0x0C] @ unit index 
+strb r6, [r0, #0x0E] @ xx 
+strb r7, [r0, #0x0F] @ yy 
 
-
+mov r0, r6 @ xx 
+mov r1, r7 @ yy 
+blh RunLocationEvents 
 
 b Exit_Event
 
+TryChest: 
+cmp r1, #7 @ chest 
+bne LocationBasedEventsLoop 
+ldrb r1, [r0, #0xA] 
+cmp r1, #0x14 @ type is always 0x14 
+bne LocationBasedEventsLoop
+
+bl GetActiveUnitChestKeySlot
+cmp r0, #0 
+blt LocationBasedEventsLoop 
+
+ldr r1, =AiDecision 
+strb r0, [r1, #0x07] @ usedItemSlot 
+ldr r1, =gActionData 
+strb r0, [r1, #0x12] @ inventory slot # (0-4) 
+strb r6, [r1, #0x0E] @ xx 
+mov r0, #0x14 @ chest 
+strb r0, [r1, #0x11] @ action type: chest 
+
+strb r7, [r1, #0x0F] @ yy 
+ldr r0, =gCurrentUnit 
+ldr r0, [r0] 
+ldrb r0, [r0, #0x0B] @ unit 
+strb r0, [r1, #1] @ unit index 
+
+ldr r0, =AiDecision  
+strb r7, [r0, #3] @ yy 
+strb r6, [r0, #2] @ xx 
+mov r1, #0x6 @ use item 
+strb r1, [r0] 
+strb r1, [r0, #0xB] @ visit 
+mov r1, #1 
+strb r1, [r0, #0xA] @ took decision bool 
+ldr r1, =gCurrentUnit 
+ldr r1, [r1] 
+ldrb r1, [r1, #0x0B] @ unit 
+strb r1, [r0, #1] @ unit index 
+
+blh UseKeyOrLockpick 
+
+b Exit_Event 
+FoundClosedDoor: 
+bl GetActiveUnitDoorKeySlot
+
+cmp r0, #0 
+blt NoKeyForDoor
+
+ldr r1, =AiDecision 
+strb r0, [r1, #0x07] @ usedItemSlot 
+ldr r1, =gActionData 
+strb r0, [r1, #0x12] @ inventory slot # (0-4) 
+strb r6, [r1, #0x0E] @ xx 
+strb r7, [r1, #0x0F] @ yy 
+mov r0, #0x12 
+strb r0, [r1, #0x11] @ action type: door 
+ldr r0, =gCurrentUnit 
+ldr r0, [r0] 
+ldrb r0, [r0, #0x0B] @ unit 
+strb r0, [r1, #1] @ unit index 
+
+ldr r0, =AiDecision
+strb r7, [r0, #3] @ yy 
+strb r6, [r0, #2] @ xx 
+mov r1, #0x6 @ use item 
+strb r1, [r0] 
+strb r1, [r0, #0xB] @ visit 
+mov r1, #1 
+strb r1, [r0, #0xA] @ took decision bool 
+ldr r1, =gCurrentUnit 
+ldr r1, [r1] 
+ldrb r1, [r1, #0x0B] @ unit 
+strb r1, [r0, #1] @ unit index 
+
+blh UseKeyOrLockpick 
+
+b Exit_Event 
+
+
 BreakLocationLoop: 
-pop {r2-r3} 
+ldr r2, =TryAddClosedDoorToTargetList 
+mov r0, #1 
+orr r2, r0 
+mov r0, r6 
+mov r1, r7 
+blh ForEachAdjacentPos 
+ldr r0, =gTargetArraySize
+.equ gTargetArraySize, 0x203E0EC 
+ldrb r0, [r0] 
+cmp r0, #0 
+bne FoundClosedDoor 
+
+NoKeyForDoor:
+
+
+
+@ https://github.com/FireEmblemUniverse/fireemblem8u/blob/8a04f056602fb6f1db1a8f6aebed0f8d383ac420/src/bmusemind.c#L556
+@talk 
+@ rescue? 
+@ if rescuing a unit, run away and drop somewhere 
+
+
+
 b NextTile_X_Event 
 
 Exit_Event: 
 
 pop {r4-r7} 
+mov r8, r4 
+mov r9, r5 
+mov r10, r6 
+mov r11, r7 
+pop {r4-r7} 
 pop {r0} 
 bx r0 
+.ltorg 
+
+.equ GetItemData, 0x80177B0
+GetActiveUnitDoorKeySlot:
+push {r4-r5, lr} 
+ldr r4, =gCurrentUnit 
+ldr r4, [r4] 
+mov r5, #0x1C 
+
+InvLoop_DoorKey: 
+add r5, #2 
+cmp r5, #0x28 
+bge BreakDoorKeySlot 
+ldrb r0, [r4, r5] 
+blh GetItemData 
+ldrb r1, [r0, #0x1e] @ WhenUsed 
+cmp r1, #0x1F @ door key 
+beq FoundValidDoorKey 
+cmp r1, #0x0E @ unlock staff 
+beq FoundValidDoorKey 
+cmp r1, #0x20 @ lockpick 
+bne InvLoop_DoorKey 
+ldr r2, [r4, #4] @ class 
+ldr r2, [r2, #0x28] @ ability 
+ldr r3, [r4] 
+ldr r3, [r4, #0x28] @ ability 
+orr r2, r3 
+mov r3, #8 @ can use lockpicks 
+tst r2, r3 
+bne FoundValidDoorKey @ they can use lockpicks 
+b InvLoop_DoorKey 
+
+FoundValidDoorKey: 
+sub r5, #0x1e 
+lsr r0, r5, #1 @ inv slot # 
+b ExitDoorKeySlot 
+
+BreakDoorKeySlot: 
+mov r0, #0 
+sub r0, #1 
+
+ExitDoorKeySlot: 
+
+pop {r4-r5} 
+pop {r1} 
+bx r1 
+.ltorg 
+
+
+
+GetActiveUnitChestKeySlot:
+push {r4-r5, lr} 
+ldr r4, =gCurrentUnit 
+ldr r4, [r4] 
+mov r5, #0x1C 
+
+InvLoop_ChestKey: 
+add r5, #2 
+cmp r5, #0x28 
+bge BreakChestKeySlot 
+ldrb r0, [r4, r5] 
+blh GetItemData 
+ldrb r1, [r0, #0x1e] @ WhenUsed 
+cmp r1, #0x1e @ Chest key 
+beq FoundValidChestKey 
+cmp r1, #0x26 @ Chest key 2 
+beq FoundValidChestKey 
+cmp r1, #0x20 @ lockpick 
+bne InvLoop_ChestKey 
+ldr r2, [r4, #4] @ class 
+ldr r2, [r2, #0x28] @ ability 
+ldr r3, [r4] 
+ldr r3, [r4, #0x28] @ ability 
+orr r2, r3 
+mov r3, #8 @ can use lockpicks 
+tst r2, r3 
+bne FoundValidChestKey @ they can use lockpicks 
+b InvLoop_ChestKey 
+
+FoundValidChestKey: 
+sub r5, #0x1e 
+lsr r0, r5, #1 @ inv slot # 
+b ExitChestKeySlot 
+
+BreakChestKeySlot: 
+mov r0, #0 
+sub r0, #1 
+
+ExitChestKeySlot: 
+
+pop {r4-r5} 
+pop {r1} 
+bx r1 
 .ltorg 
 
 
