@@ -1,0 +1,19 @@
+// optimized ai danger map generation
+// hack by stan, based on similar hack by hypergammaspaces
+
+#include "src/ai-fast-danger-extra.lyn.event"
+
+PUSH
+
+    // replace AiFillDangerMap
+    ORG $03E320
+
+    #include "src/ai-fast-danger.lyn.event"
+
+    ASSERT $03E448 - CURRENTOFFSET
+
+    // ASSERT NuAiFillDangerMap == $03E321
+    ASSERT NuAiFillDangerMap - $03E321
+    ASSERT $03E321 - NuAiFillDangerMap
+
+POP

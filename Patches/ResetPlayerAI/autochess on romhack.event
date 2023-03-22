@@ -106,9 +106,9 @@ BYTE 0x03 0x00 0xFF 1; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Exit
 //BYTE 0x12 0x00 0xFF 0x00; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Move towards opponents with safety 8 
 //BYTE 0x03 0x00 0xFF 1; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Exit1 
 
-ORG 0x03e320	//FE8U
+//ORG 0x03e320	//FE8U
 //ORG 0x0393E8	//FE7U
-#incbin "FillAIDangerMap.dmp"
+//#incbin "FillAIDangerMap.dmp"
 
 
 // RNG Randomizer 
@@ -150,6 +150,7 @@ ALIGN 4
 OneHundredGrowth:
 BYTE $00 $B5 $30 $1C $16 $4B $9E $46 $00 $F8 $38 $1C $14 $4B $9E $46 $00 $F8 $14 $4B $18 $7A $70 $21 $C9 $18 $09 $78 $88 $42 $0A $DD $73 $22 $9B $18 $01 $20 $18 $70 $58 $70 $98 $70 $D8 $70 $18 $71 $58 $71 $98 $71 $D8 $71 $0C $4B $18 $7A $70 $21 $C9 $18 $09 $78 $88 $42 $0A $DD $73 $22 $9B $18 $01 $20 $18 $70 $58 $70 $98 $70 $D8 $70 $18 $71 $58 $71 $98 $71 $D8 $71 $01 $BC $00 $47 $00 $00 $C8 $44 $0A $08 $EC $A4 $03 $02 $6C $A5 $03 $02
 #endif 
+#include "ai-fast-danger/Installer.event" 
 POP 
 
 

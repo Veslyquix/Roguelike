@@ -186,17 +186,10 @@ ldrb r0, [r0, #0xA] @ AiData.decisionBool
 cmp r0, #0 
 beq SkipRunToLord
 
-ldr r2, =0x3004E50 
+ldr r2, =gCurrentUnit
 ldr r2, [r2] 
 ldrb r0, [r2, #0x13] @ current hp 
-lsr r1, r0, #2
-sub r0, r1 @ 3/4 hp 
-ldrb r1, [r2, #0x17] 
-ldrb r3, [r2, #0x18] 
-add r1, r3 @ def + res 
-lsr r1, #1 @ /2 
-add r0, r1 @ 3/4 + (def+res)/2
-lsr r0, #1 
+lsr r0, #2 
 bl IsTargetCoordTooUnsafe 
 cmp r0, #1 
 bne SkipRunToLord 
@@ -245,6 +238,7 @@ ldr r0, =gCurrentUnit
 ldr r0, [r0] 
 blh FillMovementMapForUnit 
 
+
 @ did the attack function make a decision? 
 @ldr r1, =0x30017C8 @ s8 gAiScriptEndedFlag 
 @ldrb r0, [r1] 
@@ -253,29 +247,31 @@ ldrb r0, [r0, #0xA] @ AiData.decisionBool
 cmp r0, #0 
 beq CheckForEvents
 
-ldr r2, =0x3004E50 
+ldr r2, =gCurrentUnit
 ldr r2, [r2] 
 ldrb r0, [r2, #0x13] @ current hp 
-lsr r1, r0, #1
-sub r0, r1 @ 1/2 hp 
-ldrb r1, [r2, #0x17] 
-ldrb r3, [r2, #0x18] 
-add r1, r3 @ def + res 
-lsr r1, #1 @ /2 
-add r0, r1 @ 3/4 + (def+res)/2
-lsr r0, #1 
+lsr r0, #3 @ 1/4 hp  
 @ if the dmg we could take is more than r0, run away 
 bl IsTargetCoordTooUnsafe
 cmp r0, #1 
-bne DontRunInsteadOfAttack
+bne JustAttack
 
 
 
-ldr r0, =0x3004E50 
+ldr r0, =gCurrentUnit 
 ldr r0, [r0] 
 bl CanUnitRunToSafety 
 cmp r0, #1 
-bne DontRunInsteadOfAttack 
+bne JustAttack 
+@ coord is unsafe, and there's nowhere to run 
+@ if opponent cannot counter, attack! 
+.equ Defender, 0x203A56C
+ldr r3, =Defender 
+mov r0, #0x52 
+ldsb r0, [r3, r0] 
+cmp r0, #0 
+beq JustAttack @ so we attack archers etc 
+
 
 @ CanUnitRunToSafety 
 ldr r0, =0x203AA94 
@@ -287,7 +283,7 @@ bl TryEventInRange
 
 
 @bl CallRunAway 
-DontRunInsteadOfAttack: 
+JustAttack: 
 @returns r0 as t/f that we made a decision 
 SkipRunAway: 
 mov r0, #1 
@@ -370,7 +366,6 @@ ldr r2, [r1, #4] @ class
 ldrb r2, [r2, #0x12] @ base mov 
 ldrb r1, [r1, #0x1D] @ bonus mov 
 add r1, r2 
-mov r11, r11 
 cmp r0, r1 
 bgt NextTile_X_Event 
 
@@ -538,6 +533,10 @@ ldr r2, [r2] @ char table
 ldrb r1, [r2, #4] @ unit id 
 
 ldr r2, =AiDecision 
+mov r1, #0 
+str r1, [r2]
+str r1, [r2, #4]
+str r1, [r2, #8]
 strb r7, [r2, #3] @ yy 
 strb r6, [r2, #2] @ xx 
 .equ GetUnitByCharId, 0x801829C
@@ -651,6 +650,11 @@ cmp r0, #0
 blt LocationBasedEventsLoop 
 
 ldr r1, =AiDecision 
+mov r2, #0 
+str r2, [r1]
+str r2, [r1, #4]
+str r2, [r1, #8]
+
 strb r0, [r1, #0x07] @ usedItemSlot 
 ldr r1, =gActionData 
 strb r0, [r1, #0x12] @ inventory slot # (0-4) 
@@ -687,6 +691,11 @@ cmp r0, #0
 blt NoKeyForDoor
 
 ldr r1, =AiDecision 
+mov r2, #0 
+str r2, [r1]
+str r2, [r1, #4]
+str r2, [r1, #8]
+
 strb r0, [r1, #0x07] @ usedItemSlot 
 ldr r1, =gActionData 
 strb r0, [r1, #0x12] @ inventory slot # (0-4) 
@@ -940,18 +949,12 @@ ldr r0, [r0]
 add r0, #0x45
 .short 0xf800 
 
-ldr r2, =0x3004E50 
+ldr r2, =gCurrentUnit
 ldr r2, [r2] 
 ldrb r0, [r2, #0x13] @ current hp 
 lsr r1, r0, #2
 sub r0, r1 @ 3/4 hp 
-ldrb r1, [r2, #0x17] 
-ldrb r3, [r2, #0x18] 
-add r1, r3 @ def + res 
-lsr r1, #1 @ /2 
-add r0, r1 @ 3/4 + (def+res)/2
 lsr r0, #1 
-
 @ if the dmg we could take is more than r0, run away 
 bl IsTargetCoordTooUnsafe
 cmp r0, #1 
@@ -977,7 +980,7 @@ add		r2,r1			@so that we can get the correct row pointer
 ldr		r2,[r2]			@Now we're at the beginning of the row data
 add		r2,r0			@add x coordinate
 ldrb	r0,[r2]			@load datum at those coordinates
-
+mov r11, r11 
 cmp r0, r3
 bgt TooUnsafe
 mov r0, #0 @ It's fine 
@@ -1012,6 +1015,30 @@ strb r0, [r1]
 pop {r4} 
 pop {r1} 
 bx r1 
+.ltorg 
+
+.global IsUnitOnField 
+.type IsUnitOnField, %function 
+IsUnitOnField: 
+cmp r0, #0 
+beq RetFalse 
+ldr r1, [r0] 
+cmp r1, #0 
+beq RetFalse 
+ldrb r1, [r1, #4] @ unit id 
+cmp r1, #0 
+beq RetFalse
+ldr r1, [r0, #0x0C] 
+ldr r2, =0x1000C @ escaped, undeployed, dead 
+tst r1, r2 
+bne RetFalse
+RetTrue: 
+mov r0, #1 
+b Exit_IsUnitOnField 
+RetFalse: 
+mov r0, #0 
+Exit_IsUnitOnField: 
+bx lr 
 .ltorg 
 
 
