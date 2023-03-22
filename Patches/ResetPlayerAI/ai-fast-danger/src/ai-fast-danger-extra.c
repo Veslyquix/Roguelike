@@ -24,3 +24,30 @@ void NuAiFillDangerMap_ApplyDanger(int danger_gain)
         }
     }
 }
+int IsUnitOnField(struct Unit* unit) 
+{ 
+    if (unit == NULL)
+        return false;
+	
+    if (unit->pCharacterData == NULL)
+        return false;
+	
+    if (unit->state & (US_HIDDEN | US_DEAD | US_NOT_DEPLOYED | US_BIT16)) { 
+		return false; } 
+	return true; 
+} 
+
+int GetItemEffMight(int item) { 
+	int might = GetItemMight(item);
+	if (IsItemEffectiveAgainst(item, gActiveUnit)) { 
+	might += might*2; 
+	}
+	return might; 
+} 
+int GetCurrDanger(void) { 
+
+	//asm("mov r11, r11");
+	return gMapMovement2[gActiveUnit->yPos][gActiveUnit->xPos];
+
+
+} 

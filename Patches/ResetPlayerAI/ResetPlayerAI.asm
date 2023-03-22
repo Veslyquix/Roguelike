@@ -189,6 +189,7 @@ beq SkipRunToLord
 ldr r2, =gCurrentUnit
 ldr r2, [r2] 
 ldrb r0, [r2, #0x13] @ current hp 
+sub r0, #1 @ assume we're at WTD 
 lsr r0, #2 
 bl IsTargetCoordTooUnsafe 
 cmp r0, #1 
@@ -200,7 +201,10 @@ cmp r0, #1
 bne SkipRunToLord
 ldr r0, =0x203AA94 
 mov r1, #0 @ no decision made 
-strb r1, [r0, #0xA] @ AiData.decisionBool @ no decision, so it should do AI2 instead 
+str r1, [r0]
+str r1, [r0, #4]
+str r1, [r0, #8]
+@strb r1, [r0, #0xA] @ AiData.decisionBool @ no decision, so it should do AI2 instead 
 b SkipEventStuff
 SkipRunToLord: @returns r0 as t/f that we made a decision 
 bl TryEventInRange
@@ -249,8 +253,10 @@ beq CheckForEvents
 
 ldr r2, =gCurrentUnit
 ldr r2, [r2] 
-ldrb r0, [r2, #0x13] @ current hp 
-lsr r0, #3 @ 1/4 hp  
+ldrb r0, [r2, #0x13] @ current hp
+mov r11, r11  
+sub r0, #1 @ assume we're at WTD 
+lsr r0, #2 @ 1/2 hp  
 @ if the dmg we could take is more than r0, run away 
 bl IsTargetCoordTooUnsafe
 cmp r0, #1 
@@ -276,7 +282,10 @@ beq JustAttack @ so we attack archers etc
 @ CanUnitRunToSafety 
 ldr r0, =0x203AA94 
 mov r1, #0 @ no decision made 
-strb r1, [r0, #0xA] @ AiData.decisionBool @ no decision, so it should do AI2 instead 
+str r1, [r0]
+str r1, [r0, #4]
+str r1, [r0, #8]
+@strb r1, [r0, #0xA] @ AiData.decisionBool @ no decision, so it should do AI2 instead 
 b SkipRunAway 
 CheckForEvents: 
 bl TryEventInRange
@@ -422,6 +431,14 @@ GotoTalkEventLoop:
 b TalkEventLoop 
 
 CheckCoords: 
+
+ldr r3, =gCurrentUnit @ get movement 
+ldr r3, [r3] 
+ldr r2, [r3, #4] @ class 
+ldrb r2, [r2, #0x12] @ base mov 
+ldrb r3, [r3, #0x1D] @ bonus mov 
+add r3, r2 @ movement  
+
 @ check adjacent coords 
 sub r6, #1 
 cmp r6, #0 
@@ -433,6 +450,11 @@ add r1, r6 @ xx
 ldrb r1, [r1] 
 cmp r1, #0xFF 
 beq CheckRight 
+cmp r1, #0 
+beq CheckRight
+cmp r1, r3
+bgt CheckRight
+
 ldr		r2,=UnitMap	@Load the location in the table of tables of the map you want
 ldr		r2,[r2]			@Offset of map's table of row pointers
 lsl		r1, r7,#0x2			@multiply y coordinate by 4
@@ -459,6 +481,11 @@ add r1, r6 @ xx
 ldrb r1, [r1] 
 cmp r1, #0xFF 
 beq CheckUp
+cmp r1, #0 
+beq CheckUp
+cmp r1, r3
+bgt CheckUp
+
 ldr		r2,=UnitMap	@Load the location in the table of tables of the map you want
 ldr		r2,[r2]			@Offset of map's table of row pointers
 lsl		r1, r7,#0x2			@multiply y coordinate by 4
@@ -485,6 +512,10 @@ add r1, r6 @ xx
 ldrb r1, [r1] 
 cmp r1, #0xFF 
 beq CheckDown
+cmp r1, #0 
+beq CheckDown
+cmp r1, r3
+bgt CheckDown
 ldr		r2,=UnitMap	@Load the location in the table of tables of the map you want
 ldr		r2,[r2]			@Offset of map's table of row pointers
 lsl		r1, r7,#0x2			@multiply y coordinate by 4
@@ -510,6 +541,10 @@ add r1, r6 @ xx
 ldrb r1, [r1] 
 cmp r1, #0xFF 
 beq NoUnitHere 
+cmp r1, #0 
+beq NoUnitHere
+cmp r1, r3
+bgt NoUnitHere
 ldr		r2,=UnitMap	@Load the location in the table of tables of the map you want
 ldr		r2,[r2]			@Offset of map's table of row pointers
 lsl		r1, r7,#0x2			@multiply y coordinate by 4
@@ -863,6 +898,9 @@ bx r1
 .type CanUnitRunToSafety, %function 
 CanUnitRunToSafety:
 push {r4-r7, lr} 
+mov r4, r8 
+mov r5, r9 
+push {r4-r5} 
 mov r4, r0 @ unit 
 ldr r0, =0x203AA96
 ldrb r1, [r0, #1] @ yy 
@@ -875,7 +913,11 @@ add		r2,r1			@so that we can get the correct row pointer
 ldr		r2,[r2]			@Now we're at the beginning of the row data
 add		r2,r0			@add x coordinate
 ldrb	r5,[r2]			@load datum at those coordinates
-lsr r5, #2 @ 1/4 is what we want or less 
+@mov r11, r11 
+lsr r3, r5, #1 @ 1/2 
+sub r5, r3 @ 1/2 
+lsr r3, r5, #1 @ 1/4 
+sub r5, r3 @ 1/4 with friendly rounding 
 @ r5 = current choice 
 @ r6 = xx 
 mov r7, #0 @ yy 
@@ -883,9 +925,10 @@ sub r7, #1
 ldr r3, =0x202E4D4
 ldrh r2, [r3] 
 sub r2, #1 @ xx max 
+mov r8, r2 
 ldrh r3, [r3, #2] 
 sub r3, #1 @ yy max 
-
+mov r9, r3 
 
 
 ldr		r4,=0x202E4E0	@ movement map 
@@ -898,12 +941,12 @@ NextTile_Y:
 mov r6, #0 
 sub r6, #1 
 add r7, #1 
-cmp r7, r3 
+cmp r7, r9
 bgt False_CanUnitRunToSafety
 
 NextTile_X: 
 add r6, #1 
-cmp r6, r2 
+cmp r6, r8 
 bgt NextTile_Y 
 
 
@@ -914,6 +957,17 @@ add r0, r6 @ xx
 ldrb r0, [r0] 
 cmp r0, #0xFF 
 beq NextTile_X
+cmp r0, #0 
+beq NextTile_X
+ldr r1, =gCurrentUnit 
+ldr r1, [r1] 
+ldr r2, [r1, #4] @ class 
+ldrb r2, [r2, #0x12] @ base mov 
+ldrb r1, [r1, #0x1D] @ bonus mov 
+add r1, r2 
+cmp r0, r1 
+bgt NextTile_X
+
  
 ldr		r1,=0x202E4F0	@ danger map 
 ldr		r1,[r1]			@Offset of map's table of row pointers
@@ -930,7 +984,9 @@ False_CanUnitRunToSafety:
 mov r0, #0 
 Exit_CanUnitRunToSafety: 
 
-
+pop {r4-r5} 
+mov r8, r4 
+mov r9, r5 
 pop {r4-r7} 
 pop {r1} 
 bx r1 
@@ -942,6 +998,13 @@ bx r1
 TryMoveIfSafe: 
 push {r4, lr} 
 
+.equ gpAiScriptCurrent, 0x30017D0 
+ldr r0, =gpAiScriptCurrent
+ldr r0, [r0] 
+mov r1, #6 @ safety 
+strb r1, [r0, #2] @ safety 
+
+
 ldr r0, =0x803CE18 
 mov lr, r0 
 ldr r0, =0x3004E50 
@@ -952,9 +1015,11 @@ add r0, #0x45
 ldr r2, =gCurrentUnit
 ldr r2, [r2] 
 ldrb r0, [r2, #0x13] @ current hp 
-lsr r1, r0, #2
-sub r0, r1 @ 3/4 hp 
-lsr r0, #1 
+sub r0, #1 
+@lsr r1, r0, #2
+@sub r0, r1 @ 3/4 hp 
+@mov r11, r11 
+lsr r0, #1
 @ if the dmg we could take is more than r0, run away 
 bl IsTargetCoordTooUnsafe
 cmp r0, #1 
@@ -980,9 +1045,12 @@ add		r2,r1			@so that we can get the correct row pointer
 ldr		r2,[r2]			@Now we're at the beginning of the row data
 add		r2,r0			@add x coordinate
 ldrb	r0,[r2]			@load datum at those coordinates
-mov r11, r11 
+@mov r11, r11 
+cmp r0, #0 
+beq SafeEnough
 cmp r0, r3
-bgt TooUnsafe
+bge TooUnsafe
+SafeEnough: 
 mov r0, #0 @ It's fine 
 b ExitUnsafe 
 TooUnsafe: 
@@ -1000,7 +1068,7 @@ CallRunAway:
 @ldr r0, =0x30017C8
 @mov r1, #0 
 @strb r1, [r0] 
-
+@mov r11, r11 
 ldr r0, =0x803CDD4 @ AI Script Function ASM 11 ( Run away ) 
 mov lr, r0 
 ldr r0, =0x3004E50 
@@ -1017,28 +1085,5 @@ pop {r1}
 bx r1 
 .ltorg 
 
-.global IsUnitOnField 
-.type IsUnitOnField, %function 
-IsUnitOnField: 
-cmp r0, #0 
-beq RetFalse 
-ldr r1, [r0] 
-cmp r1, #0 
-beq RetFalse 
-ldrb r1, [r1, #4] @ unit id 
-cmp r1, #0 
-beq RetFalse
-ldr r1, [r0, #0x0C] 
-ldr r2, =0x1000C @ escaped, undeployed, dead 
-tst r1, r2 
-bne RetFalse
-RetTrue: 
-mov r0, #1 
-b Exit_IsUnitOnField 
-RetFalse: 
-mov r0, #0 
-Exit_IsUnitOnField: 
-bx lr 
-.ltorg 
 
 

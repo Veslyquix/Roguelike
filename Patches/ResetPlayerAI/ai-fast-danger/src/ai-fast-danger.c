@@ -10,23 +10,29 @@ extern void NuAiFillDangerMap_ApplyDanger(int danger_gain);
 //void FillMovementAndRangeMapForItem(struct Unit* unit, int item);
 //int GetUnitPower(struct Unit* unit);
 
-//int AreAllegiancesAllied(int uid_a, int uid_b) SHORTCALL CONSTFUNC;
-//int CanUnitUseWeapon(struct Unit* unit, int item) SHORTCALL CONSTFUNC;
-//int GetItemMight(int item) SHORTCALL CONSTFUNC;
-//int CouldUnitBeInRangeHeuristic(struct Unit* unit, struct Unit* other, int item) SHORTCALL CONSTFUNC;
-//void FillMovementAndRangeMapForItem(struct Unit* unit, int item) SHORTCALL;
-//int GetUnitPower(struct Unit* unit) SHORTCALL CONSTFUNC;
+#define SHORTCALL __attribute__((short_call))
+extern int IsUnitOnField(struct Unit* unit) SHORTCALL;
+extern int GetCurrDanger(void) SHORTCALL; 
+extern int GetItemEffMight(int item) SHORTCALL;
+s8 AreAllegiancesAllied(int uid_a, int uid_b) SHORTCALL;
+int CanUnitUseWeapon(const struct Unit* unit, int item) SHORTCALL;
+int GetItemMight(int item) SHORTCALL;
+int CouldUnitBeInRangeHeuristic(struct Unit* unit, struct Unit* other, int item) SHORTCALL;
+void FillMovementAndRangeMapForItem(struct Unit* unit, int item) SHORTCALL;
+int GetUnitPower(const struct Unit* unit) SHORTCALL;
+extern u8 * * gMapMovement2;
+
 
 extern u8 gActiveUnitId;
 extern struct Unit* gActiveUnit;
 extern int IsUnitOnField(struct Unit* unit); 
 extern struct Unit* const gUnitLookup[];
 
-void NuAiFillDangerMap(void)
+int NuAiFillDangerMap(void)
 {
-    int i, j;
-
-    int active_unit_id = gActiveUnitId;
+	//asm("mov r11, r11"); 
+    int i, j; 
+    //int active_unit_id = gActiveUnitId;
 	int res = gActiveUnit->res; 
 	int def = gActiveUnit->def; 
 
@@ -34,19 +40,14 @@ void NuAiFillDangerMap(void)
     {
         struct Unit* unit = gUnitLookup[i];
 
-		if (!IsUnitOnField(unit)) 
+		if (!IsUnitOnField(unit)) {
 			continue; 
-        //if (unit == NULL)
-        //    continue;
-		//
-        //if (unit->pCharacterData == NULL)
-        //    continue;
-		//
-        //if (unit->state & (US_HIDDEN | US_DEAD | US_NOT_DEPLOYED | US_BIT16))
-        //    continue;
+		}
 
-        if (AreAllegiancesAllied(active_unit_id, (u8) unit->index))
-            continue;
+
+        if ((gActiveUnitId >> 7) == (unit->index>>7)) { // AreAllegiancesAllied 
+			continue; 
+		} 
 
         int item = 0;
         int might = 0;
@@ -54,13 +55,10 @@ void NuAiFillDangerMap(void)
 
         for (j = 0; j < 5 && (item_tmp = unit->items[j]); ++j)
         {
-			if (item == 0) 
-				break; 
-            if (!CanUnitUseWeapon(unit, item_tmp))
-                continue;
+            if (!CanUnitUseWeapon(unit, item_tmp)) {
+			continue; } 
 
-            int might_tmp = GetItemMight(item_tmp);
-			if (IsItemEffectiveAgainst(item, gActiveUnit)) { might += might*2; }
+            int might_tmp = GetItemEffMight(item_tmp); 
 
             if (might_tmp > might)
             {
@@ -69,11 +67,12 @@ void NuAiFillDangerMap(void)
             }
         }
 
-        if (item == 0)
-            continue;
-
-        if (!CouldUnitBeInRangeHeuristic(gActiveUnit, unit, item))
-            continue;
+        if (item == 0) {
+		continue; }
+		
+        if (!CouldUnitBeInRangeHeuristic(gActiveUnit, unit, item)) {
+			continue; 
+		} 
 
         FillMovementAndRangeMapForItem(unit, item);
 		u32 atrb = GetItemAttributes(item); 
@@ -81,9 +80,13 @@ void NuAiFillDangerMap(void)
 		
 		
 		int unit_power = GetUnitPower(unit) + might;
-		if (atrb && IA_MAGIC) { unit_power -= res; }
-		else { unit_power -= def; }
-		if (unit_power > 1) { NuAiFillDangerMap_ApplyDanger(unit_power > 1); } 
+		//asm("mov r11, r11");
+		if (atrb & IA_MAGIC) { unit_power = unit_power - res; }
+		else { unit_power = unit_power - def; }
+		if (unit_power > 1) { 
+		NuAiFillDangerMap_ApplyDanger(unit_power / 2); 
+		} 
     }
+	return GetCurrDanger(); 
 }
 

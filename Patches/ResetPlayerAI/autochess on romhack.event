@@ -15,7 +15,8 @@ SHORT $46C0 // Everyone acts berserked at the end of the turn if they haven't mo
 
 //ORG $5A8412 
 //BYTE 4 // Default safety as 4 
-
+ORG $5A8391 
+BYTE 66 // Recovery mode for enemies / NPCs 
 ORG $5A8395 
 BYTE 66 // Recovery mode at 66% hp, stop recovery mode at 80% 
 
@@ -84,10 +85,11 @@ BYTE 0x03 0x00 0xFF 0; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Exit
 
 ORG $5A8690 // Non-promoted AI2 
 //Routine_AI(
-BYTE 0x18 0x00 0x8 0x00; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Move towards walls etc. with safety = 8 
+BYTE 0x18 0x00 0x8 0x00; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Move towards walls etc. with safety = 8 (but the safety doesn't work) 
 ConditionalGoto(4, EQ, 1)
 BYTE 0x03 0x00 0xFF 0; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Exit0 
 Label(1)
+//BYTE 0x13 0x00 0x6 0x00; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Move towards walls etc. with safety = 6 (duplicate because safety doesn't work on move to walls) 
 Routine_AI(TryMoveIfSafe, 0)
 BYTE 0x03 0x00 0xFF 1; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Exit1 
 
