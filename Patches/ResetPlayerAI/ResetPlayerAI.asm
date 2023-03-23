@@ -186,6 +186,30 @@ ldrb r0, [r0, #0xA] @ AiData.decisionBool
 cmp r0, #0 
 beq SkipRunToLord
 
+ldr r3, =gChapterData
+ldrb r0, [r3, #0x0E] @ chapter ID 
+cmp r0, #8 
+bgt NoAntiJeiganAI
+mov r0, #3 
+bl IsTargetCoordTooUnsafe 
+cmp r0, #0 
+bne SkipRunToLord 
+@ it is so safe that we might as well not kill with our jeigan(s) 
+ldr r3, =Defender 
+ldr r0, [r3] 
+ldr r1, [r3, #4] 
+ldr r0, [r0, #0x28] @ char abilities 
+ldr r1, [r1, #0x28] @ class abilities 
+orr r0, r1 
+mov r1, #0x80 @ boss 
+lsl r1, #8 
+tst r0, r1 
+beq JeiganDontAttack
+b JeiganAttack
+
+
+
+NoAntiJeiganAI: 
 ldr r2, =gCurrentUnit
 ldr r2, [r2] 
 ldrb r0, [r2, #0x13] @ current hp 
@@ -194,19 +218,31 @@ lsr r0, #2
 bl IsTargetCoordTooUnsafe 
 cmp r0, #1 
 bne SkipRunToLord 
+
+
 ldr r0, =0x3004E50 
 ldr r0, [r0] 
-bl CanUnitRunToSafety 
-cmp r0, #1 
-bne SkipRunToLord
+@bl CanUnitRunToSafety 
+@cmp r0, #0 
+@beq JeiganAttack
+
+ldr r3, =Defender 
+mov r1, #0x52 
+ldsb r1, [r3, r1] 
+cmp r1, #0 
+beq JeiganAttack @ so we attack archers etc 
+JeiganDontAttack:
 ldr r0, =0x203AA94 
 mov r1, #0 @ no decision made 
 str r1, [r0]
 str r1, [r0, #4]
 str r1, [r0, #8]
+
 @strb r1, [r0, #0xA] @ AiData.decisionBool @ no decision, so it should do AI2 instead 
 @b SkipEventStuff
+
 SkipRunToLord: @returns r0 as t/f that we made a decision 
+bl ActiveUnitEquipBestWepByRange
 bl TryEventInRange
 
 ldr r2, =gCurrentUnit
@@ -222,14 +258,15 @@ mov r1, #0 @ no decision made
 str r1, [r0, #0] @ AiData.decisionBool @ no decision, so it should do AI2 instead 
 str r1, [r0, #4] @ 
 str r1, [r0, #8] @ 
-bl TryEquip12RangeWep
 
 SkipEventStuff: 
+JeiganAttack:
 mov r0, #1 
 pop {r4} 
 pop {r1} 
 bx r1 
 .ltorg 
+.equ gChapterData, 0x202BCF0 
 .equ EventEngine, 0x800D07C
 .equ BmMapFill, 0x80197E4
 .equ gMapMovement, 0x0202E4E0
@@ -258,7 +295,6 @@ ldr r0, =gCurrentUnit
 ldr r0, [r0] 
 blh FillMovementMapForUnit 
 
-
 @ did the attack function make a decision? 
 @ldr r1, =0x30017C8 @ s8 gAiScriptEndedFlag 
 @ldrb r0, [r1] 
@@ -269,7 +305,7 @@ beq CheckForEvents
 
 ldr r2, =gCurrentUnit
 ldr r2, [r2] 
-ldrb r0, [r2, #0x13] @ current hp 
+ldrb r0, [r2, #0x13] @ current hp  
 sub r0, #1 @ assume we're at WTD 
 lsr r0, #2 @ 1/2 hp  
 @ if the dmg we could take is more than r0, run away 
@@ -277,35 +313,53 @@ bl IsTargetCoordTooUnsafe
 cmp r0, #1 
 bne JustAttack
 
-
-
-ldr r0, =gCurrentUnit 
-ldr r0, [r0] 
-bl CanUnitRunToSafety 
+ldr r2, =gCurrentUnit
+ldr r2, [r2] 
+ldrb r0, [r2, #0x13] @ current hp  
+sub r0, #2 @ assume we're at WTD and want to live with at least 1 hp 
+lsr r0, #1 @ hp-1 
+@ if the dmg we could take is more than r0, run away 
+bl IsTargetCoordTooUnsafe
 cmp r0, #1 
-beq RunAwayNow 
+bne AttackIfTheyCannotCounter 
+ldr r0, =0x203AA94 
+mov r1, #0 @ no decision made 
+str r1, [r0]
+str r1, [r0, #4]
+str r1, [r0, #8]
+b CheckForEvents 
+
+
 @ coord is unsafe, and there's nowhere to run 
 @ if opponent cannot counter, attack! 
 .equ Defender, 0x203A56C
+
+AttackIfTheyCannotCounter:
 ldr r3, =Defender 
-mov r0, #0x52 
-ldsb r0, [r3, r0] 
-cmp r0, #0 
+mov r1, #0x52 
+ldsb r1, [r3, r1] 
+cmp r1, #0 
 beq JustAttack @ so we attack archers etc 
 
-RunAwayNow: 
-@ CanUnitRunToSafety 
+ldr r0, =gCurrentUnit 
+ldr r0, [r0] 
+
+@bl CanUnitRunToSafety 
+@cmp r0, #1 
+@beq DoNotAttack 
+@b CheckForEvents 
+DoNotAttack: 
 ldr r0, =0x203AA94 
 mov r1, #0 @ no decision made 
 str r1, [r0]
 str r1, [r0, #4]
 str r1, [r0, #8]
 @strb r1, [r0, #0xA] @ AiData.decisionBool @ no decision, so it should do AI2 instead 
-bl TryEquip12RangeWep
-b SkipRunAway 
+@b SkipRunAway 
+
 CheckForEvents: 
 bl TryEventInRange
-
+bl ActiveUnitEquipBestWepByRange
 ldr r2, =gCurrentUnit
 ldr r2, [r2] 
 ldrb r0, [r2, #0x13] @ current hp 
@@ -319,33 +373,23 @@ mov r1, #0 @ no decision made
 str r1, [r0, #0] @ AiData.decisionBool @ no decision, so it should do AI2 instead 
 str r1, [r0, #4] @ 
 str r1, [r0, #8] @ 
-bl TryEquip12RangeWep
 @bl CallRunAway 
 JustAttack: 
 @returns r0 as t/f that we made a decision 
 SkipRunAway: 
+
 mov r0, #1 
 pop {r4} 
 pop {r1} 
 bx r1 
 .ltorg 
 
-TryEquip12RangeWep: 
-push {r4-r5, lr} 
-ldr r4, =gCurrentUnit 
-ldr r4, [r4] 
-blh 0x08016B58
-
-pop {r4-r5} 
-pop {r0} 
-bx r0 
-.ltorg 
-
 .equ GetUnitEquippedWepSlot, 0x08016B58 @ (const struct Unit*);
 .equ EquipUnitItemSlot, 0x08016BC0 @ (struct Unit*, int slot)
 @ doors are adjacent 
-@ SET_FUNC IsThereClosedChestAt, 0x80831AD
+	.equ MemorySlot,0x30004B8
 @SET_FUNC IsThereClosedDoorAt, 0x80831F1
+.equ IsThereClosedChestAt, 0x80831AC 
 .equ AiDecision, 0x203AA94
 .equ TryAddClosedDoorToTargetList, 0x8025794 
 .equ ForEachAdjacentPos, 0x8024FA4
@@ -363,8 +407,6 @@ mov r5, r9
 mov r6, r10 
 mov r7, r11 
 push {r4-r7} 
-
-
 
 ldr r0, =0x202BCF0 
 ldrb r0, [r0, #0xE] @ chapter ID 
@@ -401,6 +443,13 @@ add r6, #1
 cmp r6, r8 
 bgt NextTile_Y_Event 
 
+cmp r6, #6 
+bne NoBreak
+cmp r7, #12
+bne NoBreak 
+@mov r11, r11 
+
+NoBreak: 
 
 lsl r0, r7, #2 
 add r0, r10
@@ -409,8 +458,6 @@ add r0, r6 @ xx
 ldrb r0, [r0] 
 cmp r0, #0xFF 
 beq NextTile_X_Event
-cmp r0, #0 
-beq NextTile_X_Event 
 ldr r1, =gCurrentUnit 
 ldr r1, [r1] 
 ldr r2, [r1, #4] @ class 
@@ -429,6 +476,12 @@ add		r1,r0			@so that we can get the correct row pointer
 ldr		r1,[r1]			@Now we're at the beginning of the row data
 add		r1,r6			@add x coordinate
 ldrb	r0,[r1]			@load datum at those coordinates
+ldr r1, =gCurrentUnit 
+ldr r1, [r1] 
+ldrb r1, [r1, #0x0B] @ current unit 
+cmp r0, r1 
+beq GotoNoUnitHere 
+
 
 cmp r0, #0 
 beq GotoNoUnitHere 
@@ -569,7 +622,7 @@ cmp r1, #0
 beq FoundValidCoordMove 
 ldr r2, =gCurrentUnit 
 ldr r2, [r2] 
-ldrb r2, [r2, #0x0B] 
+ldrb r2, [r2, #0x0B] @ D3232 
 cmp r1, r2 
 beq FoundValidCoordMove 
 CheckDown: 
@@ -668,8 +721,9 @@ add r4, #12
 
 ldr r0, [r5, r4] 
 cmp r0, #0 
-beq BreakLocationLoop 
-
+bne ContinueLocationBasedEventsLoop 
+b BreakLocationLoop 
+ContinueLocationBasedEventsLoop: 
 
 mov r0, r5 
 add r0, r4 
@@ -689,7 +743,15 @@ ldrb r0, [r0, #2] @ completion flag
 blh CheckEventId
 cmp r0, #0 
 bne LocationBasedEventsLoop 
-
+ldr r2, =0x202E4DC @ terrain map 
+ldr r2, [r2] 
+lsl r1, r7, #2 
+add r2, r1 
+ldr r2, [r2] 
+add r2, r6 
+ldrb r0, [r2] 
+cmp r0, #3 @ village (open) 
+bne LocationBasedEventsLoop 
 
 ldr r0, =0x203AA94 
 strb r7, [r0, #3] @ yy 
@@ -709,9 +771,23 @@ strb r1, [r0, #0x0C] @ unit index
 strb r6, [r0, #0x0E] @ xx 
 strb r7, [r0, #0x0F] @ yy 
 
-mov r0, r6 @ xx 
-mov r1, r7 @ yy 
-blh RunLocationEvents 
+ldr r3, =MemorySlot 
+strh r6, [r3, #4*0x0B]
+strh r7, [r3, #4*0x0B+2]
+
+
+mov r1, #3
+ldr r0, =WaitUntilAIMovesProc
+blh pr6C_New, r2
+	.equ pr6C_New,                   0x08002C7C
+
+
+add r0, #0x2C
+str r6, [r0] @ param 1 
+str r7, [r0, #4] @ param 2 
+ldr r1, =RunLocationEvents 
+str r1, [r0, #20] @ 
+
 
 b Exit_Event
 
@@ -719,7 +795,7 @@ TryChest:
 cmp r1, #7 @ chest 
 bne LocationBasedEventsLoop 
 ldrb r1, [r0, #0xA] 
-cmp r1, #0x14 @ type is always 0x14 
+cmp r1, #0x14 @ type is always 0x14 when closed 
 bne LocationBasedEventsLoop
 
 bl GetActiveUnitChestKeySlot
@@ -735,6 +811,21 @@ str r2, [r1, #8]
 strb r0, [r1, #0x07] @ usedItemSlot 
 ldr r1, =gActionData 
 strb r0, [r1, #0x12] @ inventory slot # (0-4) 
+
+@mov r0, r6 
+@mov r1, r7 @ coords 
+@blh IsThereClosedChestAt
+@cmp r0, #0 
+@beq LocationBasedEventsLoop 
+ldr r3, =0x202E4DC @ TerrainMap 
+ldr r2, [r3] 
+lsl r1, r7, #2 
+add r2, r1 
+ldr r2, [r2] 
+ldrb r0, [r2, r6] 
+cmp r0, #0x21 
+bne LocationBasedEventsLoop 
+
 strb r6, [r1, #0x0E] @ xx 
 mov r0, #0x14 @ chest 
 strb r0, [r1, #0x11] @ action type: chest 
@@ -758,7 +849,20 @@ ldr r1, [r1]
 ldrb r1, [r1, #0x0B] @ unit 
 strb r1, [r0, #1] @ unit index 
 
-blh UseKeyOrLockpick 
+@mov r1, #3
+@ldr r0, =WaitUntilAIMovesProc
+@blh pr6C_New, r2
+@	.equ pr6C_New,                   0x08002C7C
+@
+@
+@add r0, #0x2C
+@str r6, [r0] @ param 1 
+@str r7, [r0, #4] @ param 2 
+@ldr r1, =RunLocationEvents 
+@str r1, [r0, #20] @ 
+@
+@
+@blh UseKeyOrLockpick 
 
 b Exit_Event 
 FoundClosedDoor: 
@@ -798,18 +902,29 @@ ldr r1, [r1]
 ldrb r1, [r1, #0x0B] @ unit 
 strb r1, [r0, #1] @ unit index 
 
+@mov r1, #3
+@ldr r0, =WaitUntilAIMovesProc
+@blh pr6C_New, r2
+@	.equ pr6C_New,                   0x08002C7C
+@
+@
+@add r0, #0x2C
+@str r6, [r0] @ param 1 
+@str r7, [r0, #4] @ param 2 
+@ldr r1, =RunLocationEvents 
+@str r1, [r0, #20] @ 
+@
 blh UseKeyOrLockpick 
 
 b Exit_Event 
 
 
 BreakLocationLoop: 
-ldr r2, =TryAddClosedDoorToTargetList 
-mov r0, #1 
-orr r2, r0 
 mov r0, r6 
 mov r1, r7 
-blh ForEachAdjacentPos 
+mov r2, r8 
+mov r3, r9 
+bl TryAddClosedDoorToTargetListNew 
 ldr r0, =gTargetArraySize
 .equ gTargetArraySize, 0x203E0EC 
 ldrb r0, [r0] 
@@ -821,7 +936,6 @@ NoKeyForDoor:
 
 
 @ https://github.com/FireEmblemUniverse/fireemblem8u/blob/8a04f056602fb6f1db1a8f6aebed0f8d383ac420/src/bmusemind.c#L556
-@talk 
 @ rescue? 
 @ if rescuing a unit, run away and drop somewhere 
 
@@ -840,6 +954,120 @@ pop {r4-r7}
 pop {r0} 
 bx r0 
 .ltorg 
+
+TryAddClosedDoorToTargetListNew:
+push {r4-r7, lr}
+mov r6, r0 @ xx 
+mov r7, r1 @ yy 
+mov r4, r2 @ xx boundary 
+mov r5, r3 @ yy boundary 
+
+mov r0, r6 
+sub r0, #1 
+cmp r0, #0 
+blt SkipLeftSide 
+mov r1, r7 
+blh TryAddClosedDoorToTargetList 
+SkipLeftSide: 
+mov r0, r6 
+add r0, #1 
+cmp r0, r4 
+bgt SkipRightSide 
+mov r1, r7 
+blh TryAddClosedDoorToTargetList 
+SkipRightSide: 
+mov r0, r6 
+mov r1, r7 
+sub r1, #1 
+cmp r1, #0 
+blt SkipAboveSide
+blh TryAddClosedDoorToTargetList 
+SkipAboveSide: 
+mov r0, r6 
+mov r1, r7 
+add r1, #1 
+cmp r1, r5 
+bgt SkipBelowSide 
+blh TryAddClosedDoorToTargetList 
+SkipBelowSide: 
+
+pop {r4-r7} 
+pop {r0} 
+bx r0 
+.ltorg 
+
+.ltorg
+.global WaitUntilAIMoves
+.type WaitUntilAIMoves, %function
+WaitUntilAIMoves:
+push {r4-r5, lr} 
+mov r4, r0 @ Parent? 
+ldr r0, =0x85a8024 @gProc_CpPerform
+blh ProcFind, r1 
+cmp r0, #0 
+beq ProcStateError 
+
+
+
+.equ IsThereAMovingMoveunit, 0x8078738 
+blh IsThereAMovingMoveunit 
+cmp r0, #0 
+bne ProcStateError 
+.equ gProcCameraMovement, 0x859A548 
+ldr r0, =gProcCameraMovement 
+blh ProcFind 
+cmp r0, #0 
+bne ProcStateError 
+b ReturnProcStateRight 
+
+@ldr r1, [r0, #4] @ Code Cursor 
+@ldr r2, =0x85A8068 @ wait 0x85a8024 + 0x40 @gProc_CpPerform
+@cmp r1, r2 
+@beq ReturnProcStateRight 
+
+ProcStateError:
+mov r0, #0 
+
+
+b EndIfProcStateWrongThenYield
+
+ReturnProcStateRight: 
+
+
+mov r0, r4 @  @ parent to break from 
+blh BreakProcLoop
+mov r0, #1
+
+EndIfProcStateWrongThenYield:
+pop {r4-r5}
+pop {r1}
+bx r1 
+.ltorg 
+
+	.equ BreakProcLoop, 0x08002E94
+	.equ ProcFind, 0x08002E9C
+.global CallProvidedRoutine
+.type CallProvidedRoutine, %function 
+CallProvidedRoutine: 
+push {r4, lr} 
+mov r4, #0x2C 
+add r4, r0 
+ldr r0, [r4, #20] @ routine 
+mov r1, #1 
+orr r0, r1 
+mov lr, r0 
+
+ldr r0, [r4] 
+ldr r1, [r4, #4] @ param 2 
+.short 0xf800 
+
+
+
+pop {r4} 
+pop {r0} 
+bx r0 
+.ltorg 
+
 
 .equ GetItemData, 0x80177B0
 GetActiveUnitDoorKeySlot:
@@ -1057,9 +1285,9 @@ add r0, #0x45
 ldr r2, =gCurrentUnit
 ldr r2, [r2] 
 ldrb r0, [r2, #0x13] @ current hp 
-sub r0, #1 
-@lsr r1, r0, #2
-@sub r0, r1 @ 3/4 hp 
+@sub r0, #3
+lsr r1, r0, #2
+sub r0, r1 @ 3/4 hp 
 @mov r11, r11 
 lsr r0, #1
 @ if the dmg we could take is more than r0, run away 
@@ -1076,9 +1304,12 @@ bx r1
 
 IsTargetCoordTooUnsafe:
 mov r3, r0 @ safety threshold 
-ldr r0, =0x203AA96
-ldrb r1, [r0, #1] @ yy 
-ldrb r0, [r0] @ xx 
+ldr r0, =AiDecision
+ldr r2, [r0] 
+cmp r2, #0 
+beq SafeEnough 
+ldrb r1, [r0, #3] @ yy 
+ldrb r0, [r0, #2] @ xx 
 
 ldr		r2,=0x202E4F0	@Load the location in the table of tables of the map you want
 ldr		r2,[r2]			@Offset of map's table of row pointers

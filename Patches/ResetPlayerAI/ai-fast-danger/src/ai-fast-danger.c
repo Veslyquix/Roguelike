@@ -88,12 +88,13 @@ int NuAiFillDangerMap(void)
 		
 		//unit_power += might;
 		
-		if (unit_power > 1) { 
-		NuAiFillDangerMap_ApplyDanger(unit_power / 2); 
-		} 
+
+		if (unit_power < 2) { unit_power = 2; } 
+		NuAiFillDangerMap_ApplyDanger(unit_power / 2); // minimum of 1 unit power 
+
     }
 	
-	asm("mov r11, r11");
+	//asm("mov r11, r11");
 	return GetCurrDanger(); 
 }
 

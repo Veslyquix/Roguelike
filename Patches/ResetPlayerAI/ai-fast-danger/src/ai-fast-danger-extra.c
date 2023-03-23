@@ -2,6 +2,42 @@
 //extern struct Vec2 gMapSize;
 extern u8 * * gMapRange;
 extern u8 * * gMapMovement2;
+void ActiveUnitEquipBestWepByRange(void) { 
+  struct Unit* unit = gActiveUnit;
+  int slot = GetUnitEquippedWeaponSlot(unit);
+  if (slot>=0) { 
+  int wep = unit->items[slot];
+  int might = GetItemMight(wep);
+  int minRange = GetItemMinRange(wep); 
+  int maxRange = GetItemMaxRange(wep);
+  int finalSlot = slot; 
+  for (int i = 0; i < 5; i++) { 
+  if (slot == i) { 
+    continue; }
+  int item = unit->items[i]; 
+  if (!CanUnitUseWeapon(unit, item)) 
+    continue;
+  int newMinRange = GetItemMinRange(item);
+  // Equip the weapon with the lowest min range. 
+  // Then for weapons with more range or more might, equip those 
+  if (newMinRange <= minRange) { 
+    int newMaxRange = GetItemMaxRange(item);
+    if (newMaxRange >= maxRange) { 
+    int newMight = GetItemMight(item); 
+    if ((newMinRange != minRange) || (newMaxRange != maxRange) || (newMight > might)) {  
+      finalSlot = i; 
+      might = newMight; 
+      minRange = newMinRange; 
+      maxRange = newMaxRange; 
+    } 
+  }
+  } 
+  }
+  if (slot != finalSlot)
+    EquipUnitItemSlot(unit, finalSlot);
+  } 
+  
+} 
 
 void NuAiFillDangerMap_ApplyDanger(int danger_gain, int unit_power, int battle_def)
 {
@@ -17,8 +53,8 @@ void NuAiFillDangerMap_ApplyDanger(int danger_gain, int unit_power, int battle_d
 
         for (ix = map_size_x_m1; ix >= 0; --ix)
         {
-            //if (map_range_row[ix] == 0)
-            //    continue;
+            if (map_range_row[ix] == 0)
+                continue;
 
             map_other_row[ix] += danger_gain;
         }

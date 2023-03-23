@@ -1,10 +1,11 @@
 #include "eastdlib.event" 
 #include "Extensions/AI Assembly.txt" 
+#include "ProcDefinitions.txt" 
 #ifndef callHackNew 
 	#define callHackNew(offset) 		"BYTE $01 $4B $9E $46 $00 $F8 $01 $E0; POIN (offset|0x1)"
 #endif 
 
-//#define ENABLE_100_GROWTH
+#define ENABLE_100_GROWTH
 
 PUSH 
 ORG $39722 
@@ -153,6 +154,24 @@ OneHundredGrowth:
 BYTE $00 $B5 $30 $1C $16 $4B $9E $46 $00 $F8 $38 $1C $14 $4B $9E $46 $00 $F8 $14 $4B $18 $7A $70 $21 $C9 $18 $09 $78 $88 $42 $0A $DD $73 $22 $9B $18 $01 $20 $18 $70 $58 $70 $98 $70 $D8 $70 $18 $71 $58 $71 $98 $71 $D8 $71 $0C $4B $18 $7A $70 $21 $C9 $18 $09 $78 $88 $42 $0A $DD $73 $22 $9B $18 $01 $20 $18 $70 $58 $70 $98 $70 $D8 $70 $18 $71 $58 $71 $98 $71 $D8 $71 $01 $BC $00 $47 $00 $00 $C8 $44 $0A $08 $EC $A4 $03 $02 $6C $A5 $03 $02
 #endif 
 #include "ai-fast-danger/Installer.event" 
+
+ALIGN 4
+WaitUntilAIMovesProc:
+PROC_YIELD // Buffer.
+PROC_SET_NAME(WaitUntilAIMovesProcName)
+PROC_SLEEP(0)
+PROC_LOOP_ROUTINE(WaitUntilAIMoves)
+PROC_CALL_ROUTINE(CallProvidedRoutine)
+PROC_END
+
+
+WaitUntilAIMovesProcName:
+String("CustomAIPausedBecauseUnitIsMoving") ; BYTE 0
+ALIGN 4
+
+
+
+
 POP 
 
 
