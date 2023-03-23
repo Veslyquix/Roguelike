@@ -205,9 +205,25 @@ str r1, [r0]
 str r1, [r0, #4]
 str r1, [r0, #8]
 @strb r1, [r0, #0xA] @ AiData.decisionBool @ no decision, so it should do AI2 instead 
-b SkipEventStuff
+@b SkipEventStuff
 SkipRunToLord: @returns r0 as t/f that we made a decision 
 bl TryEventInRange
+
+ldr r2, =gCurrentUnit
+ldr r2, [r2] 
+ldrb r0, [r2, #0x13] @ current hp 
+sub r0, #2 
+@ if the dmg we could take is more than r0, run away 
+bl IsTargetCoordTooUnsafe
+cmp r0, #1 
+bne SkipEventStuff
+ldr r0, =0x203AA94 
+mov r1, #0 @ no decision made 
+str r1, [r0, #0] @ AiData.decisionBool @ no decision, so it should do AI2 instead 
+str r1, [r0, #4] @ 
+str r1, [r0, #8] @ 
+bl TryEquip12RangeWep
+
 SkipEventStuff: 
 mov r0, #1 
 pop {r4} 
@@ -253,8 +269,7 @@ beq CheckForEvents
 
 ldr r2, =gCurrentUnit
 ldr r2, [r2] 
-ldrb r0, [r2, #0x13] @ current hp
-mov r11, r11  
+ldrb r0, [r2, #0x13] @ current hp 
 sub r0, #1 @ assume we're at WTD 
 lsr r0, #2 @ 1/2 hp  
 @ if the dmg we could take is more than r0, run away 
@@ -268,7 +283,7 @@ ldr r0, =gCurrentUnit
 ldr r0, [r0] 
 bl CanUnitRunToSafety 
 cmp r0, #1 
-bne JustAttack 
+beq RunAwayNow 
 @ coord is unsafe, and there's nowhere to run 
 @ if opponent cannot counter, attack! 
 .equ Defender, 0x203A56C
@@ -278,7 +293,7 @@ ldsb r0, [r3, r0]
 cmp r0, #0 
 beq JustAttack @ so we attack archers etc 
 
-
+RunAwayNow: 
 @ CanUnitRunToSafety 
 ldr r0, =0x203AA94 
 mov r1, #0 @ no decision made 
@@ -286,11 +301,25 @@ str r1, [r0]
 str r1, [r0, #4]
 str r1, [r0, #8]
 @strb r1, [r0, #0xA] @ AiData.decisionBool @ no decision, so it should do AI2 instead 
+bl TryEquip12RangeWep
 b SkipRunAway 
 CheckForEvents: 
 bl TryEventInRange
 
-
+ldr r2, =gCurrentUnit
+ldr r2, [r2] 
+ldrb r0, [r2, #0x13] @ current hp 
+sub r0, #2 
+@ if the dmg we could take is more than r0, run away 
+bl IsTargetCoordTooUnsafe
+cmp r0, #1 
+bne SkipRunAway 
+ldr r0, =0x203AA94 
+mov r1, #0 @ no decision made 
+str r1, [r0, #0] @ AiData.decisionBool @ no decision, so it should do AI2 instead 
+str r1, [r0, #4] @ 
+str r1, [r0, #8] @ 
+bl TryEquip12RangeWep
 @bl CallRunAway 
 JustAttack: 
 @returns r0 as t/f that we made a decision 
@@ -301,6 +330,19 @@ pop {r1}
 bx r1 
 .ltorg 
 
+TryEquip12RangeWep: 
+push {r4-r5, lr} 
+ldr r4, =gCurrentUnit 
+ldr r4, [r4] 
+blh 0x08016B58
+
+pop {r4-r5} 
+pop {r0} 
+bx r0 
+.ltorg 
+
+.equ GetUnitEquippedWepSlot, 0x08016B58 @ (const struct Unit*);
+.equ EquipUnitItemSlot, 0x08016BC0 @ (struct Unit*, int slot)
 @ doors are adjacent 
 @ SET_FUNC IsThereClosedChestAt, 0x80831AD
 @SET_FUNC IsThereClosedDoorAt, 0x80831F1

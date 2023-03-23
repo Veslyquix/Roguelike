@@ -1,6 +1,4 @@
 	.cpu arm7tdmi
-	.arch armv4t
-	.fpu softvfp
 	.eabi_attribute 20, 1	@ Tag_ABI_FP_denormal
 	.eabi_attribute 21, 1	@ Tag_ABI_FP_exceptions
 	.eabi_attribute 23, 3	@ Tag_ABI_FP_number_model
@@ -11,7 +9,7 @@
 	.eabi_attribute 34, 0	@ Tag_CPU_unaligned_access
 	.eabi_attribute 18, 4	@ Tag_ABI_PCS_wchar_t
 	.file	"ai-fast-danger.c"
-@ GNU C17 (devkitARM release 59) version 12.2.0 (arm-none-eabi)
+@ GNU C17 (devkitARM release 56) version 11.1.0 (arm-none-eabi)
 @	compiled by GNU C version 10.3.0, GMP version 6.2.1, MPFR version 4.1.0, MPC version 1.2.1, isl version isl-0.18-GMP
 
 @ GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
@@ -20,9 +18,11 @@
 	.align	1
 	.p2align 2,,3
 	.global	NuAiFillDangerMap
+	.arch armv4t
 	.syntax unified
 	.code	16
 	.thumb_func
+	.fpu softvfp
 	.type	NuAiFillDangerMap, %function
 NuAiFillDangerMap:
 	@ Function supports interworking.
@@ -33,160 +33,168 @@ NuAiFillDangerMap:
 	mov	r7, r10	@,
 	mov	r6, r9	@,
 	mov	r5, r8	@,
-@ ai-fast-danger.c:36: 	int res = gActiveUnit->res; 
-	movs	r2, #24	@ res,
-@ ai-fast-danger.c:37: 	int def = gActiveUnit->def; 
-	movs	r1, #23	@ def,
-@ ai-fast-danger.c:32: {
 	push	{r5, r6, r7, lr}	@
-@ ai-fast-danger.c:36: 	int res = gActiveUnit->res; 
-	ldr	r7, .L27	@ tmp169,
-	ldr	r3, [r7]	@ gActiveUnit.0_1, gActiveUnit
-@ ai-fast-danger.c:36: 	int res = gActiveUnit->res; 
-	ldrsb	r2, [r3, r2]	@ res,* res
-@ ai-fast-danger.c:32: {
-	sub	sp, sp, #28	@,,
-@ ai-fast-danger.c:36: 	int res = gActiveUnit->res; 
-	str	r2, [sp, #16]	@ res, %sfp
-@ ai-fast-danger.c:37: 	int def = gActiveUnit->def; 
-	ldrsb	r1, [r3, r1]	@ def,* def
-	ldr	r3, .L27+4	@ ivtmp.24,
-	mov	ip, r3	@ ivtmp.24, ivtmp.24
-	str	r3, [sp]	@ ivtmp.24, %sfp
-@ ai-fast-danger.c:48:         if ((gActiveUnitId >> 7) == (unit->index>>7)) { // AreAllegiancesAllied 
-	ldr	r3, .L27+8	@ tmp170,
-	movs	r2, #191	@ _77,
-	mov	r9, r3	@ tmp170, tmp170
-@ ai-fast-danger.c:78: 		u32 atrb = GetItemAttributes(item); 
-	ldr	r3, .L27+12	@ tmp171,
-	str	r3, [sp, #12]	@ tmp171, %sfp
-@ ai-fast-danger.c:87: 		NuAiFillDangerMap_ApplyDanger(unit_power / 2); 
-	ldr	r3, .L27+16	@ tmp172,
-	lsls	r2, r2, #2	@ _77, _77,
-	str	r3, [sp, #20]	@ tmp172, %sfp
-	mov	r3, r9	@ tmp170, tmp170
-	add	r2, r2, ip	@ _77, ivtmp.24
-	mov	fp, r2	@ _77, _77
-	mov	r9, r1	@ def, def
-	str	r7, [sp, #8]	@ tmp169, %sfp
-	str	r3, [sp, #4]	@ tmp170, %sfp
-.L12:
-@ ai-fast-danger.c:41:         struct Unit* unit = gUnitLookup[i];
-	ldr	r3, [sp]	@ ivtmp.24, %sfp
-	ldr	r6, [r3]	@ unit, MEM[(struct Unit * *)_75]
-@ ai-fast-danger.c:43: 		if (!IsUnitOnField(unit)) {
-	movs	r0, r6	@, unit
+@ ai-fast-danger.c:37: 	int res = gActiveUnit->res; 
+	ldr	r3, .L25	@ tmp169,
+@ ai-fast-danger.c:33: {
+	sub	sp, sp, #36	@,,
+@ ai-fast-danger.c:37: 	int res = gActiveUnit->res; 
+	str	r3, [sp, #28]	@ tmp169, %sfp
+	ldr	r0, [r3]	@ gActiveUnit.0_1, gActiveUnit
+@ ai-fast-danger.c:37: 	int res = gActiveUnit->res; 
+	movs	r3, #24	@ res,
+	ldrsb	r3, [r0, r3]	@ res,* res
+	str	r3, [sp, #24]	@ res, %sfp
+@ ai-fast-danger.c:38: 	int def = gActiveUnit->def; 
+	movs	r3, #23	@ def,
+	ldrsb	r3, [r0, r3]	@ def,* def
+	str	r3, [sp, #12]	@ def, %sfp
+@ ai-fast-danger.c:39: 	int spd = GetUnitEffSpd(gActiveUnit); 
+	bl	GetUnitEffSpd		@
+@ ai-fast-danger.c:50:         if ((gActiveUnitId >> 7) == (unit->index>>7)) { // AreAllegiancesAllied 
+	ldr	r3, .L25+4	@ tmp173,
+	str	r3, [sp, #8]	@ tmp173, %sfp
+@ ai-fast-danger.c:64: 			u32 atrb = GetItemAttributes(item); 
+	ldr	r3, .L25+8	@ tmp174,
+@ ai-fast-danger.c:39: 	int spd = GetUnitEffSpd(gActiveUnit); 
+	str	r0, [sp, #16]	@ tmp176, %sfp
+	ldr	r7, .L25+12	@ ivtmp.23,
+@ ai-fast-danger.c:64: 			u32 atrb = GetItemAttributes(item); 
+	str	r3, [sp, #20]	@ tmp174, %sfp
+	b	.L10		@
+.L3:
+@ ai-fast-danger.c:41:     for (i = 1; i < 0xC0; ++i)
+	ldr	r3, .L25+16	@ tmp213,
+	adds	r7, r7, #4	@ ivtmp.23,
+	cmp	r3, r7	@ tmp213, ivtmp.23
+	beq	.L24		@,
+.L10:
+@ ai-fast-danger.c:43:         struct Unit* unit = gUnitLookup[i];
+	ldr	r4, [r7]	@ unit, MEM[(struct Unit * *)_57]
+@ ai-fast-danger.c:45: 		if (!IsUnitOnField(unit)) {
+	movs	r0, r4	@, unit
 	bl	IsUnitOnField		@
-@ ai-fast-danger.c:43: 		if (!IsUnitOnField(unit)) {
-	cmp	r0, #0	@ tmp173,
+@ ai-fast-danger.c:45: 		if (!IsUnitOnField(unit)) {
+	cmp	r0, #0	@ tmp177,
 	beq	.L3		@,
-@ ai-fast-danger.c:48:         if ((gActiveUnitId >> 7) == (unit->index>>7)) { // AreAllegiancesAllied 
-	ldr	r3, [sp, #4]	@ tmp170, %sfp
+@ ai-fast-danger.c:50:         if ((gActiveUnitId >> 7) == (unit->index>>7)) { // AreAllegiancesAllied 
+	ldr	r3, [sp, #8]	@ tmp173, %sfp
 	ldrb	r2, [r3]	@ gActiveUnitId, gActiveUnitId
-@ ai-fast-danger.c:48:         if ((gActiveUnitId >> 7) == (unit->index>>7)) { // AreAllegiancesAllied 
+@ ai-fast-danger.c:50:         if ((gActiveUnitId >> 7) == (unit->index>>7)) { // AreAllegiancesAllied 
 	movs	r3, #11	@ tmp157,
-	ldrsb	r3, [r6, r3]	@ tmp157,
-@ ai-fast-danger.c:48:         if ((gActiveUnitId >> 7) == (unit->index>>7)) { // AreAllegiancesAllied 
+	ldrsb	r3, [r4, r3]	@ tmp157,
+@ ai-fast-danger.c:50:         if ((gActiveUnitId >> 7) == (unit->index>>7)) { // AreAllegiancesAllied 
 	lsrs	r2, r2, #7	@ tmp155, gActiveUnitId,
-@ ai-fast-danger.c:48:         if ((gActiveUnitId >> 7) == (unit->index>>7)) { // AreAllegiancesAllied 
+@ ai-fast-danger.c:50:         if ((gActiveUnitId >> 7) == (unit->index>>7)) { // AreAllegiancesAllied 
 	asrs	r3, r3, #31	@ tmp159, tmp157,
-@ ai-fast-danger.c:48:         if ((gActiveUnitId >> 7) == (unit->index>>7)) { // AreAllegiancesAllied 
+@ ai-fast-danger.c:50:         if ((gActiveUnitId >> 7) == (unit->index>>7)) { // AreAllegiancesAllied 
 	cmp	r2, r3	@ tmp155, tmp159
 	beq	.L3		@,
-	movs	r3, #40	@ _70,
-@ ai-fast-danger.c:53:         int might = 0;
-	movs	r5, #0	@ might,
-	mov	r8, r3	@ _70, _70
-@ ai-fast-danger.c:52:         int item = 0;
-	movs	r3, #0	@ item,
-	movs	r4, r6	@ ivtmp.14, unit
-	mov	r10, r3	@ item, item
-	movs	r7, r5	@ might, might
-	adds	r4, r4, #30	@ ivtmp.14,
-	add	r8, r8, r6	@ _70, unit
+@ ai-fast-danger.c:57: 		int unit_power = GetUnitPower(unit);
+	movs	r0, r4	@, unit
+	bl	GetUnitPower		@
+	movs	r3, #40	@ _53,
+	mov	r10, r3	@ _53, _53
+@ ai-fast-danger.c:55:         int might = 0;
+	movs	r3, #0	@ might,
+	mov	fp, r3	@ might, might
+@ ai-fast-danger.c:54:         int item = 0;
+	mov	r8, r3	@ item, item
+	movs	r3, r7	@ ivtmp.23, ivtmp.23
+	add	r10, r10, r4	@ _53, unit
+	movs	r5, r4	@ ivtmp.13, unit
+	mov	r7, r10	@ _53, _53
+@ ai-fast-danger.c:57: 		int unit_power = GetUnitPower(unit);
+	mov	r9, r0	@ unit_power, tmp178
+	mov	r10, r3	@ ivtmp.23, ivtmp.23
+	adds	r5, r5, #30	@ ivtmp.13,
 .L5:
-@ ai-fast-danger.c:56:         for (j = 0; j < 5 && (item_tmp = unit->items[j]); ++j)
-	ldrh	r5, [r4]	@ item_tmp, MEM[(short unsigned int *)_68]
-@ ai-fast-danger.c:56:         for (j = 0; j < 5 && (item_tmp = unit->items[j]); ++j)
-	cmp	r5, #0	@ item_tmp,
+@ ai-fast-danger.c:59:         for (j = 0; j < 5 && (item_tmp = unit->items[j]); ++j)
+	ldrh	r6, [r5]	@ item_tmp, MEM[(short unsigned int *)_67]
+@ ai-fast-danger.c:59:         for (j = 0; j < 5 && (item_tmp = unit->items[j]); ++j)
+	cmp	r6, #0	@ item_tmp,
 	beq	.L8		@,
-@ ai-fast-danger.c:58:             if (!CanUnitUseWeapon(unit, item_tmp)) {
-	movs	r1, r5	@, item_tmp
-	movs	r0, r6	@, unit
+@ ai-fast-danger.c:61:             if (!CanUnitUseWeapon(unit, item_tmp)) {
+	movs	r1, r6	@, item_tmp
+	movs	r0, r4	@, unit
 	bl	CanUnitUseWeapon		@
-@ ai-fast-danger.c:58:             if (!CanUnitUseWeapon(unit, item_tmp)) {
-	cmp	r0, #0	@ tmp174,
+@ ai-fast-danger.c:61:             if (!CanUnitUseWeapon(unit, item_tmp)) {
+	cmp	r0, #0	@ tmp179,
+	beq	.L6		@,
+@ ai-fast-danger.c:64: 			u32 atrb = GetItemAttributes(item); 
+	ldr	r3, [sp, #20]	@ tmp174, %sfp
+	mov	r0, r8	@, item
+	bl	.L27		@
+@ ai-fast-danger.c:66: 			if (atrb & IA_MAGIC) { battle_def = res; }
+	movs	r3, #2	@ tmp208,
+@ ai-fast-danger.c:65: 			int battle_def = def; 
+	ldr	r2, [sp, #12]	@ battle_def, %sfp
+@ ai-fast-danger.c:66: 			if (atrb & IA_MAGIC) { battle_def = res; }
+	tst	r3, r0	@ tmp208, tmp180
 	beq	.L7		@,
-@ ai-fast-danger.c:61:             int might_tmp = GetItemEffMight(item_tmp); 
-	movs	r0, r5	@, item_tmp
-	bl	GetItemEffMight		@
-@ ai-fast-danger.c:63:             if (might_tmp > might)
-	cmp	r0, r7	@ might_tmp, might
-	ble	.L7		@,
-	movs	r7, r0	@ might, might_tmp
-	mov	r10, r5	@ item, item_tmp
+@ ai-fast-danger.c:66: 			if (atrb & IA_MAGIC) { battle_def = res; }
+	ldr	r2, [sp, #24]	@ battle_def, %sfp
 .L7:
-@ ai-fast-danger.c:56:         for (j = 0; j < 5 && (item_tmp = unit->items[j]); ++j)
-	adds	r4, r4, #2	@ ivtmp.14,
-	cmp	r4, r8	@ ivtmp.14, _70
+@ ai-fast-danger.c:69:             int might_tmp = GetItemEffMight(item_tmp, unit_power, battle_def, spd, unit); 
+	mov	r1, r9	@, unit_power
+	movs	r0, r6	@, item_tmp
+	str	r4, [sp]	@ unit,
+	ldr	r3, [sp, #16]	@, %sfp
+	bl	GetItemEffMight		@
+@ ai-fast-danger.c:71:             if (might_tmp > might)
+	cmp	r0, fp	@ might_tmp, might
+	ble	.L6		@,
+	mov	fp, r0	@ might, might_tmp
+	mov	r8, r6	@ item, item_tmp
+.L6:
+@ ai-fast-danger.c:59:         for (j = 0; j < 5 && (item_tmp = unit->items[j]); ++j)
+	adds	r5, r5, #2	@ ivtmp.13,
+	cmp	r7, r5	@ _53, ivtmp.13
 	bne	.L5		@,
 .L8:
-@ ai-fast-danger.c:70:         if (item == 0) {
-	mov	r3, r10	@ item, item
+@ ai-fast-danger.c:78:         if (item == 0) {
+	mov	r3, r8	@ item, item
+	mov	r7, r10	@ ivtmp.23, ivtmp.23
 	cmp	r3, #0	@ item,
 	beq	.L3		@,
-@ ai-fast-danger.c:73:         if (!CouldUnitBeInRangeHeuristic(gActiveUnit, unit, item)) {
-	ldr	r3, [sp, #8]	@ tmp169, %sfp
-	mov	r2, r10	@, item
-	movs	r1, r6	@, unit
+@ ai-fast-danger.c:81:         if (!CouldUnitBeInRangeHeuristic(gActiveUnit, unit, item)) {
+	ldr	r3, [sp, #28]	@ tmp169, %sfp
+	mov	r2, r8	@, item
+	movs	r1, r4	@, unit
 	ldr	r0, [r3]	@ gActiveUnit, gActiveUnit
 	bl	CouldUnitBeInRangeHeuristic		@
-@ ai-fast-danger.c:73:         if (!CouldUnitBeInRangeHeuristic(gActiveUnit, unit, item)) {
-	cmp	r0, #0	@ tmp176,
+@ ai-fast-danger.c:81:         if (!CouldUnitBeInRangeHeuristic(gActiveUnit, unit, item)) {
+	cmp	r0, #0	@ tmp182,
 	beq	.L3		@,
-@ ai-fast-danger.c:77:         FillMovementAndRangeMapForItem(unit, item);
-	mov	r1, r10	@, item
-	movs	r0, r6	@, unit
+@ ai-fast-danger.c:85:         FillMovementAndRangeMapForItem(unit, item);
+	mov	r1, r8	@, item
+	movs	r0, r4	@, unit
 	bl	FillMovementAndRangeMapForItem		@
-@ ai-fast-danger.c:78: 		u32 atrb = GetItemAttributes(item); 
-	ldr	r3, [sp, #12]	@ tmp171, %sfp
-	mov	r0, r10	@, item
-	bl	.L29		@
-	movs	r4, r0	@ atrb, tmp177
-@ ai-fast-danger.c:82: 		int unit_power = GetUnitPower(unit) + might;
-	movs	r0, r6	@, unit
-	bl	GetUnitPower		@
-@ ai-fast-danger.c:85: 		else { unit_power = unit_power - def; }
-	mov	r3, r9	@ def, def
-@ ai-fast-danger.c:82: 		int unit_power = GetUnitPower(unit) + might;
-	adds	r0, r0, r7	@ unit_power, tmp178, might
-@ ai-fast-danger.c:85: 		else { unit_power = unit_power - def; }
-	subs	r3, r0, r3	@ unit_power, unit_power, def
-@ ai-fast-danger.c:84: 		if (atrb & IA_MAGIC) { unit_power = unit_power - res; }
-	lsls	r4, r4, #30	@ tmp180, atrb,
-	bpl	.L11		@,
-@ ai-fast-danger.c:84: 		if (atrb & IA_MAGIC) { unit_power = unit_power - res; }
-	ldr	r3, [sp, #16]	@ res, %sfp
-	subs	r3, r0, r3	@ unit_power, unit_power, res
-.L11:
-@ ai-fast-danger.c:86: 		if (unit_power > 1) { 
+@ ai-fast-danger.c:91: 		if (unit_power > 1) { 
+	mov	r3, r9	@ unit_power, unit_power
 	cmp	r3, #1	@ unit_power,
 	ble	.L3		@,
-@ ai-fast-danger.c:87: 		NuAiFillDangerMap_ApplyDanger(unit_power / 2); 
+@ ai-fast-danger.c:92: 		NuAiFillDangerMap_ApplyDanger(unit_power / 2); 
 	asrs	r0, r3, #1	@ tmp166, unit_power,
-	ldr	r3, [sp, #20]	@ tmp172, %sfp
-	bl	.L29		@
-.L3:
-@ ai-fast-danger.c:39:     for (i = 1; i < 0xC0; ++i)
-	ldr	r3, [sp]	@ ivtmp.24, %sfp
-	adds	r3, r3, #4	@ ivtmp.24,
-	str	r3, [sp]	@ ivtmp.24, %sfp
-	cmp	r3, fp	@ ivtmp.24, _77
-	bne	.L12		@,
-@ ai-fast-danger.c:90: 	return GetCurrDanger(); 
+	ldr	r3, .L25+20	@ tmp167,
+	bl	.L27		@
+@ ai-fast-danger.c:41:     for (i = 1; i < 0xC0; ++i)
+	ldr	r3, .L25+16	@ tmp213,
+	adds	r7, r7, #4	@ ivtmp.23,
+	cmp	r3, r7	@ tmp213, ivtmp.23
+	bne	.L10		@,
+.L24:
+@ ai-fast-danger.c:96: 	asm("mov r11, r11");
+	.syntax divided
+@ 96 "ai-fast-danger.c" 1
+	mov r11, r11
+@ 0 "" 2
+@ ai-fast-danger.c:97: 	return GetCurrDanger(); 
+	.thumb
+	.syntax unified
 	bl	GetCurrDanger		@
-@ ai-fast-danger.c:91: }
-	add	sp, sp, #28	@,,
+@ ai-fast-danger.c:98: }
+	add	sp, sp, #36	@,,
 	@ sp needed	@
 	pop	{r4, r5, r6, r7}
 	mov	fp, r7
@@ -196,17 +204,18 @@ NuAiFillDangerMap:
 	pop	{r4, r5, r6, r7}
 	pop	{r1}
 	bx	r1
-.L28:
+.L26:
 	.align	2
-.L27:
+.L25:
 	.word	gActiveUnit
-	.word	gUnitLookup+4
 	.word	gActiveUnitId
 	.word	GetItemAttributes
+	.word	gUnitLookup+4
+	.word	gUnitLookup+768
 	.word	NuAiFillDangerMap_ApplyDanger
 	.size	NuAiFillDangerMap, .-NuAiFillDangerMap
-	.ident	"GCC: (devkitARM release 59) 12.2.0"
+	.ident	"GCC: (devkitARM release 56) 11.1.0"
 	.code 16
 	.align	1
-.L29:
+.L27:
 	bx	r3

@@ -13,7 +13,8 @@ extern void NuAiFillDangerMap_ApplyDanger(int danger_gain);
 #define SHORTCALL __attribute__((short_call))
 extern int IsUnitOnField(struct Unit* unit) SHORTCALL;
 extern int GetCurrDanger(void) SHORTCALL; 
-extern int GetItemEffMight(int item) SHORTCALL;
+extern int GetItemEffMight(int item, int unit_power, int battle_def, int spd, struct Unit* unit) SHORTCALL;
+extern int GetUnitEffSpd(struct Unit* unit) SHORTCALL;
 s8 AreAllegiancesAllied(int uid_a, int uid_b) SHORTCALL;
 int CanUnitUseWeapon(const struct Unit* unit, int item) SHORTCALL;
 int GetItemMight(int item) SHORTCALL;
@@ -35,6 +36,7 @@ int NuAiFillDangerMap(void)
     //int active_unit_id = gActiveUnitId;
 	int res = gActiveUnit->res; 
 	int def = gActiveUnit->def; 
+	int spd = GetUnitEffSpd(gActiveUnit); 
 
     for (i = 1; i < 0xC0; ++i)
     {
@@ -52,13 +54,19 @@ int NuAiFillDangerMap(void)
         int item = 0;
         int might = 0;
         int item_tmp;
+		int unit_power = GetUnitPower(unit);
 
         for (j = 0; j < 5 && (item_tmp = unit->items[j]); ++j)
         {
             if (!CanUnitUseWeapon(unit, item_tmp)) {
-			continue; } 
+				continue; 
+			} 
+			u32 atrb = GetItemAttributes(item); 
+			int battle_def = def; 
+			if (atrb & IA_MAGIC) { battle_def = res; }
+			
 
-            int might_tmp = GetItemEffMight(item_tmp); 
+            int might_tmp = GetItemEffMight(item_tmp, unit_power, battle_def, spd, unit); 
 
             if (might_tmp > might)
             {
@@ -75,18 +83,17 @@ int NuAiFillDangerMap(void)
 		} 
 
         FillMovementAndRangeMapForItem(unit, item);
-		u32 atrb = GetItemAttributes(item); 
+		
 
 		
+		//unit_power += might;
 		
-		int unit_power = GetUnitPower(unit) + might;
-		//asm("mov r11, r11");
-		if (atrb & IA_MAGIC) { unit_power = unit_power - res; }
-		else { unit_power = unit_power - def; }
 		if (unit_power > 1) { 
 		NuAiFillDangerMap_ApplyDanger(unit_power / 2); 
 		} 
     }
+	
+	asm("mov r11, r11");
 	return GetCurrDanger(); 
 }
 
