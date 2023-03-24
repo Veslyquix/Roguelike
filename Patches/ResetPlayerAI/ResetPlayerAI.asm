@@ -303,6 +303,7 @@ ldrb r0, [r0, #0xA] @ AiData.decisionBool
 cmp r0, #0 
 beq CheckForEvents
 
+@ if we take less than 1/2 dmg on enemy phase, go ahead and attack 
 ldr r2, =gCurrentUnit
 ldr r2, [r2] 
 ldrb r0, [r2, #0x13] @ current hp  
@@ -313,6 +314,7 @@ bl IsTargetCoordTooUnsafe
 cmp r0, #1 
 bne JustAttack
 
+@ if we take less than our full hp on enemy phase, attack only if they cannot counter 
 ldr r2, =gCurrentUnit
 ldr r2, [r2] 
 ldrb r0, [r2, #0x13] @ current hp  
@@ -322,13 +324,8 @@ lsr r0, #1 @ hp-1
 bl IsTargetCoordTooUnsafe
 cmp r0, #1 
 bne AttackIfTheyCannotCounter 
-ldr r0, =0x203AA94 
-mov r1, #0 @ no decision made 
-str r1, [r0]
-str r1, [r0, #4]
-str r1, [r0, #8]
-b CheckForEvents 
-
+@ we'll die, so don't attack 
+b DoNotAttack 
 
 @ coord is unsafe, and there's nowhere to run 
 @ if opponent cannot counter, attack! 
@@ -368,6 +365,7 @@ sub r0, #2
 bl IsTargetCoordTooUnsafe
 cmp r0, #1 
 bne SkipRunAway 
+@ we will die moving here, so cancel our decision 
 ldr r0, =0x203AA94 
 mov r1, #0 @ no decision made 
 str r1, [r0, #0] @ AiData.decisionBool @ no decision, so it should do AI2 instead 
@@ -1288,7 +1286,7 @@ ldrb r0, [r2, #0x13] @ current hp
 @sub r0, #3
 lsr r1, r0, #2
 sub r0, r1 @ 3/4 hp 
-@mov r11, r11 
+mov r11, r11 
 lsr r0, #1
 @ if the dmg we could take is more than r0, run away 
 bl IsTargetCoordTooUnsafe
