@@ -29,7 +29,7 @@ extern struct Unit* gActiveUnit;
 extern int IsUnitOnField(struct Unit* unit); 
 extern struct Unit* const gUnitLookup[];
 
-int NuAiFillDangerMap(void)
+void NuAiFillDangerMap(void)
 {
 	//asm("mov r11, r11"); 
     int i, j; 
@@ -84,17 +84,11 @@ int NuAiFillDangerMap(void)
 
         FillMovementAndRangeMapForItem(unit, item);
 		
-
-		
-		//unit_power += might;
-		
-
-		if (unit_power < 2) { unit_power = 2; } 
-		NuAiFillDangerMap_ApplyDanger(unit_power / 2); // minimum of 1 unit power 
+		NuAiFillDangerMap_ApplyDanger(might); // minimum of 1 unit power 
 
     }
 	
 	//asm("mov r11, r11");
-	return GetCurrDanger(); 
+	//return GetCurrDanger(); 
 }
 

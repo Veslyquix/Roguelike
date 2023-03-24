@@ -55,7 +55,7 @@ void NuAiFillDangerMap_ApplyDanger(int danger_gain)
         {
             if (map_range_row[ix] == 0)
                 continue;
-			if ((ix == 8) && (iy == 5)) { asm("mov r11, r11"); } 
+			//if ((ix == 8) && (iy == 5)) { asm("mov r11, r11"); } 
             map_other_row[ix] += danger_gain;
         }
     }
@@ -89,15 +89,14 @@ int GetUnitEffSpd(struct Unit* unit) {
 } 
 int GetItemEffMight(int item, int unit_power, int battle_def, int spd, struct Unit* unit) { 
 	int might = GetItemMight(item);
-	if (IsItemEffectiveAgainst(item, gActiveUnit)) { 
-		might += might*2; 
-	}
-	asm("mov r11, r11");
+	if (IsItemEffectiveAgainst(item, gActiveUnit)) { might += might*2; }
+	
 	might += unit_power; 
 	might -= battle_def; 
-	if (might<0) { might = 0; } 
 	if (GetUnitEffSpdWithWep(unit, item)-4 >= spd) { might += might; } // doubles 
-	return might; 
+	//asm("mov r11, r11");
+	if (might<2) { might = 2; } 
+	return ((might+1)/2); // assume WTD  
 } 
 
 

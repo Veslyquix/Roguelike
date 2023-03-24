@@ -213,7 +213,6 @@ NoAntiJeiganAI:
 ldr r2, =gCurrentUnit
 ldr r2, [r2] 
 ldrb r0, [r2, #0x13] @ current hp 
-sub r0, #1 @ assume we're at WTD 
 lsr r0, #2 
 bl IsTargetCoordTooUnsafe 
 cmp r0, #1 
@@ -248,7 +247,8 @@ bl TryEventInRange
 ldr r2, =gCurrentUnit
 ldr r2, [r2] 
 ldrb r0, [r2, #0x13] @ current hp 
-sub r0, #2 
+sub r0, #1
+lsr r0, #1 
 @ if the dmg we could take is more than r0, run away 
 bl IsTargetCoordTooUnsafe
 cmp r0, #1 
@@ -307,7 +307,6 @@ beq CheckForEvents
 ldr r2, =gCurrentUnit
 ldr r2, [r2] 
 ldrb r0, [r2, #0x13] @ current hp  
-sub r0, #1 @ assume we're at WTD 
 lsr r0, #2 @ 1/2 hp  
 @ if the dmg we could take is more than r0, run away 
 bl IsTargetCoordTooUnsafe
@@ -318,7 +317,7 @@ bne JustAttack
 ldr r2, =gCurrentUnit
 ldr r2, [r2] 
 ldrb r0, [r2, #0x13] @ current hp  
-sub r0, #2 @ assume we're at WTD and want to live with at least 1 hp 
+sub r0, #1 @ assume we want to live with at least 1 hp 
 lsr r0, #1 @ hp-1 
 @ if the dmg we could take is more than r0, run away 
 bl IsTargetCoordTooUnsafe
@@ -360,7 +359,8 @@ bl ActiveUnitEquipBestWepByRange
 ldr r2, =gCurrentUnit
 ldr r2, [r2] 
 ldrb r0, [r2, #0x13] @ current hp 
-sub r0, #2 
+sub r0, #1
+lsr r0, #1 
 @ if the dmg we could take is more than r0, run away 
 bl IsTargetCoordTooUnsafe
 cmp r0, #1 
@@ -441,13 +441,6 @@ add r6, #1
 cmp r6, r8 
 bgt NextTile_Y_Event 
 
-cmp r6, #6 
-bne NoBreak
-cmp r7, #12
-bne NoBreak 
-@mov r11, r11 
-
-NoBreak: 
 
 lsl r0, r7, #2 
 add r0, r10
@@ -1283,11 +1276,8 @@ add r0, #0x45
 ldr r2, =gCurrentUnit
 ldr r2, [r2] 
 ldrb r0, [r2, #0x13] @ current hp 
-@sub r0, #3
-lsr r1, r0, #2
-sub r0, r1 @ 3/4 hp 
-mov r11, r11 
-lsr r0, #1
+sub r0, #1 @ must survive with at least 1 hp 
+lsr r0, #1 
 @ if the dmg we could take is more than r0, run away 
 bl IsTargetCoordTooUnsafe
 cmp r0, #1 
