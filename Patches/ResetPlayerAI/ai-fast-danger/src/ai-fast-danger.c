@@ -22,7 +22,7 @@ int CouldUnitBeInRangeHeuristic(struct Unit* unit, struct Unit* other, int item)
 void FillMovementAndRangeMapForItem(struct Unit* unit, int item) SHORTCALL;
 int GetUnitPower(const struct Unit* unit) SHORTCALL;
 extern u8 * * gMapMovement2;
-
+extern u8 * * gMapUnit;
 
 extern u8 gActiveUnitId;
 extern struct Unit* gActiveUnit;
@@ -37,6 +37,7 @@ void NuAiFillDangerMap(void)
 	int res = gActiveUnit->res; 
 	int def = gActiveUnit->def; 
 	int spd = GetUnitEffSpd(gActiveUnit); 
+	gMapUnit[gActiveUnit->yPos][gActiveUnit->xPos] = 0; // remove active unit from the unit map so danger map includes tiles past where you were blocking 
 
     for (i = 1; i < 0xC0; ++i)
     {
