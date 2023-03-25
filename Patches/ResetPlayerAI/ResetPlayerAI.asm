@@ -157,6 +157,80 @@ bx r3
   .short 0xf800
 .endm
 
+
+.global TryMoveIfSafe
+.type TryMoveIfSafe, %function 
+TryMoveIfSafe: 
+push {r4, lr} 
+
+.equ gpAiScriptCurrent, 0x30017D0 
+ldr r0, =gpAiScriptCurrent
+ldr r0, [r0] 
+mov r1, #6 @ safety 
+strb r1, [r0, #2] @ safety 
+
+
+ldr r0, =0x803CE18 
+mov lr, r0 
+ldr r0, =0x3004E50 
+ldr r0, [r0] 
+add r0, #0x45
+.short 0xf800 
+
+
+ldr r2, =gCurrentUnit
+ldr r2, [r2] 
+ldrb r0, [r2, #0x13] @ current hp 
+sub r0, #1 @ must survive with at least 1 hp 
+lsr r0, #1 
+@ if the dmg we could take is more than r0, run away 
+bl IsTargetCoordTooUnsafe
+cmp r0, #1 
+beq TryKiteInstead
+bl GetCurrDanger
+cmp r0, #0 
+beq DontRun @ target space won't kill us and our current space isn't dangerous, so move to enemy with safety is fine 
+
+
+TryKiteInstead: 
+@ kite enemies instead 
+bl CallRunAway @ search for tiles nearby this one 
+
+ldr r0, =AiDecision 
+ldrb r1, [r0, #3] @ yy 
+ldrb r0, [r0, #2] @ xx 
+@mov r11, r11 
+bl FindClosestDangerousTileInRange
+ldr r2, =AiDecision 
+lsr r1, r0, #16 @ yy 
+cmp r1, #0xFF 
+beq DontRun 
+strb r0, [r2, #2] @ xx 
+strb r1, [r2, #3] @ yy 
+@ new location to run away to 
+@mov r11, r11 
+
+ldr r2, =gCurrentUnit
+ldr r2, [r2] 
+ldrb r0, [r2, #0x13] @ current hp 
+sub r0, #1 @ must survive with at least 1 hp 
+lsr r0, #1 
+@ if the dmg we could take is more than r0, run away 
+bl IsTargetCoordTooUnsafe
+
+cmp r0, #1 
+beq OkayFineRun
+
+b DontRun 
+OkayFineRun: 
+bl CallRunAway 
+DontRun: 
+mov r0, #1 
+pop {r4} 
+pop {r1} 
+bx r1 
+.ltorg 
+
 .global CallAttack05_Promoted
 .type CallAttack05_Promoted, %function 
 CallAttack05_Promoted:
@@ -230,6 +304,28 @@ mov r1, #0x52
 ldsb r1, [r3, r1] 
 cmp r1, #0 
 beq JeiganAttack @ so we attack archers etc 
+
+.equ Attacker, 0x203A4EC
+@ if we will KO, attack even if it's dangerous 
+ldr r2, =Attacker 
+mov r1, #0x5a 
+ldsh r0, [r2, r1] @ battle attack 
+mov r1, #0x5C 
+ldsh r1, [r3, r1] @ battle def 
+sub r0, r1 
+cmp r0, #0 
+blt JeiganDontAttack 
+mov r1, #0x72
+ldrb r1, [r3, r1] @ hp 
+sub r1, r0 
+cmp r1, #0 
+bgt JeiganDontAttack @ we won't ko, so don't attack 
+mov r1, #0x64 
+ldsh r0, [r2, r1] @ battle hit 
+cmp r0, #80 
+blt JeiganDontAttack 
+b JeiganAttack 
+
 JeiganDontAttack:
 ldr r0, =0x203AA94 
 mov r1, #0 @ no decision made 
@@ -337,13 +433,32 @@ ldsb r1, [r3, r1]
 cmp r1, #0 
 beq JustAttack @ so we attack archers etc 
 
-ldr r0, =gCurrentUnit 
-ldr r0, [r0] 
+@ attack if they have <30 hit? 
 
-@bl CanUnitRunToSafety 
-@cmp r0, #1 
-@beq DoNotAttack 
-@b CheckForEvents 
+
+@ if we will KO, attack even if it's dangerous 
+ldr r3, =Defender 
+ldr r2, =Attacker 
+mov r1, #0x5a 
+ldsh r0, [r2, r1] @ battle attack 
+mov r1, #0x5C 
+ldsh r1, [r3, r1] @ battle def 
+sub r0, r1 
+cmp r0, #0 
+blt DoNotAttack
+mov r1, #0x72
+ldrb r1, [r3, r1] @ hp 
+sub r1, r0 
+cmp r1, #0 
+bgt DoNotAttack @ we won't immediately ko, so don't attack 
+mov r1, #0x64 
+ldsh r0, [r2, r1] @ battle hit 
+cmp r0, #80 
+blt DoNotAttack 
+b JustAttack
+
+
+
 DoNotAttack: 
 ldr r0, =0x203AA94 
 mov r1, #0 @ no decision made 
@@ -1254,41 +1369,6 @@ bx r1
 .ltorg 
 
 
-.global TryMoveIfSafe
-.type TryMoveIfSafe, %function 
-TryMoveIfSafe: 
-push {r4, lr} 
-
-.equ gpAiScriptCurrent, 0x30017D0 
-ldr r0, =gpAiScriptCurrent
-ldr r0, [r0] 
-mov r1, #6 @ safety 
-strb r1, [r0, #2] @ safety 
-
-
-ldr r0, =0x803CE18 
-mov lr, r0 
-ldr r0, =0x3004E50 
-ldr r0, [r0] 
-add r0, #0x45
-.short 0xf800 
-
-ldr r2, =gCurrentUnit
-ldr r2, [r2] 
-ldrb r0, [r2, #0x13] @ current hp 
-sub r0, #1 @ must survive with at least 1 hp 
-lsr r0, #1 
-@ if the dmg we could take is more than r0, run away 
-bl IsTargetCoordTooUnsafe
-cmp r0, #1 
-bne DontRun
-bl CallRunAway 
-DontRun: 
-mov r0, #1 
-pop {r4} 
-pop {r1} 
-bx r1 
-.ltorg 
 
 IsTargetCoordTooUnsafe:
 mov r3, r0 @ safety threshold 
@@ -1325,7 +1405,7 @@ bx lr
 .global CallRunAway
 .type CallRunAway, %function 
 CallRunAway:
-
+push {r4, lr} 
 @ldr r0, =0x30017C8
 @mov r1, #0 
 @strb r1, [r0] 
