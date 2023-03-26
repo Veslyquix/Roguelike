@@ -55,7 +55,7 @@ int CountNearbyWeaponTypes(int x, int y) {
 	//result.light = 0x0;
 	//result.dark = 0x0;
 	
-	for (int dist = 1; dist < 5; dist++) { 
+	for (int dist = 1; dist < 7; dist++) { 
 		for (int ix = x-dist; ix <= x+dist; ix++) {
 			result = AddWeaponTypeAt(result, ix, y-dist);
 			result = AddWeaponTypeAt(result, ix, y+dist);
@@ -84,10 +84,25 @@ void TryEquipType(int itemType, struct Unit* unit) {
 		int item = unit->items[i]; 
 		if (item) { 
 			if (CanUnitUseWeapon(unit, item)) { 
-				if (GetItemType(item) == itemType) { 
+				int type = GetItemType(item); 
+				u32 atrb = GetItemAttributes(item); 
+				if (atrb & IA_REVERTTRIANGLE) { // swap the "type" of the wep if weapon triangle is swapped  
+					if (type == ITYPE_SWORD) { 
+						type = ITYPE_AXE; 
+					} 
+					else if (type == ITYPE_LANCE) { 
+						type = ITYPE_SWORD; 
+					}
+					else if (type == ITYPE_AXE) { 
+						type = ITYPE_LANCE; 
+					}
+				
+				} 
+				if (type == itemType) { 
 					EquipUnitItemSlot(unit, i);
 					break; 
 				}
+
 			}
 		}
 	}
@@ -157,13 +172,7 @@ int doesUnitHaveMoreThanOneWEXP(struct Unit* unit) {
 
 void ActiveUnitEquipBestWepByRange(void) { 
   struct Unit* unit = gActiveUnit;
-  //asm("mov r11, r11"); 
   if (doesUnitHaveMoreThanOneWep(unit)) { 
-  
-  	if (doesUnitHaveMoreThanOneWEXP(unit)) { // try to win weapon triangle 
-		struct AiDecision* decision = &gAiData.decision; 
-		EquipOptimalWepType(unit, decision->xMovement, decision->yMovement); 
-	} 
   
 	int slot = GetUnitEquippedWeaponSlot(unit); // or just try to equip javelins etc 
 	if (slot>=0) { 
@@ -197,10 +206,14 @@ void ActiveUnitEquipBestWepByRange(void) {
 		}
 		if (slot != finalSlot)
 		EquipUnitItemSlot(unit, finalSlot);
+	
+	  	if (doesUnitHaveMoreThanOneWEXP(unit)) { // try to win weapon triangle 
+		struct AiDecision* decision = &gAiData.decision; 
+		EquipOptimalWepType(unit, decision->xMovement, decision->yMovement); 
+	} 
 	} 
 
     } 
-    //asm("mov r11, r11"); 
 } 
 
 void NuAiFillDangerMap_ApplyDanger(int danger_gain)
@@ -219,7 +232,6 @@ void NuAiFillDangerMap_ApplyDanger(int danger_gain)
         {
             if (map_range_row[ix] == 0)
                 continue;
-			//if ((ix == 8) && (iy == 5)) { asm("mov r11, r11"); } 
             map_other_row[ix] += danger_gain;
         }
     }
@@ -264,7 +276,6 @@ int GetItemEffMight(int item, int unit_power, int battle_def, int spd, struct Un
 	might += unit_power; 
 	might -= battle_def; 
 	if (GetUnitEffSpdWithWep(unit, item)-4 >= spd) { might += might; } // doubles 
-	//asm("mov r11, r11");
 	if (might<2) { might = 2; } 
 	return ((might+1)/2); // assume WTD  
 } 
@@ -272,7 +283,6 @@ int GetItemEffMight(int item, int unit_power, int battle_def, int spd, struct Un
 
 int GetCurrDanger(void) { 
 
-	//asm("mov r11, r11");
 	return gMapMovement2[gActiveUnit->yPos][gActiveUnit->xPos];
 
 
@@ -280,11 +290,10 @@ int GetCurrDanger(void) {
 
 
 // so we don't repeat the same tiles 
-struct Vec2 FindDangerousTileAt(struct Vec2 result, int iy, int ix) { 
+struct Vec2 FindDangerousTileAt(struct Vec2 result, int ix, int iy) { 
 	int currMov = gActiveUnit->movBonus + gActiveUnit->pClassData->baseMov; 
     int map_size_x_m1 = gMapSize.x - 1;
     int map_size_y_m1 = gMapSize.y - 1;
-	if ((iy == 4) && (ix == 12)) { asm("mov r11, r11"); } 
 	if ((iy >= 0) && (iy <= map_size_y_m1)) { // y within boundaries 
 		if ((ix >= 0) && (ix <= map_size_x_m1)) {
 			u8 * map_move_row = gMapMovement[iy];
@@ -306,12 +315,13 @@ struct Vec2 FindClosestDangerousTileInRange(int x, int y) {
 	result.x = 0xFF;
 	result.y = 0xFF;
 	
-	for (int dist = 1; dist < 10; dist++) { 
-		for (int ix = x-dist; ix <= x+dist; ix++) {
+	for (int dist = 1; dist < 7; dist++) { 
+		if (result.x != 0xFF) break; 
+		for (int ix = x-dist; ix <= (x+dist); ix++) { // left to right on row above and below 
 			result = FindDangerousTileAt(result, ix, y-dist); 
 			result = FindDangerousTileAt(result, ix, y+dist); 
 		}
-		for (int iy = y-(dist-1); iy <= y+(dist-1); iy++) {
+		for (int iy = y-(dist-1); iy <= (y+(dist-1)); iy++) {
 			result = FindDangerousTileAt(result, x-dist, iy); 
 			result = FindDangerousTileAt(result, x+dist, iy); 
 		}

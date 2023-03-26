@@ -201,7 +201,6 @@ ldrb r1, [r0, #3] @ yy
 ldrb r0, [r0, #2] @ xx 
 bl FindClosestDangerousTileInRange
 ldr r2, =AiDecision 
-@mov r11, r11 
 lsr r1, r0, #16 @ yy 
 cmp r1, #0xFF 
 beq DontRun 
@@ -267,7 +266,7 @@ bgt NoAntiJeiganAI
 mov r0, #3 
 bl IsTargetCoordTooUnsafe 
 cmp r0, #0 
-bne SkipRunToLord 
+bne JeiganAttack  
 @ it is so safe that we might as well not kill with our jeigan(s) 
 ldr r3, =Defender 
 ldr r0, [r3] 
