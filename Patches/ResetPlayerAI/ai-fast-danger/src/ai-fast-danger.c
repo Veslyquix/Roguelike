@@ -37,7 +37,7 @@ void NuAiFillDangerMap(void)
 	int res = gActiveUnit->res; 
 	int def = gActiveUnit->def; 
 	int spd = GetUnitEffSpd(gActiveUnit); 
-	gMapUnit[gActiveUnit->yPos][gActiveUnit->xPos] = 0; // remove active unit from the unit map so danger map includes tiles past where you were blocking 
+	
 
     for (i = 1; i < 0xC0; ++i)
     {

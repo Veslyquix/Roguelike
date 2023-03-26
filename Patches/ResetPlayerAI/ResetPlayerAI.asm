@@ -199,7 +199,6 @@ bl CallRunAway @ search for tiles nearby this one
 ldr r0, =AiDecision 
 ldrb r1, [r0, #3] @ yy 
 ldrb r0, [r0, #2] @ xx 
-@mov r11, r11 
 bl FindClosestDangerousTileInRange
 ldr r2, =AiDecision 
 lsr r1, r0, #16 @ yy 
@@ -208,7 +207,6 @@ beq DontRun
 strb r0, [r2, #2] @ xx 
 strb r1, [r2, #3] @ yy 
 @ new location to run away to 
-@mov r11, r11 
 
 ldr r2, =gCurrentUnit
 ldr r2, [r2] 
@@ -225,6 +223,7 @@ b DontRun
 OkayFineRun: 
 bl CallRunAway 
 DontRun: 
+bl ActiveUnitEquipBestWepByRange 
 mov r0, #1 
 pop {r4} 
 pop {r1} 
@@ -337,8 +336,13 @@ str r1, [r0, #8]
 @b SkipEventStuff
 
 SkipRunToLord: @returns r0 as t/f that we made a decision 
-bl ActiveUnitEquipBestWepByRange
 bl TryEventInRange
+ldr r0, =AiDecision 
+ldr r0, [r0] 
+cmp r0, #0 
+beq SkipActiveEquipBestWepByRange
+bl ActiveUnitEquipBestWepByRange
+SkipActiveEquipBestWepByRange: 
 
 ldr r2, =gCurrentUnit
 ldr r2, [r2] 
@@ -470,7 +474,12 @@ str r1, [r0, #8]
 
 CheckForEvents: 
 bl TryEventInRange
+ldr r0, =AiDecision 
+ldr r0, [r0] 
+cmp r0, #0 
+beq SkipActiveEquipBestWepByRange2
 bl ActiveUnitEquipBestWepByRange
+SkipActiveEquipBestWepByRange2: 
 ldr r2, =gCurrentUnit
 ldr r2, [r2] 
 ldrb r0, [r2, #0x13] @ current hp 
@@ -1289,7 +1298,6 @@ add		r2,r1			@so that we can get the correct row pointer
 ldr		r2,[r2]			@Now we're at the beginning of the row data
 add		r2,r0			@add x coordinate
 ldrb	r5,[r2]			@load datum at those coordinates
-@mov r11, r11 
 lsr r3, r5, #1 @ 1/2 
 sub r5, r3 @ 1/2 
 lsr r3, r5, #1 @ 1/4 
@@ -1386,7 +1394,6 @@ add		r2,r1			@so that we can get the correct row pointer
 ldr		r2,[r2]			@Now we're at the beginning of the row data
 add		r2,r0			@add x coordinate
 ldrb	r0,[r2]			@load datum at those coordinates
-@mov r11, r11 
 cmp r0, #0 
 beq SafeEnough
 cmp r0, r3
@@ -1401,25 +1408,50 @@ bx lr
 .ltorg 
 
 
-
+.equ AiFindUnitSafestTileToMoveTo, 0x803B808
 .global CallRunAway
 .type CallRunAway, %function 
 CallRunAway:
 push {r4, lr} 
+
+ldr r0, =gCurrentUnit 
+ldr r0, [r0] 
+sub sp, #4 
+mov r4, sp 
+mov r1, r4 
+blh AiFindUnitSafestTileToMoveTo 
+ldr r0, =AiDecision 
+ldrb r2, [r4, #0] @ xx 
+strb r2, [r0, #2] @ xx 
+ldrb r2, [r4, #2] @ yy 
+strb r2, [r0, #3] @ yy 
+add sp, #4 
+
+mov r1, #0x0 @ wait
+strb r1, [r0] 
+strb r1, [r0, #0xB] @ visit 
+mov r1, #1 
+strb r1, [r0, #0xA] @ took decision bool 
+ldr r1, =gCurrentUnit 
+ldr r1, [r1] 
+ldrb r1, [r1, #0x0B] @ unit 
+strb r1, [r0, #1] @ unit index 
+
+
+
 @ldr r0, =0x30017C8
 @mov r1, #0 
 @strb r1, [r0] 
-@mov r11, r11 
-ldr r0, =0x803CDD4 @ AI Script Function ASM 11 ( Run away ) 
-mov lr, r0 
-ldr r0, =0x3004E50 
-ldr r0, [r0] 
-add r0, #0x45
-.short 0xf800 
-
-ldr r1, =0x30017C8
-mov r0, #1
-strb r0, [r1] 
+@ldr r0, =0x803CDD4 @ AI Script Function ASM 11 ( Run away ) 
+@mov lr, r0 
+@ldr r0, =0x3004E50 
+@ldr r0, [r0] 
+@add r0, #0x45
+@.short 0xf800 
+@
+@ldr r1, =0x30017C8
+@mov r0, #1
+@strb r0, [r1] 
 
 pop {r4} 
 pop {r1} 
