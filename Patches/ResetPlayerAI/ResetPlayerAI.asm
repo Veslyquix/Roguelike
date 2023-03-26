@@ -201,6 +201,7 @@ ldrb r1, [r0, #3] @ yy
 ldrb r0, [r0, #2] @ xx 
 bl FindClosestDangerousTileInRange
 ldr r2, =AiDecision 
+@mov r11, r11 
 lsr r1, r0, #16 @ yy 
 cmp r1, #0xFF 
 beq DontRun 
@@ -1423,9 +1424,10 @@ blh AiFindUnitSafestTileToMoveTo
 ldr r0, =AiDecision 
 ldrb r2, [r4, #0] @ xx 
 strb r2, [r0, #2] @ xx 
-ldrb r2, [r4, #2] @ yy 
-strb r2, [r0, #3] @ yy 
+ldrb r3, [r4, #2] @ yy 
+strb r3, [r0, #3] @ yy 
 add sp, #4 
+
 
 mov r1, #0x0 @ wait
 strb r1, [r0] 

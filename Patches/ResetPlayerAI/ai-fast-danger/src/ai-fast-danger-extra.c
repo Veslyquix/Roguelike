@@ -157,7 +157,7 @@ int doesUnitHaveMoreThanOneWEXP(struct Unit* unit) {
 
 void ActiveUnitEquipBestWepByRange(void) { 
   struct Unit* unit = gActiveUnit;
-  asm("mov r11, r11"); 
+  //asm("mov r11, r11"); 
   if (doesUnitHaveMoreThanOneWep(unit)) { 
   
   	if (doesUnitHaveMoreThanOneWEXP(unit)) { // try to win weapon triangle 
@@ -200,7 +200,7 @@ void ActiveUnitEquipBestWepByRange(void) {
 	} 
 
     } 
-    asm("mov r11, r11"); 
+    //asm("mov r11, r11"); 
 } 
 
 void NuAiFillDangerMap_ApplyDanger(int danger_gain)
@@ -247,6 +247,11 @@ int GetUnitEffSpdWithWep(struct Unit* unit, int item) {
 	} 
 	return spd; 
 }
+void RestoreActiveUnitOnUnitMap(void) { 
+	gMapUnit[gActiveUnit->yPos][gActiveUnit->xPos] = gActiveUnit->index;
+
+} 
+
 int GetUnitEffSpd(struct Unit* unit) { 
 	gMapUnit[gActiveUnit->yPos][gActiveUnit->xPos] = 0; // remove active unit from the unit map so danger map includes tiles past where you were blocking 
 	int item = GetUnitEquippedWeapon(unit);
@@ -279,12 +284,13 @@ struct Vec2 FindDangerousTileAt(struct Vec2 result, int iy, int ix) {
 	int currMov = gActiveUnit->movBonus + gActiveUnit->pClassData->baseMov; 
     int map_size_x_m1 = gMapSize.x - 1;
     int map_size_y_m1 = gMapSize.y - 1;
-	if (!((iy < 0) || (iy > map_size_y_m1))) { // y within boundaries 
-		if (!(ix < 0) || (ix > map_size_x_m1)) {
-			u8 * map_range_row = gMapMovement[iy];
+	if ((iy == 4) && (ix == 12)) { asm("mov r11, r11"); } 
+	if ((iy >= 0) && (iy <= map_size_y_m1)) { // y within boundaries 
+		if ((ix >= 0) && (ix <= map_size_x_m1)) {
+			u8 * map_move_row = gMapMovement[iy];
 			u8 * map_other_row = gMapMovement2[iy];
 			u8 * map_unit_row = gMapUnit[iy]; 
-			if (!(map_range_row[ix] == 0xFF) || (map_range_row[ix] > currMov) || (map_unit_row[ix] != 0)) {
+			if ((map_move_row[ix] != 0xFF) && (map_move_row[ix] <= currMov) && (map_unit_row[ix] == 0)) {
 				if (map_other_row[ix] != 0) {
 					result.x = ix; 
 					result.y = iy;
@@ -300,7 +306,7 @@ struct Vec2 FindClosestDangerousTileInRange(int x, int y) {
 	result.x = 0xFF;
 	result.y = 0xFF;
 	
-	for (int dist = 1; dist < 5; dist++) { 
+	for (int dist = 1; dist < 10; dist++) { 
 		for (int ix = x-dist; ix <= x+dist; ix++) {
 			result = FindDangerousTileAt(result, ix, y-dist); 
 			result = FindDangerousTileAt(result, ix, y+dist); 

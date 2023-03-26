@@ -29,6 +29,7 @@ extern struct Unit* gActiveUnit;
 extern int IsUnitOnField(struct Unit* unit); 
 extern struct Unit* const gUnitLookup[];
 
+extern void RestoreActiveUnitOnUnitMap(void) SHORTCALL; 
 void NuAiFillDangerMap(void)
 {
 	//asm("mov r11, r11"); 
@@ -88,7 +89,7 @@ void NuAiFillDangerMap(void)
 		NuAiFillDangerMap_ApplyDanger(might); // minimum of 1 unit power 
 
     }
-	
+	RestoreActiveUnitOnUnitMap(); 
 	//asm("mov r11, r11");
 	//return GetCurrDanger(); 
 }
