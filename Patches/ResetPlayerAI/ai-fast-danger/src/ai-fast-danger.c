@@ -10,8 +10,9 @@ extern void NuAiFillDangerMap_ApplyDanger(int danger_gain);
 //void FillMovementAndRangeMapForItem(struct Unit* unit, int item);
 //int GetUnitPower(struct Unit* unit);
 
+#define CONSTFUNC __attribute__((const))
 #define SHORTCALL __attribute__((short_call))
-extern int IsUnitOnField(struct Unit* unit) SHORTCALL;
+extern int IsUnitOnField(struct Unit* unit) SHORTCALL CONSTFUNC;
 extern int GetCurrDanger(void) SHORTCALL; 
 extern int GetItemEffMight(int item, int unit_power, int battle_def, int spd, struct Unit* unit) SHORTCALL;
 extern int GetUnitEffSpd(struct Unit* unit) SHORTCALL;
@@ -21,15 +22,15 @@ int GetItemMight(int item) SHORTCALL;
 int CouldUnitBeInRangeHeuristic(struct Unit* unit, struct Unit* other, int item) SHORTCALL;
 void FillMovementAndRangeMapForItem(struct Unit* unit, int item) SHORTCALL;
 int GetUnitPower(const struct Unit* unit) SHORTCALL;
+void RefreshUnitsOnBmMap(void) SHORTCALL; 
+extern void removeActiveAllegianceFromUnitMap(void) SHORTCALL; 
+
 extern u8 * * gMapMovement2;
 extern u8 * * gMapUnit;
-
 extern u8 gActiveUnitId;
 extern struct Unit* gActiveUnit;
-extern int IsUnitOnField(struct Unit* unit); 
 extern struct Unit* const gUnitLookup[];
 
-extern void RestoreActiveUnitOnUnitMap(void) SHORTCALL; 
 void NuAiFillDangerMap(void)
 {
 	//asm("mov r11, r11"); 
@@ -37,6 +38,7 @@ void NuAiFillDangerMap(void)
     //int active_unit_id = gActiveUnitId;
 	int res = gActiveUnit->res; 
 	int def = gActiveUnit->def; 
+	removeActiveAllegianceFromUnitMap(); 
 	int spd = GetUnitEffSpd(gActiveUnit); 
 	
 
@@ -84,12 +86,12 @@ void NuAiFillDangerMap(void)
 			continue; 
 		} 
 
-        FillMovementAndRangeMapForItem(unit, item);
+        FillMovementAndRangeMapForItem(unit, item); // perhaps this should use a version that assumes they can pass through walls etc. 
 		
 		NuAiFillDangerMap_ApplyDanger(might); // minimum of 1 unit power 
 
     }
-	RestoreActiveUnitOnUnitMap(); 
+	RefreshUnitsOnBmMap();
 	//asm("mov r11, r11");
 	//return GetCurrDanger(); 
 }

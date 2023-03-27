@@ -2,8 +2,67 @@
 //extern struct Vec2 gMapSize;
 extern u8 * * gMapRange;
 extern u8 * * gMapMovement2;
+extern u8 * * gMapMovement;
+extern u8 * * gMapUnit;
+extern u8 * * gMapTerrain;
 
+extern struct AiState gAiState;
+struct AiState
+{
+    /* 00 */ u8 units[116];
+    /* 74 */ u8* unitIt;
+    /* 78 */ u8 orderState;
+    /* 79 */ u8 decideState;
+    /* 7A */ s8 dangerMapFilled; // bool
+    /* 7B */ u8 flags;
+    /* 7C */ u8 unk7C;
+    /* 7D */ u8 combatWeightTableId;
+    /* 7E */ u8 unk7E;
+    /* 7F */ u8 unk7F;
+    /* 80 */ u32 specialItemFlags;
+    /* 84 */ u8 unk84;
+    /* 85 */ u8 bestBlueMov;
+    /* 86 */ u8 unk86[8];
+};
+enum
+{
+    AI_FLAGS_NONE = 0,
 
+    AI_FLAG_0 = (1 << 0),
+    AI_FLAG_1 = (1 << 1), // do not move 
+    AI_FLAG_BERSERKED = (1 << 2),
+    AI_FLAG_3 = (1 << 3),
+};
+
+int CanAnotherUnitMakeItSafeEnough(void) { 
+	int c = 0; 
+	for (int i = 1; i < 115; i++) { 
+		if (!gAiState.units[i]) 
+			continue; 
+		c++; 
+	
+	
+	} 
+	if (c>2) 
+		return true; 
+
+	return false; 
+} 
+
+void removeActiveAllegianceFromUnitMap(void) { 
+	int ix, iy; 
+	int activeAllegiance = (gActiveUnit->index)>>6; 
+    for (iy = gMapSize.y - 1; iy >= 0; iy--) {
+		u8 * unitRow = gMapUnit[iy];
+        for (ix = gMapSize.x - 1; ix >= 0; ix--) {
+			if (!unitRow[ix]) 
+				continue; // do nothing if already 0 here 
+			if (unitRow[ix]>>6 == activeAllegiance) { 
+				unitRow[ix] = 0; 
+			} 
+        }
+    }
+} 
 
 
 u32 AddWeaponTypeAt(u32 weaponTypes, int ix, int iy) { 
@@ -259,13 +318,9 @@ int GetUnitEffSpdWithWep(struct Unit* unit, int item) {
 	} 
 	return spd; 
 }
-void RestoreActiveUnitOnUnitMap(void) { 
-	gMapUnit[gActiveUnit->yPos][gActiveUnit->xPos] = gActiveUnit->index;
 
-} 
 
 int GetUnitEffSpd(struct Unit* unit) { 
-	gMapUnit[gActiveUnit->yPos][gActiveUnit->xPos] = 0; // remove active unit from the unit map so danger map includes tiles past where you were blocking 
 	int item = GetUnitEquippedWeapon(unit);
 	return GetUnitEffSpdWithWep(unit, item); 
 } 
@@ -328,4 +383,62 @@ struct Vec2 FindClosestDangerousTileInRange(int x, int y) {
 	}
 	return result; 
 } 
- 
+
+s8 NewAiFindSafestReachableLocation(struct Unit* unit, struct Vec2* out) {
+    int ix;
+    int iy;
+	int resultX = 0xFF; 
+	int resultY = 0xFF; 
+    u8 bestDanger = 0xff;
+
+    if (gAiState.flags & AI_FLAG_1) {
+        BmMapFill(gMapMovement, -1);
+        gMapMovement[unit->yPos][unit->xPos] = 0;
+    } else {
+        FillMovementMapForUnit(unit);
+    }
+
+    for (iy = gMapSize.y - 1; iy >= 0; iy--) {
+		u8 * moveRow = gMapMovement[iy];
+		u8 * unitRow = gMapUnit[iy];
+		u8 * otherRow = gMapMovement2[iy];
+		u8 * terrainRow = gMapTerrain[iy]; 
+		
+        for (ix = gMapSize.x - 1; ix >= 0; ix--) {
+
+            if (moveRow[ix] > 120) { // magic number fsr 
+                continue;
+            }
+
+            if ((unitRow[ix] != 0) && (unitRow[ix] != gActiveUnitId)) {
+                continue;
+            }
+			int tempDanger = otherRow[ix]; 
+			
+			if (!tempDanger) { // if 0 danger, don't care about trees etc. 
+				resultX = ix; 
+				resultY = iy; 
+				bestDanger = tempDanger; 
+			} 
+			tempDanger -= (unit->pClassData->pTerrainAvoidLookup[terrainRow[ix]]/4); // every 4 avoid makes a tile 1 dmg less dangerous  
+			if (tempDanger < 0) tempDanger = 0; 
+			
+            if (bestDanger < tempDanger) {
+                continue;
+            }
+
+			resultX = ix; 
+			resultY = iy; 
+            bestDanger = tempDanger; 
+			
+        }
+    }
+    out->x = resultX;
+    out->y = resultY;
+    if (bestDanger != 0xFF) {
+        return 1;
+    }
+
+    return 0;
+}
+

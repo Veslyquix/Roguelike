@@ -283,20 +283,18 @@ b JeiganAttack
 
 
 NoAntiJeiganAI: 
-ldr r2, =gCurrentUnit
-ldr r2, [r2] 
-ldrb r0, [r2, #0x13] @ current hp 
-lsr r0, #2 
-bl IsTargetCoordTooUnsafe 
+@ if we take less dmg on enemy phase than our remaining hp after attacking, go ahead and attack 
+ldr r2, =Attacker
+ldrb r0, [r2, #0x13] @ current hp after attacking 
+sub r0, #1 @ survive with at least 1 hp 
+cmp r0, #0 
+blt JeiganDontAttack 
+asr r0, #1 @ danger map uses 1/2 values  
+@ if the dmg we could take is more than r0, run away 
+bl IsTargetCoordTooUnsafeIfWeDefeatTarget
 cmp r0, #1 
 bne SkipRunToLord 
 
-
-ldr r0, =0x3004E50 
-ldr r0, [r0] 
-@bl CanUnitRunToSafety 
-@cmp r0, #0 
-@beq JeiganAttack
 
 ldr r3, =Defender 
 mov r1, #0x52 
@@ -304,26 +302,15 @@ ldsb r1, [r3, r1]
 cmp r1, #0 
 beq JeiganAttack @ so we attack archers etc 
 
+
+@ is another unit likely to finish off the target and make it likely that we'll live? 
+@bl CanAnotherUnitMakeItSafeEnough 
+@cmp r0, #0 
+@beq JeiganDontAttack 
+@b JeiganAttack 
+
 .equ Attacker, 0x203A4EC
-@ if we will KO, attack even if it's dangerous 
-ldr r2, =Attacker 
-mov r1, #0x5a 
-ldsh r0, [r2, r1] @ battle attack 
-mov r1, #0x5C 
-ldsh r1, [r3, r1] @ battle def 
-sub r0, r1 
-cmp r0, #0 
-blt JeiganDontAttack 
-mov r1, #0x72
-ldrb r1, [r3, r1] @ hp 
-sub r1, r0 
-cmp r1, #0 
-bgt JeiganDontAttack @ we won't ko, so don't attack 
-mov r1, #0x64 
-ldsh r0, [r2, r1] @ battle hit 
-cmp r0, #80 
-blt JeiganDontAttack 
-b JeiganAttack 
+
 
 JeiganDontAttack:
 ldr r0, =0x203AA94 
@@ -403,28 +390,32 @@ ldrb r0, [r0, #0xA] @ AiData.decisionBool
 cmp r0, #0 
 beq CheckForEvents
 
-@ if we take less than 1/2 dmg on enemy phase, go ahead and attack 
-ldr r2, =gCurrentUnit
-ldr r2, [r2] 
-ldrb r0, [r2, #0x13] @ current hp  
-lsr r0, #2 @ 1/2 hp  
+@ if we take less dmg on enemy phase than our remaining hp after attacking, go ahead and attack 
+ldr r2, =Attacker
+ldrb r0, [r2, #0x13] @ current hp after attacking 
+sub r0, #1 @ survive with at least 1 hp 
+cmp r0, #0 
+blt DoNotAttack 
+asr r0, #1 @ danger map uses 1/2 values  
 @ if the dmg we could take is more than r0, run away 
-bl IsTargetCoordTooUnsafe
+bl IsTargetCoordTooUnsafeIfWeDefeatTarget
 cmp r0, #1 
 bne JustAttack
+@ if we attack, we'll probably die 
+@b DoNotAttack @ run away instead 
 
 @ if we take less than our full hp on enemy phase, attack only if they cannot counter 
-ldr r2, =gCurrentUnit
-ldr r2, [r2] 
-ldrb r0, [r2, #0x13] @ current hp  
-sub r0, #1 @ assume we want to live with at least 1 hp 
-lsr r0, #1 @ hp-1 
-@ if the dmg we could take is more than r0, run away 
-bl IsTargetCoordTooUnsafe
-cmp r0, #1 
-bne AttackIfTheyCannotCounter 
-@ we'll die, so don't attack 
-b DoNotAttack 
+@ldr r2, =gCurrentUnit
+@ldr r2, [r2] 
+@ldrb r0, [r2, #0x13] @ current hp  
+@sub r0, #1 @ assume we want to live with at least 1 hp 
+@lsr r0, #1 @ hp-1 
+@@ if the dmg we could take is more than r0, run away 
+@bl IsTargetCoordTooUnsafe
+@cmp r0, #1 
+@bne AttackIfTheyCannotCounter 
+@@ we'll die, so don't attack 
+@b DoNotAttack 
 
 @ coord is unsafe, and there's nowhere to run 
 @ if opponent cannot counter, attack! 
@@ -437,29 +428,11 @@ ldsb r1, [r3, r1]
 cmp r1, #0 
 beq JustAttack @ so we attack archers etc 
 
-@ attack if they have <30 hit? 
-
-
-@ if we will KO, attack even if it's dangerous 
-ldr r3, =Defender 
-ldr r2, =Attacker 
-mov r1, #0x5a 
-ldsh r0, [r2, r1] @ battle attack 
-mov r1, #0x5C 
-ldsh r1, [r3, r1] @ battle def 
-sub r0, r1 
-cmp r0, #0 
-blt DoNotAttack
-mov r1, #0x72
-ldrb r1, [r3, r1] @ hp 
-sub r1, r0 
-cmp r1, #0 
-bgt DoNotAttack @ we won't immediately ko, so don't attack 
-mov r1, #0x64 
-ldsh r0, [r2, r1] @ battle hit 
-cmp r0, #80 
-blt DoNotAttack 
-b JustAttack
+@ is another unit likely to finish off the target and make it likely that we'll live? 
+@bl CanAnotherUnitMakeItSafeEnough 
+@cmp r0, #0 
+@beq DoNotAttack
+@b JustAttack
 
 
 
@@ -1376,9 +1349,9 @@ pop {r1}
 bx r1 
 .ltorg 
 
-
-
-IsTargetCoordTooUnsafe:
+IsTargetCoordTooUnsafeIfWeDefeatTarget:
+cmp r0, #0 
+blt TooUnsafe 
 mov r3, r0 @ safety threshold 
 ldr r0, =AiDecision
 ldr r2, [r0] 
@@ -1396,6 +1369,19 @@ add		r2,r0			@add x coordinate
 ldrb	r0,[r2]			@load datum at those coordinates
 cmp r0, #0 
 beq SafeEnough
+ldr r2, =Defender 
+ldrb r1, [r2, #0x13] @ current hp 
+cmp r1, #0 
+bgt NoFlooring @ if they survive, then they could attack us on enemy phase 
+mov r1, #0x5a 
+ldsh r1, [r2, r1] @ counterattack 
+asr r1, #1 @ /2 
+sub r0, r1 
+cmp r0, #0 
+bge NoFlooring
+mov r0, #0 
+NoFlooring: 
+
 cmp r0, r3
 bge TooUnsafe
 SafeEnough: 
@@ -1404,6 +1390,37 @@ b ExitUnsafe
 TooUnsafe: 
 mov r0, #1 @ Too unsafe 
 ExitUnsafe: 
+bx lr 
+.ltorg 
+
+IsTargetCoordTooUnsafe:
+cmp r0, #0 
+blt TooUnsafe2 
+mov r3, r0 @ safety threshold 
+ldr r0, =AiDecision
+ldr r2, [r0] 
+cmp r2, #0 
+beq SafeEnough2 
+ldrb r1, [r0, #3] @ yy 
+ldrb r0, [r0, #2] @ xx 
+
+ldr		r2,=0x202E4F0	@Load the location in the table of tables of the map you want
+ldr		r2,[r2]			@Offset of map's table of row pointers
+lsl		r1,#0x2			@multiply y coordinate by 4
+add		r2,r1			@so that we can get the correct row pointer
+ldr		r2,[r2]			@Now we're at the beginning of the row data
+add		r2,r0			@add x coordinate
+ldrb	r0,[r2]			@load datum at those coordinates
+cmp r0, #0 
+beq SafeEnough2
+cmp r0, r3
+bge TooUnsafe2
+SafeEnough2: 
+mov r0, #0 @ It's fine 
+b ExitUnsafe2 
+TooUnsafe2: 
+mov r0, #1 @ Too unsafe 
+ExitUnsafe2: 
 bx lr 
 .ltorg 
 

@@ -1,6 +1,9 @@
-
 .include "C:/devkitPro/FE-CLib/reference/FE8U-20190316.s"
+.include "Hooks.s"
 
+// other stuff 
+SET_DATA gAiState, 0x203AA04
+SET_DATA gAiDecision, 0x203AA94
 
 SET_FUNC Font_ResetAllocation, (0x08003D20+1) 
 SET_FUNC Clean, (0x800F0C8+1) 
