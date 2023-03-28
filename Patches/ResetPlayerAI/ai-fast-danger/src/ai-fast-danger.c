@@ -14,13 +14,15 @@ extern void NuAiFillDangerMap_ApplyDanger(int danger_gain);
 #define SHORTCALL __attribute__((short_call))
 extern int IsUnitOnField(struct Unit* unit) SHORTCALL CONSTFUNC;
 extern int GetCurrDanger(void) SHORTCALL; 
-extern int GetItemEffMight(int item, int unit_power, int battle_def, int spd, struct Unit* unit) SHORTCALL;
+extern int GetItemEffMight(int item, int unit_power, int def, int res, int spd, struct Unit* unit) SHORTCALL;
 extern int GetUnitEffSpd(struct Unit* unit) SHORTCALL;
+extern int WhichWepHasBetterRange(int itemA, int itemB) SHORTCALL; 
 s8 AreAllegiancesAllied(int uid_a, int uid_b) SHORTCALL;
 int CanUnitUseWeapon(const struct Unit* unit, int item) SHORTCALL;
 int GetItemMight(int item) SHORTCALL;
 int CouldUnitBeInRangeHeuristic(struct Unit* unit, struct Unit* other, int item) SHORTCALL;
 void FillMovementAndRangeMapForItem(struct Unit* unit, int item) SHORTCALL;
+void FillMovementAndRangeMapForItem_PassableWalls(struct Unit* unit, u16 item) SHORTCALL;
 int GetUnitPower(const struct Unit* unit) SHORTCALL;
 void RefreshUnitsOnBmMap(void) SHORTCALL; 
 extern void removeActiveAllegianceFromUnitMap(void) SHORTCALL; 
@@ -56,6 +58,7 @@ void NuAiFillDangerMap(void)
 		} 
 
         int item = 0;
+		int item_best_range = 0; 
         int might = 0;
         int item_tmp;
 		int unit_power = GetUnitPower(unit);
@@ -65,29 +68,30 @@ void NuAiFillDangerMap(void)
             if (!CanUnitUseWeapon(unit, item_tmp)) {
 				continue; 
 			} 
-			u32 atrb = GetItemAttributes(item); 
-			int battle_def = def; 
-			if (atrb & IA_MAGIC) { battle_def = res; }
+
 			
 
-            int might_tmp = GetItemEffMight(item_tmp, unit_power, battle_def, spd, unit); 
-
+            int might_tmp = GetItemEffMight(item_tmp, unit_power, def, res, spd, unit); 
+			item_best_range = WhichWepHasBetterRange(item_tmp, item);
             if (might_tmp > might)
             {
                 item = item_tmp;
                 might = might_tmp;
             }
+			
         }
 
         if (item == 0) {
 		continue; }
 		
-        if (!CouldUnitBeInRangeHeuristic(gActiveUnit, unit, item)) {
+        if (!CouldUnitBeInRangeHeuristic(gActiveUnit, unit, item_best_range)) {
 			continue; 
 		} 
 
-        FillMovementAndRangeMapForItem(unit, item); // perhaps this should use a version that assumes they can pass through walls etc. 
-		
+
+        FillMovementAndRangeMapForItem_PassableWalls(unit, item_best_range); 
+		// this won't work properly for enemeis with non 1-2 range weps 
+		// eg. an enemy with an axe and a bow 
 		NuAiFillDangerMap_ApplyDanger(might); // minimum of 1 unit power 
 
     }

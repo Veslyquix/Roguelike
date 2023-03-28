@@ -5,6 +5,10 @@
 SET_DATA gAiState, 0x203AA04
 SET_DATA gAiDecision, 0x203AA94
 
+SET_DATA gWorkingBmMap, 0x30049A0
+SET_FUNC MapIncInBoundedRange, 0x801B9A5
+
+SET_FUNC AiSetMovCostTableWithPassableWalls, 0x8040DCD
 SET_FUNC Font_ResetAllocation, (0x08003D20+1) 
 SET_FUNC Clean, (0x800F0C8+1) 
 SET_DATA gCurrentTextString, 0x202A6AC

@@ -1,11 +1,13 @@
 #include "gbafe.h"
 //extern struct Vec2 gMapSize;
+#include "stdlib.h" 
 extern u8 * * gMapRange;
 extern u8 * * gMapMovement2;
 extern u8 * * gMapMovement;
 extern u8 * * gMapUnit;
 extern u8 * * gMapTerrain;
-
+int CouldUnitBeInRangeHeuristic(struct Unit* unit, struct Unit* other, int item);
+void FillMovementAndRangeMapForItem(struct Unit* unit, int item);
 extern struct AiState gAiState;
 struct AiState
 {
@@ -33,21 +35,183 @@ enum
     AI_FLAG_BERSERKED = (1 << 2),
     AI_FLAG_3 = (1 << 3),
 };
+extern u8** gWorkingBmMap;
+inline void SetWorkingBmMap(u8** map)
+{
+    gWorkingBmMap = map;
+}
+
+
+int GetUnitEffSpdWithWep(struct Unit* unit, int item) { 
+	int weight = GetItemWeight(item);
+	int spd = unit->spd; 
+	int con = unit->conBonus + unit->pCharacterData->baseCon + unit->pClassData->baseCon; 
+	if (weight>con) { 
+		weight -= con; 
+		spd -= weight; 
+		if (spd < 0) { spd = 0; } 
+	} 
+	return spd; 
+}
+
+
+int GetUnitEffSpd(struct Unit* unit) { 
+	int item = GetUnitEquippedWeapon(unit);
+	return GetUnitEffSpdWithWep(unit, item); 
+}
+
+int GetItemEffMight(int item, int unit_power, int def, int res, int spd, struct Unit* unit) { 
+
+	u32 atrb = GetItemAttributes(item); 
+	int battle_def = def; 
+	if (atrb & IA_MAGIC) { battle_def = res; }
+	int might = GetItemMight(item);
+	if (IsItemEffectiveAgainst(item, gActiveUnit)) { might += might*2; }
+	
+	might += unit_power; 
+	might -= battle_def; 
+	if (GetUnitEffSpdWithWep(unit, item)-4 >= spd) { might += might; } // doubles 
+	if (might<2) { might = 2; } 
+	return ((might+1)/2); // assume WTD  
+} 
+
+
+extern void AiSetMovCostTableWithPassableWalls(const s8* cost); 
+void GenerateUnitMovementMap_PassableWalls(struct Unit* unit) {
+    AiSetMovCostTableWithPassableWalls((const s8*)GetUnitMovementCost(unit));
+
+    SetWorkingBmMap(gMapMovement);
+
+    MapFillMovement(unit->xPos, unit->yPos, UNIT_MOV(unit), unit->index);
+    return;
+}
+int WhichWepHasBetterRange(int item_tmp, int item) { 
+
+	int minRange = GetItemMinRange(item_tmp); 
+	int maxRange = GetItemMaxRange(item_tmp);
+	int newMinRange = GetItemMinRange(item);
+	// Find the weapon with the lowest min range. 
+	// Then find weps with greater range 
+	if (newMinRange <= minRange) { 
+		int newMaxRange = GetItemMaxRange(item);
+		if (newMaxRange > maxRange) { // leave items alone but prefer better range weps over worse range weps 
+			return item; 
+		}
+	} 
+	return item_tmp; 
+} 
+
+void FillMovementAndRangeMapForItem_PassableWalls(struct Unit* unit, u16 item) {
+    int ix;
+    int iy;
+	if (!(unit->ai3And4 & 0x2000)) { // for boss AI, they cannot move 
+		GenerateUnitMovementMap_PassableWalls(unit);
+	}
+	else {
+		BmMapFill(gMapMovement, 0xFF); // Cannot move anywhere except where they are already 
+		gMapMovement[unit->yPos][unit->xPos] = 0; 
+	}
+    BmMapFill(gMapRange, 0);
+
+    for (iy = gMapSize.y - 1; iy >= 0; iy--) {
+		u8* moveRow = gMapMovement[iy]; 
+        for (ix = gMapSize.x - 1; ix >= 0; ix--) {
+
+            if (moveRow[ix] > 120) {
+                continue;
+            }
+
+            MapIncInBoundedRange(ix, iy, GetItemMinRange(item), GetItemMaxRange(item));
+        }
+    }
+
+    return;
+}
+
+void TryMoveTowardsLeader() { 
+	struct Unit* target = 0; 
+	for (int i = 1; i <= 50; i++) { 
+		target = gUnitLookup[i]; 
+		if ((target->pCharacterData->attributes | target->pClassData->attributes) & CA_LORD) { 
+			break; 
+		} 
+	} 
+	if (target) { 
+		if (abs(gActiveUnit->xPos - target->xPos) + abs(gActiveUnit->yPos - target->yPos) > 5) 
+		AiTryMoveTowards(target->xPos, target->yPos, 0, 0x8, true); // if far from lord, move towards them 
+		//AiTryMoveTowards(target->xPos, target->yPos, int decisionId, int safetyThreshold, int ignoreEnemies);
+
+	}
+} 
+
+u32 WhatHPWillTargetHaveAfterAIQueueIsDone(int i, int xPos, int yPos, int startHP) { 
+    //struct Unit* actor = gActiveUnit; 
+    struct BattleUnit* target = &gBattleTarget; 
+    int item = 0; 
+	int c = 0; 
+	int newHP = startHP; 
+    for (c = i; c < 115; c++) { 
+		if (!gAiState.unitIt[c]) {
+			c = 115; 
+		break; } // stop when no unit is found  }
+		struct Unit* unit = gUnitLookup[c];
+
+		item = GetUnitEquippedWeapon(unit); 
+		if (!item) continue;       
+
+
+		if (!CouldUnitBeInRangeHeuristic(gActiveUnit, unit, item)) {
+			continue; 
+		} 
+
+		FillMovementAndRangeMapForItem(unit, item); // perhaps this should use a version that assumes they can pass through walls etc. 
+
+		if (!gMapRange[yPos][xPos]) continue; 
+		
+		if (((unit->skl * 2) + GetItemHit(item) + (unit->lck / 2) - target->battleAvoidRate) > 75) { 
+			int res = target->unit.res; 
+			int def = target->unit.def; 
+			int spd = unit->spd; 
+			int unit_power = GetUnitPower(unit);
+			int might = GetItemEffMight(item, unit_power, def, res, spd, unit); 
+			newHP -= might; 
+			if (newHP < 0) newHP = 0; 
+			break;
+		} 
+	} 
+	return (c+1)<<16 | newHP; 
+
+
+} 
 
 int CanAnotherUnitMakeItSafeEnough(void) { 
-	int c = 0; 
-	for (int i = 1; i < 115; i++) { 
-		if (!gAiState.units[i]) 
-			continue; 
-		c++; 
+    struct Unit* actor = gActiveUnit; 
+    struct BattleUnit* target = &gBattleTarget; 
+	struct AiDecision* gAiDecision = &gAiData.decision; 
+	int result = false; 
+	int yPos = gAiDecision->yMovement; 
+	int xPos = gAiDecision->xMovement; 
+    int i = 1; 
+    int reducedDanger = gMapMovement2[yPos][xPos] - (target->battleAttack/2); 
+    if (actor->curHP <= reducedDanger) { return false; } 
+    // even if someone else kills the target, we won't be safe, so don't attack 
+	int remainingHP = target->unit.curHP; 
 	
-	
-	} 
-	if (c>2) 
-		return true; 
+	for (int c = 0; c < 50; c++) { 
+		remainingHP = WhatHPWillTargetHaveAfterAIQueueIsDone(i, xPos, yPos, remainingHP); 
+		i = (remainingHP & 0xFF0000)>>16; // counter  
+		if (i > 100) { 
+			break; } 
+		remainingHP = remainingHP & 0xFFFF; 
+		if (!remainingHP) {
+			result = true; 
+			break; }
+    } 
 
-	return false; 
-} 
+	FillMovementMapForUnit(gActiveUnit); 
+    return result; 
+	
+}
 
 void removeActiveAllegianceFromUnitMap(void) { 
 	int ix, iy; 
@@ -82,12 +246,10 @@ u32 AddWeaponTypeAt(u32 weaponTypes, int ix, int iy) {
 						u8 type = GetItemType(item);
 						if (atrb) {
 							if (type == 0) type = 2; // lancereaver becomes an axe 
-							else { // we immediately change its type, so we must use else 
-								if (type == 1) type = 0; // axereaver becomes a sword 
-								else { 
-									if (type == 2) type = 1; // swordreaver becomes a lance 
-								}
-							}
+							// we immediately change its type, so we must use else 
+							else if (type == 1) type = 0; // axereaver becomes a sword 
+							else if (type == 2) type = 1; // swordreaver becomes a lance 	
+							
 						}
 						if (type < 8) { 
 							u32 myNibble = ((weaponTypes & (0xF << (type*4))) + (1<<(type*4))) & (0xF << (type*4)); // add 1 to the nibble at whichever offset. ensure it doesn't exceed 0xF. 
@@ -171,9 +333,9 @@ void TryEquipType(int itemType, struct Unit* unit) {
 
 void EquipOptimalWepType(struct Unit* unit, int x, int y) { 
 	u32 weps = CountNearbyWeaponTypes(x, y); 
-	int sword = weps 	& 0xF; 
-	int lance = weps 	& 0xF0; 
-	int axe = weps 		& 0xF00; 
+	int sword =  weps 	& 0xF; 
+	int lance = (weps 	& 0xF0)>>4; 
+	int axe = 	(weps 	& 0xF00)>>8; 
 	//int bow = weps 	& 0xF000; 
 	//int staff = weps 	& 0xF0000; 
 	
@@ -306,35 +468,7 @@ int IsUnitOnField(struct Unit* unit)
     if (unit->state & (US_HIDDEN | US_DEAD | US_NOT_DEPLOYED | US_BIT16)) { 
 		return false; } 
 	return true; 
-} 
-int GetUnitEffSpdWithWep(struct Unit* unit, int item) { 
-	int weight = GetItemWeight(item);
-	int spd = unit->spd; 
-	int con = unit->conBonus + unit->pCharacterData->baseCon + unit->pClassData->baseCon; 
-	if (weight>con) { 
-		weight -= con; 
-		spd -= weight; 
-		if (spd < 0) { spd = 0; } 
-	} 
-	return spd; 
 }
-
-
-int GetUnitEffSpd(struct Unit* unit) { 
-	int item = GetUnitEquippedWeapon(unit);
-	return GetUnitEffSpdWithWep(unit, item); 
-} 
-int GetItemEffMight(int item, int unit_power, int battle_def, int spd, struct Unit* unit) { 
-	int might = GetItemMight(item);
-	if (IsItemEffectiveAgainst(item, gActiveUnit)) { might += might*2; }
-	
-	might += unit_power; 
-	might -= battle_def; 
-	if (GetUnitEffSpdWithWep(unit, item)-4 >= spd) { might += might; } // doubles 
-	if (might<2) { might = 2; } 
-	return ((might+1)/2); // assume WTD  
-} 
-
 
 int GetCurrDanger(void) { 
 
@@ -420,7 +554,10 @@ s8 NewAiFindSafestReachableLocation(struct Unit* unit, struct Vec2* out) {
 				resultY = iy; 
 				bestDanger = tempDanger; 
 			} 
+			if (!unit->index>>7) { 
 			tempDanger -= (unit->pClassData->pTerrainAvoidLookup[terrainRow[ix]]/4); // every 4 avoid makes a tile 1 dmg less dangerous  
+			tempDanger -= ((unit->pClassData->pTerrainDefenseLookup[terrainRow[ix]])>0); // any def also makes it 1 dmg less dangerous 
+			} 
 			if (tempDanger < 0) tempDanger = 0; 
 			
             if (bestDanger < tempDanger) {

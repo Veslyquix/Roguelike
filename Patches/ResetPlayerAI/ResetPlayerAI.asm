@@ -177,6 +177,22 @@ ldr r0, [r0]
 add r0, #0x45
 .short 0xf800 
 
+ldr r0, =gCurrentUnit 
+ldr r0, [r0] 
+blh GetUnitEquippedWepSlot 
+cmp r0, #0 
+bge TheyHaveWep 
+bl TryMoveTowardsLeader @ no wep so go towards leader when it is safe 
+
+mov r0, #1 @ if it's dangerous, just run away 
+@ if the dmg we could take is more than r0, run away 
+bl IsTargetCoordTooUnsafe
+cmp r0, #1 
+beq OkayFineRun 
+b DontRun 
+
+TheyHaveWep: 
+
 
 ldr r2, =gCurrentUnit
 ldr r2, [r2] 
@@ -296,18 +312,18 @@ cmp r0, #1
 bne SkipRunToLord 
 
 
-ldr r3, =Defender 
-mov r1, #0x52 
-ldsb r1, [r3, r1] 
-cmp r1, #0 
-beq JeiganAttack @ so we attack archers etc 
+@ldr r3, =Defender 
+@mov r1, #0x52 
+@ldsb r1, [r3, r1] 
+@cmp r1, #0 
+@beq JeiganAttack @ so we attack archers etc 
 
 
 @ is another unit likely to finish off the target and make it likely that we'll live? 
-@bl CanAnotherUnitMakeItSafeEnough 
-@cmp r0, #0 
-@beq JeiganDontAttack 
-@b JeiganAttack 
+bl CanAnotherUnitMakeItSafeEnough 
+cmp r0, #0 
+beq JeiganDontAttack 
+b JeiganAttack 
 
 .equ Attacker, 0x203A4EC
 
@@ -348,6 +364,12 @@ str r1, [r0, #8] @
 
 SkipEventStuff: 
 JeiganAttack:
+ldr r0, =AiDecision 
+ldr r0, [r0] 
+cmp r0, #0 
+bne SkipMoveTowardsLord 
+bl TryMoveTowardsLeader
+SkipMoveTowardsLord: 
 mov r0, #1 
 pop {r4} 
 pop {r1} 
@@ -421,18 +443,18 @@ bne JustAttack
 @ if opponent cannot counter, attack! 
 .equ Defender, 0x203A56C
 
-AttackIfTheyCannotCounter:
-ldr r3, =Defender 
-mov r1, #0x52 
-ldsb r1, [r3, r1] 
-cmp r1, #0 
-beq JustAttack @ so we attack archers etc 
+@AttackIfTheyCannotCounter:
+@ldr r3, =Defender 
+@mov r1, #0x52 
+@ldsb r1, [r3, r1] 
+@cmp r1, #0 
+@beq JustAttack @ so we attack archers etc 
 
 @ is another unit likely to finish off the target and make it likely that we'll live? 
-@bl CanAnotherUnitMakeItSafeEnough 
-@cmp r0, #0 
-@beq DoNotAttack
-@b JustAttack
+bl CanAnotherUnitMakeItSafeEnough 
+cmp r0, #0 
+beq DoNotAttack
+b JustAttack
 
 
 

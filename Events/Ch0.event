@@ -64,7 +64,12 @@ END_MAIN
 Traps:
 ENDTRAP
 ALIGN 4
+// 0x8088D3C -> [2025450+4c]?
+// 8088F54: StartDrawDialogProcs 0x808A0FC
+// ... 
+// 8A082 GetString - ExpandNames at 800A2A4 - a2c4 
 
+// 
 
 EndingScene: 
 EndMMS 
