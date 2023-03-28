@@ -28,10 +28,9 @@ str r4, [r7]
 strh r5, [r7, #4] 
 b GotoNextUnit 
 PromotedAI: 
-ldr r1, =0x20031
+ldr r1, =0x20031 @ if cannot attack, try event or move towards first Lord found 
 str r1, [r7] 
-mov r1, #0xA @ move towards Eirika
-strh r1, [r7, #4] 
+strh r5, [r7, #4] @ ai2 = safety 
 b GotoNextUnit 
 
 LordAI: 
@@ -192,13 +191,11 @@ beq OkayFineRun
 b DontRun 
 
 TheyHaveWep: 
-
-
 ldr r2, =gCurrentUnit
 ldr r2, [r2] 
 ldrb r0, [r2, #0x13] @ current hp 
 sub r0, #1 @ must survive with at least 1 hp 
-lsr r0, #1 
+asr r0, #1 
 @ if the dmg we could take is more than r0, run away 
 bl IsTargetCoordTooUnsafe
 cmp r0, #1 
@@ -821,7 +818,6 @@ b Exit_Event
 
 NoUnitHere: 
 
-
 mov r5, r11 
 ldr r5, [r5, #8] @ LocationBasedEvents 
 mov r4, #0 
@@ -862,6 +858,7 @@ add r2, r6
 ldrb r0, [r2] 
 cmp r0, #3 @ village (open) 
 bne LocationBasedEventsLoop 
+
 
 ldr r0, =0x203AA94 
 strb r7, [r0, #3] @ yy 

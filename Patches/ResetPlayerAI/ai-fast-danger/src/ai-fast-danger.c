@@ -17,12 +17,13 @@ extern int GetCurrDanger(void) SHORTCALL;
 extern int GetItemEffMight(int item, int unit_power, int def, int res, int spd, struct Unit* unit) SHORTCALL;
 extern int GetUnitEffSpd(struct Unit* unit) SHORTCALL;
 extern int WhichWepHasBetterRange(int itemA, int itemB) SHORTCALL; 
+//void BmMapFill(MapData, u8 value) SHORTCALL;
 s8 AreAllegiancesAllied(int uid_a, int uid_b) SHORTCALL;
 int CanUnitUseWeapon(const struct Unit* unit, int item) SHORTCALL;
 int GetItemMight(int item) SHORTCALL;
 int CouldUnitBeInRangeHeuristic(struct Unit* unit, struct Unit* other, int item) SHORTCALL;
 void FillMovementAndRangeMapForItem(struct Unit* unit, int item) SHORTCALL;
-void FillMovementAndRangeMapForItem_PassableWalls(struct Unit* unit, u16 item) SHORTCALL;
+void FillMovementAndRangeMapForItem_PassableDoors(struct Unit* unit, u16 item) SHORTCALL;
 int GetUnitPower(const struct Unit* unit) SHORTCALL;
 void RefreshUnitsOnBmMap(void) SHORTCALL; 
 extern void removeActiveAllegianceFromUnitMap(void) SHORTCALL; 
@@ -40,6 +41,7 @@ void NuAiFillDangerMap(void)
     //int active_unit_id = gActiveUnitId;
 	int res = gActiveUnit->res; 
 	int def = gActiveUnit->def; 
+	//BmMapFill(gMapUnit, 0);
 	removeActiveAllegianceFromUnitMap(); 
 	int spd = GetUnitEffSpd(gActiveUnit); 
 	
@@ -89,7 +91,7 @@ void NuAiFillDangerMap(void)
 		} 
 
 
-        FillMovementAndRangeMapForItem_PassableWalls(unit, item_best_range); 
+        FillMovementAndRangeMapForItem_PassableDoors(unit, item_best_range); 
 		// this won't work properly for enemeis with non 1-2 range weps 
 		// eg. an enemy with an axe and a bow 
 		NuAiFillDangerMap_ApplyDanger(might); // minimum of 1 unit power 

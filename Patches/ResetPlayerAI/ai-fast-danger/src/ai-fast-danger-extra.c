@@ -36,6 +36,8 @@ enum
     AI_FLAG_3 = (1 << 3),
 };
 extern u8** gWorkingBmMap;
+extern u8 gWorkingTerrainMoveCosts[];
+
 inline void SetWorkingBmMap(u8** map)
 {
     gWorkingBmMap = map;
@@ -75,10 +77,22 @@ int GetItemEffMight(int item, int unit_power, int def, int res, int spd, struct 
 	return ((might+1)/2); // assume WTD  
 } 
 
+void AiSetMovCostTableWithPassableDoors(const s8* cost) {
+    u16 i;
 
-extern void AiSetMovCostTableWithPassableWalls(const s8* cost); 
-void GenerateUnitMovementMap_PassableWalls(struct Unit* unit) {
-    AiSetMovCostTableWithPassableWalls((const s8*)GetUnitMovementCost(unit));
+    for (i = 1; i < 0x41; i++) { // 0x40 terrain types 
+        gWorkingTerrainMoveCosts[i] = cost[i];
+    }
+	gWorkingTerrainMoveCosts[0x1B] = 1; // Breakable wall 
+	gWorkingTerrainMoveCosts[0x1E] = 1; // Door 
+	gWorkingTerrainMoveCosts[0x33] = 1; // Snag - this doesn't make the river crossable, however 
+	
+    
+    return;
+}
+
+void GenerateUnitMovementMap_PassableDoors(struct Unit* unit) {
+    AiSetMovCostTableWithPassableDoors((const s8*)GetUnitMovementCost(unit));
 
     SetWorkingBmMap(gMapMovement);
 
@@ -101,11 +115,11 @@ int WhichWepHasBetterRange(int item_tmp, int item) {
 	return item_tmp; 
 } 
 
-void FillMovementAndRangeMapForItem_PassableWalls(struct Unit* unit, u16 item) {
+void FillMovementAndRangeMapForItem_PassableDoors(struct Unit* unit, u16 item) {
     int ix;
     int iy;
 	if (!(unit->ai3And4 & 0x2000)) { // for boss AI, they cannot move 
-		GenerateUnitMovementMap_PassableWalls(unit);
+		GenerateUnitMovementMap_PassableDoors(unit);
 	}
 	else {
 		BmMapFill(gMapMovement, 0xFF); // Cannot move anywhere except where they are already 
@@ -150,11 +164,19 @@ u32 WhatHPWillTargetHaveAfterAIQueueIsDone(int i, int xPos, int yPos, int startH
     int item = 0; 
 	int c = 0; 
 	int newHP = startHP; 
+	int actorIndex = gActiveUnit->index; 
     for (c = i; c < 115; c++) { 
+		//if (!gAiState.unitIt[c]) {
 		if (!gAiState.unitIt[c]) {
 			c = 115; 
 		break; } // stop when no unit is found  }
 		struct Unit* unit = gUnitLookup[c];
+		//asm("mov r11, r11"); 
+		if (unit->state & US_HAS_MOVED_AI) 
+			continue; // can't move twice 
+		if (unit->index == actorIndex)
+			continue; // can't act twice 
+		
 
 		item = GetUnitEquippedWeapon(unit); 
 		if (!item) continue;       
@@ -214,18 +236,19 @@ int CanAnotherUnitMakeItSafeEnough(void) {
 }
 
 void removeActiveAllegianceFromUnitMap(void) { 
-	int ix, iy; 
-	int activeAllegiance = (gActiveUnit->index)>>6; 
-    for (iy = gMapSize.y - 1; iy >= 0; iy--) {
-		u8 * unitRow = gMapUnit[iy];
-        for (ix = gMapSize.x - 1; ix >= 0; ix--) {
-			if (!unitRow[ix]) 
-				continue; // do nothing if already 0 here 
-			if (unitRow[ix]>>6 == activeAllegiance) { 
-				unitRow[ix] = 0; 
-			} 
-        }
-    }
+	BmMapFill(gMapUnit, 0);
+	//int ix, iy; 
+	//int activeAllegiance = (gActiveUnit->index)>>6; 
+    //for (iy = gMapSize.y - 1; iy >= 0; iy--) {
+	//	u8 * unitRow = gMapUnit[iy];
+    //    for (ix = gMapSize.x - 1; ix >= 0; ix--) {
+	//		if (!unitRow[ix]) 
+	//			continue; // do nothing if already 0 here 
+	//		if (unitRow[ix]>>6 == activeAllegiance) { 
+	//			unitRow[ix] = 0; 
+	//		} 
+    //    }
+    //}
 } 
 
 

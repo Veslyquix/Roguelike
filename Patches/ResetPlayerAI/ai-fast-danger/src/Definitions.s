@@ -4,7 +4,7 @@
 // other stuff 
 SET_DATA gAiState, 0x203AA04
 SET_DATA gAiDecision, 0x203AA94
-
+SET_DATA gWorkingTerrainMoveCosts, 0x3004BB0
 SET_DATA gWorkingBmMap, 0x30049A0
 SET_FUNC MapIncInBoundedRange, 0x801B9A5
 
