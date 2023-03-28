@@ -5,7 +5,7 @@
 	#define callHackNew(offset) 		"BYTE $01 $4B $9E $46 $00 $F8 $01 $E0; POIN (offset|0x1)"
 #endif 
 
-//#define ENABLE_100_GROWTH
+#define ENABLE_100_GROWTH
 
 PUSH 
 ORG $39722 
@@ -132,6 +132,8 @@ callHackNew(OneHundredGrowth)
 ORG $D2F7C // overwrite vsprintf (debug print text) 
 ResetPlayerAI: // also gives a vuln to all players that don't have one 
 #include "ResetPlayerAI.lyn.event"
+
+
 ALIGN 4
 RNGBodyFE8:
 BYTE $08 $BC $11 $48 $00 $68 $00 $28 $07 $D0 $10 $48 $00 $78 $00 $28 $07 $D1 $0C $48 $00 $F0 $0D $F8 $03 $E0 $0D $48 $00 $78 $00 $28 $F3 $D1 $0C $48 $00 $68 $00 $28 $01 $D0 $00 $F0 $02 $F8 $04 $48 $00 $47 $00 $47 $C0 $46 $C0 $46 $C0 $46 $C0 $46 $C0 $46 $C0 $46 $43 $13 $00 $08 $65 $0C $00 $08 $EC $A4 $03 $02 $FF $BC $02 $02 $6A $4E $00 $03 $B8 $4C $02 $02
@@ -141,6 +143,7 @@ BYTE $44 $42 $04 $43 $E4 $0F $20 $1C $01 $B4 $06 $4B $07 $48 $18 $60 $05 $4B $07
 ALIGN 4
 resumeHackBodyFE8:
 BYTE $01 $88 $51 $80 $50 $88 $90 $80 $01 $B4 $06 $4B $07 $48 $18 $60 $05 $4B $06 $48 $18 $70 $01 $BC $01 $4B $18 $47 $C0 $46 $C0 $46 $45 $0C $00 $08 $EC $A4 $03 $02 $6A $4E $00 $03 $00 $00 $00 $00
+
 ALIGN 4 
 GetItemAttributesWithUnbreakable: 
 BYTE $89 $00 $03 $48 $00 $68 $09 $18 $88 $68 $08 $21 $08 $43 $70 $47 $80 $75 $01 $08

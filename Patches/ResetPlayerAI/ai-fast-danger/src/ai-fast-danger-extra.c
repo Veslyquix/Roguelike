@@ -38,6 +38,10 @@ enum
 extern u8** gWorkingBmMap;
 extern u8 gWorkingTerrainMoveCosts[];
 
+// if no other action, try use vulnerary / elixir 
+// snag + visit simultaneously 
+// order / Seth moving towards Eirika before she moves 
+
 inline void SetWorkingBmMap(u8** map)
 {
     gWorkingBmMap = map;
@@ -170,9 +174,8 @@ u32 WhatHPWillTargetHaveAfterAIQueueIsDone(int i, int xPos, int yPos, int startH
 		if (!gAiState.unitIt[c]) {
 			c = 115; 
 		break; } // stop when no unit is found  }
-		struct Unit* unit = gUnitLookup[c];
-		//asm("mov r11, r11"); 
-		if (unit->state & US_HAS_MOVED_AI) 
+		struct Unit* unit = gUnitLookup[gAiState.unitIt[c]];
+		if (unit->state & (US_HAS_MOVED_AI|US_HAS_MOVED)) 
 			continue; // can't move twice 
 		if (unit->index == actorIndex)
 			continue; // can't act twice 
@@ -180,15 +183,14 @@ u32 WhatHPWillTargetHaveAfterAIQueueIsDone(int i, int xPos, int yPos, int startH
 
 		item = GetUnitEquippedWeapon(unit); 
 		if (!item) continue;       
-
-
-		if (!CouldUnitBeInRangeHeuristic(gActiveUnit, unit, item)) {
+		if (!CouldUnitBeInRangeHeuristic(unit, target, item)) {
 			continue; 
 		} 
 
 		FillMovementAndRangeMapForItem(unit, item); // perhaps this should use a version that assumes they can pass through walls etc. 
 
 		if (!gMapRange[yPos][xPos]) continue; 
+		if (gMapUnit[yPos][xPos]) continue; // can't go where a unit is already 
 		
 		if (((unit->skl * 2) + GetItemHit(item) + (unit->lck / 2) - target->battleAvoidRate) > 75) { 
 			int res = target->unit.res; 
@@ -208,13 +210,16 @@ u32 WhatHPWillTargetHaveAfterAIQueueIsDone(int i, int xPos, int yPos, int startH
 
 int CanAnotherUnitMakeItSafeEnough(void) { 
     struct Unit* actor = gActiveUnit; 
+	
     struct BattleUnit* target = &gBattleTarget; 
 	struct AiDecision* gAiDecision = &gAiData.decision; 
 	int result = false; 
 	int yPos = gAiDecision->yMovement; 
 	int xPos = gAiDecision->xMovement; 
+	int value = gMapUnit[yPos][xPos];
+	gMapUnit[yPos][xPos] = actor->index; // so no other unit can move here 
     int i = 1; 
-    int reducedDanger = gMapMovement2[yPos][xPos] - (target->battleAttack/2); 
+    int reducedDanger = gMapMovement2[yPos][xPos] - (target->battleAttack/2); // perhaps this should calc attack independently as to not be influenced by WTA in current battle 
     if (actor->curHP <= reducedDanger) { return false; } 
     // even if someone else kills the target, we won't be safe, so don't attack 
 	int remainingHP = target->unit.curHP; 
@@ -231,6 +236,7 @@ int CanAnotherUnitMakeItSafeEnough(void) {
     } 
 
 	FillMovementMapForUnit(gActiveUnit); 
+	gMapUnit[yPos][xPos] = value; // restore afterwards 
     return result; 
 	
 }

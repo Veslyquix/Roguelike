@@ -290,10 +290,14 @@ orr r0, r1
 mov r1, #0x80 @ boss 
 lsl r1, #8 
 tst r0, r1 
-beq JeiganDontAttack
-b JeiganAttack
-
-
+bne JeiganAttack  
+mov r0, #0x48 @ item 
+ldrh r0, [r3, r0] 
+blh GetItemMaxRange 
+cmp r0, #1 
+bgt JeiganAttack @ kill handaxe/bow users etc. 
+b JeiganDontAttack
+.equ GetItemMaxRange, 0x8017684
 
 NoAntiJeiganAI: 
 @ if we take less dmg on enemy phase than our remaining hp after attacking, go ahead and attack 
@@ -817,7 +821,6 @@ b Exit_Event
 
 
 NoUnitHere: 
-
 mov r5, r11 
 ldr r5, [r5, #8] @ LocationBasedEvents 
 mov r4, #0 
@@ -1027,14 +1030,29 @@ b Exit_Event
 
 
 BreakLocationLoop: 
+
+@ldr r0, =gTargetPosition 
+@ldr r0, [r0] 
+@ldr r1, =gTargetArraySize 
+@ldr r1, [r1] 
+@
+@
+@mov r0, r6 
+@mov r1, r7 
+@blh InitTargets 
+@mov r0, r6 
+@mov r1, r7 
+@mov r2, r8 
+@mov r3, r9 
+@bl IsClosedDoorAdjacent 
+@ldr r0, =gTargetArraySize
+@.equ InitTargets, 0x804F8A4
+@.equ gTargetPosition, 0x203DDE8 
+@.equ gTargetArraySize, 0x203E0EC 
+@ldrb r0, [r0] 
 mov r0, r6 
 mov r1, r7 
-mov r2, r8 
-mov r3, r9 
-bl TryAddClosedDoorToTargetListNew 
-ldr r0, =gTargetArraySize
-.equ gTargetArraySize, 0x203E0EC 
-ldrb r0, [r0] 
+bl IsClosedDoorAdjacent
 cmp r0, #0 
 bne FoundClosedDoor 
 
@@ -1062,7 +1080,7 @@ pop {r0}
 bx r0 
 .ltorg 
 
-TryAddClosedDoorToTargetListNew:
+IsClosedDoorAdjacent:
 push {r4-r7, lr}
 mov r6, r0 @ xx 
 mov r7, r1 @ yy 
@@ -1074,35 +1092,71 @@ sub r0, #1
 cmp r0, #0 
 blt SkipLeftSide 
 mov r1, r7 
-blh TryAddClosedDoorToTargetList 
+bl NewIsThereClosedDoorAt
+cmp r0, #0 
+bne SkipBelowSide
 SkipLeftSide: 
 mov r0, r6 
 add r0, #1 
 cmp r0, r4 
 bgt SkipRightSide 
 mov r1, r7 
-blh TryAddClosedDoorToTargetList 
+bl NewIsThereClosedDoorAt
+cmp r0, #0 
+bne SkipBelowSide
 SkipRightSide: 
 mov r0, r6 
 mov r1, r7 
 sub r1, #1 
 cmp r1, #0 
 blt SkipAboveSide
-blh TryAddClosedDoorToTargetList 
+bl NewIsThereClosedDoorAt
+cmp r0, #0 
+bne SkipBelowSide
 SkipAboveSide: 
 mov r0, r6 
 mov r1, r7 
 add r1, #1 
 cmp r1, r5 
 bgt SkipBelowSide 
-blh TryAddClosedDoorToTargetList 
+bl NewIsThereClosedDoorAt
+cmp r0, #0 
+bne SkipBelowSide
 SkipBelowSide: 
 
 pop {r4-r7} 
-pop {r0} 
-bx r0 
+pop {r1} 
+bx r1 
 .ltorg 
 
+.global NewIsThereClosedDoorAt 
+.type NewIsThereClosedDoorAt, %function 
+NewIsThereClosedDoorAt: 
+push {lr} 
+ldr r3, =gMapTerrain 
+ldr		r3,[r3]			@Offset of map's table of row pointers
+lsl		r2, r1,#0x2			@multiply y coordinate by 4
+add		r3,r2			@so that we can get the correct row pointer
+ldr		r3,[r3]			@Now we're at the beginning of the row data
+add		r3,r0			@add x coordinate
+ldrb	r2,[r3]			@load datum at those coordinates
+cmp r2, #0x1E 
+bne NoDoor
+blh GetAvailableLocaCommandAt @ r0 = x, r1 = y 
+cmp r0, #0x12 
+beq YesThereIsDoor
+NoDoor: 
+mov r0, #0 
+b ExitDoorAt 
+YesThereIsDoor: 
+mov r0, #1 
+ExitDoorAt: 
+pop {r1} 
+bx r1 
+.ltorg 
+
+.equ gMapTerrain, 0x202E4DC 
+.equ GetAvailableLocaCommandAt, 0x8084078
 .ltorg
 .global WaitUntilAIMoves
 .type WaitUntilAIMoves, %function
