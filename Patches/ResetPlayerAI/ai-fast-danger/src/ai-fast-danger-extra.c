@@ -90,6 +90,7 @@ void AiSetMovCostTableWithPassableDoors(const s8* cost) {
 	gWorkingTerrainMoveCosts[0x1B] = 1; // Breakable wall 
 	gWorkingTerrainMoveCosts[0x1E] = 1; // Door 
 	gWorkingTerrainMoveCosts[0x33] = 1; // Snag - this doesn't make the river crossable, however 
+	if (gChapterData.chapterIndex == 4) gWorkingTerrainMoveCosts[0x10] = 1; // Rivers treated as crossable in ch 4. 
 	
     
     return;
@@ -155,7 +156,7 @@ void TryMoveTowardsLeader() {
 		} 
 	} 
 	if (target) { 
-		if (abs(gActiveUnit->xPos - target->xPos) + abs(gActiveUnit->yPos - target->yPos) > 5) 
+		if (abs(gActiveUnit->xPos - target->xPos) + abs(gActiveUnit->yPos - target->yPos) > 9) 
 		AiTryMoveTowards(target->xPos, target->yPos, 0, 0x8, true); // if far from lord, move towards them 
 		//AiTryMoveTowards(target->xPos, target->yPos, int decisionId, int safetyThreshold, int ignoreEnemies);
 
@@ -241,7 +242,8 @@ int CanAnotherUnitMakeItSafeEnough(void) {
 	
 }
 
-void removeActiveAllegianceFromUnitMap(void) { 
+void removeActiveAllegianceFromUnitMap(void) {
+	BmMapFill(gMapMovement2, 0); 
 	BmMapFill(gMapUnit, 0);
 	//int ix, iy; 
 	//int activeAllegiance = (gActiveUnit->index)>>6; 
@@ -553,7 +555,13 @@ s8 NewAiFindSafestReachableLocation(struct Unit* unit, struct Vec2* out) {
 	int resultX = 0xFF; 
 	int resultY = 0xFF; 
     u8 bestDanger = 0xff;
+	if (gMapMovement2[gActiveUnit->yPos][gActiveUnit->xPos] == 0) { 
+		resultX = gActiveUnit->xPos;
+		resultY = gActiveUnit->yPos;
+		bestDanger = 0; 
+	}
 
+	if (gMapMovement2[gActiveUnit->yPos][gActiveUnit->xPos]) { 
     if (gAiState.flags & AI_FLAG_1) {
         BmMapFill(gMapMovement, -1);
         gMapMovement[unit->yPos][unit->xPos] = 0;
@@ -583,9 +591,10 @@ s8 NewAiFindSafestReachableLocation(struct Unit* unit, struct Vec2* out) {
 				resultY = iy; 
 				bestDanger = tempDanger; 
 			} 
-			if (!unit->index>>7) { 
-			tempDanger -= (unit->pClassData->pTerrainAvoidLookup[terrainRow[ix]]/4); // every 4 avoid makes a tile 1 dmg less dangerous  
-			tempDanger -= ((unit->pClassData->pTerrainDefenseLookup[terrainRow[ix]])>0); // any def also makes it 1 dmg less dangerous 
+			if (!(unit->index>>7)) { 
+			tempDanger -= (unit->pClassData->pTerrainAvoidLookup[terrainRow[ix]]/5); // every 5 avoid makes a tile 1 dmg less dangerous  
+			//tempDanger -= ((unit->pClassData->pTerrainDefenseLookup[terrainRow[ix]])>0); // any def also makes it 1 dmg less dangerous 
+			tempDanger -= (((unit->pClassData->pTerrainDefenseLookup[terrainRow[ix]])>1) + ((unit->pClassData->pTerrainDefenseLookup[terrainRow[ix]])>0)); // any def also makes it 1-2 dmg less dangerous 
 			} 
 			if (tempDanger < 0) tempDanger = 0; 
 			
@@ -599,6 +608,7 @@ s8 NewAiFindSafestReachableLocation(struct Unit* unit, struct Vec2* out) {
 			
         }
     }
+	}
     out->x = resultX;
     out->y = resultY;
     if (bestDanger != 0xFF) {
@@ -607,4 +617,51 @@ s8 NewAiFindSafestReachableLocation(struct Unit* unit, struct Vec2* out) {
 
     return 0;
 }
+//! FE8U = 0x0803E718
+s8 NewAiTryHealSelf(void) { // same as decomp, but try elixir before vulnerary 
+    int i;
 
+    for (i = 0; i < 5; i++) {
+        u16 item = gActiveUnit->items[i];
+
+        if (item == 0) {
+            continue;
+        }
+
+        if (GetItemIndex(item) == 0x6d) { // Elixir 
+            if (!(gAiState.flags & AI_FLAG_1) && !(gActiveUnit->ai3And4 & 0x2000)) {
+                struct Vec2 position;
+
+                if (NewAiFindSafestReachableLocation(gActiveUnit, &position) == 1) {
+                    AiSetDecision(position.x, position.y, 6, 0, i, 0, 0);
+                    return 1;
+                }
+            } else {
+                AiSetDecision(gActiveUnit->xPos, gActiveUnit->yPos, 6, 0, i, 0, 0);
+                return 1;
+            }
+        }
+    }
+    for (i = 0; i < 5; i++) {
+        u16 item = gActiveUnit->items[i];
+
+        if (item == 0) {
+            return 0;
+        }
+
+        if (GetItemIndex(item) == 0x6c) { // VUlnerary
+            if (!(gAiState.flags & AI_FLAG_1) && !(gActiveUnit->ai3And4 & 0x2000)) {
+                struct Vec2 position;
+
+                if (NewAiFindSafestReachableLocation(gActiveUnit, &position) == 1) {
+                    AiSetDecision(position.x, position.y, 6, 0, i, 0, 0);
+                    return 1;
+                }
+            } else {
+                AiSetDecision(gActiveUnit->xPos, gActiveUnit->yPos, 6, 0, i, 0, 0);
+                return 1;
+            }
+        }
+    }
+    return 0;
+}

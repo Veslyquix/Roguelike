@@ -5,7 +5,7 @@
 	#define callHackNew(offset) 		"BYTE $01 $4B $9E $46 $00 $F8 $01 $E0; POIN (offset|0x1)"
 #endif 
 
-#define ENABLE_100_GROWTH
+//#define ENABLE_100_GROWTH
 
 PUSH 
 ORG $39722 
@@ -13,7 +13,8 @@ SHORT $2100 // Berserked units won't attack their own allegiance
 
 ORG $397F6
 SHORT $46C0 // Everyone acts berserked at the end of the turn if they haven't moved 
-
+ORG $3981C 
+callHackNew(OrderBerserkPhase)
 //ORG $5A8412 
 //BYTE 4 // Default safety as 4 
 ORG $5A8391 
@@ -86,13 +87,14 @@ BYTE 0x03 0x00 0xFF 0; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Exit
 
 ORG $5A8690 // Non-promoted AI2 
 //Routine_AI(
-BYTE 0x18 0x00 0x8 0x00; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Move towards walls etc. with safety = 8 (but the safety doesn't work) 
-ConditionalGoto(4, EQ, 1)
+//BYTE 0x18 0x00 0x8 0x00; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Move towards walls etc. with safety = 8 (but the safety doesn't work) 
+//ConditionalGoto(4, EQ, 1)
+Routine_AI(BreakWallIfSafe, 0) 
 BYTE 0x03 0x00 0xFF 0; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Exit0 
-Label(1)
+//Label(1)
 //BYTE 0x13 0x00 0x6 0x00; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Move towards walls etc. with safety = 6 (duplicate because safety doesn't work on move to walls) 
-Routine_AI(TryMoveIfSafe, 0)
-BYTE 0x03 0x00 0xFF 1; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Exit1 
+//Routine_AI(TryMoveIfSafe, 0)
+//BYTE 0x03 0x00 0xFF 1; WORD 0x00000000; WORD 0x00000000; WORD 0x00000000 // Exit1 
 
 
 //ORG $5A8790 // Lord AI2

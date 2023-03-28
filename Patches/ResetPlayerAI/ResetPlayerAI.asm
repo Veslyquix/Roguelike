@@ -156,6 +156,78 @@ bx r3
   .short 0xf800
 .endm
 
+.equ GetCurrentPhaseUnitCount, 0x80399B0 
+.equ SortAiUnitQueue, 0x8039A50 
+.global OrderBerserkPhase
+.type OrderBerserkPhase, %function 
+OrderBerserkPhase: 
+push {lr} 
+ldr r0, =0x203AA04 
+add r2, r5, r0 
+mov r1, #0 
+strb r1, [r2] 
+str r0, [r0, #0x74] 
+ldr r1, =0x3004F10 
+ldr r0, =0x8039CAD 
+str r0, [r1] 
+blh GetCurrentPhaseUnitCount 
+blh SortAiUnitQueue 
+pop {r3} 
+bx r3 
+.ltorg 
+
+
+
+.global BreakWallIfSafe
+.type BreakWallIfSafe, %function 
+BreakWallIfSafe: 
+push {r4, lr} 
+
+
+
+ldr r0, =gpAiScriptCurrent
+ldr r0, [r0] 
+mov r1, #6 @ safety 
+strb r1, [r0, #2] @ safety 
+
+
+ldr r0, =0x803D228 @ try attack snag/wall  
+mov lr, r0 
+ldr r0, =0x3004E50 
+ldr r0, [r0] 
+add r0, #0x45
+.short 0xf800 
+
+ldr r0, =AiDecision 
+ldr r0, [r0] 
+cmp r0, #0 
+beq YesTryMoveIfSafe 
+
+ldr r2, =gCurrentUnit
+ldr r2, [r2] 
+ldrb r0, [r2, #0x13] @ current hp 
+sub r0, #1 @ must survive with at least 1 hp 
+asr r0, #1 
+@ if the dmg we could take is more than r0, run away 
+bl IsTargetCoordTooUnsafe
+cmp r0, #1 
+bne BreakWallLol
+ldr r0, =AiDecision 
+mov r1, #0 
+str r1, [r0]
+str r1, [r0, #4]
+str r1, [r0, #8]
+YesTryMoveIfSafe: 
+bl TryMoveIfSafe 
+
+BreakWallLol:
+mov r0, #1 
+pop {r4} 
+pop {r1} 
+bx r1 
+.ltorg 
+
+
 
 .global TryMoveIfSafe
 .type TryMoveIfSafe, %function 
