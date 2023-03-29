@@ -281,8 +281,9 @@ int CanAnotherUnitMakeItSafeEnough(void) {
 
 void FillRangeForBallista(struct Unit* unit) { 
     // if unit state is riding ballista, maybe? 
-	//if (unit->state & US_IN_BALLISTA) { 
-	if (((unit->pCharacterData->attributes) | (unit->pClassData->attributes)) & CA_BALLISTAE) {
+	/*
+	if (unit->state & US_IN_BALLISTA) { 
+		if (((unit->pCharacterData->attributes) | (unit->pClassData->attributes)) & CA_BALLISTAE) {
 		int iy, ix; 
 		for (iy = gMapSize.y - 1; iy >= 0; --iy) 
 		{ 
@@ -304,9 +305,39 @@ void FillRangeForBallista(struct Unit* unit) {
 				}
 			} 
 		}
+		}
+	}*/
+			
+
+	//if (unit->index == 0x0B) { 
+	if (((unit->pCharacterData->attributes) | (unit->pClassData->attributes)) & CA_BALLISTAE) {
+		int iy, ix; 
+		for (iy = gMapSize.y - 1; iy >= 0; --iy) 
+		{ 
+			u8* moveRow = gMapMovement[iy]; 
+			u8* unitRow = gMapUnit[iy]; 
+			u8* otherRow = gMapMovement2[iy]; 
+			for (ix = gMapSize.x - 1; ix >= 0; --ix) 
+			{ 
+				//if (moveRow[ix] > 120) 
+				//	continue; 
+				//if ((unitRow[ix] != unit->index) && (unitRow[ix] != 0)) 
+				//	continue; 
+				//if (otherRow[ix]) 
+					//continue; 
+				
+				int item = GetBallistaItemAt(ix, iy);
+				if (item)
+				{
+					asm("mov r11, r11"); 
+					MapIncInBoundedRange(ix, iy, GetItemMinRange(item), GetItemMaxRange(item));
+				}
+			} 
+		}
 			
 
 	}
+	//}
 	//} 
 }
 
