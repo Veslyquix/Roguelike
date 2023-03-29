@@ -12,7 +12,7 @@ extern void NuAiFillDangerMap_ApplyDanger(int danger_gain);
 
 #define CONSTFUNC __attribute__((const))
 #define SHORTCALL __attribute__((short_call))
-extern int IsUnitOnField(struct Unit* unit) SHORTCALL CONSTFUNC;
+extern int IsUnitOnFieldAndNotAllied(struct Unit* unit) SHORTCALL CONSTFUNC;
 extern int GetCurrDanger(void) SHORTCALL; 
 extern int GetItemEffMight(int item, int unit_power, int def, int res, int spd, struct Unit* unit) SHORTCALL;
 extern int GetUnitEffSpd(struct Unit* unit) SHORTCALL;
@@ -33,32 +33,31 @@ extern u8 * * gMapUnit;
 extern u8 gActiveUnitId;
 extern struct Unit* gActiveUnit;
 extern struct Unit* const gUnitLookup[];
-
+extern void FillRangeForBallista(struct Unit* unit) SHORTCALL; 
 void NuAiFillDangerMap(void)
 {
 	//asm("mov r11, r11"); 
     int i, j; 
     //int active_unit_id = gActiveUnitId;
-	int res = gActiveUnit->res; 
-	int def = gActiveUnit->def; 
+	struct Unit* actor = gActiveUnit; 
+	int res = actor->res; 
+	int def = actor->def; 
 	//BmMapFill(gMapUnit, 0);
 	removeActiveAllegianceFromUnitMap(); 
-	int spd = GetUnitEffSpd(gActiveUnit); 
+	int spd = GetUnitEffSpd(actor); 
 	
 
     for (i = 1; i < 0xC0; ++i)
     {
         struct Unit* unit = gUnitLookup[i];
 
-		if (!IsUnitOnField(unit)) {
+		if (!IsUnitOnFieldAndNotAllied(unit)) {
 			continue; 
 		}
 
 
-        if ((gActiveUnitId >> 7) == (unit->index>>7)) { // AreAllegiancesAllied 
-			continue; 
-		} 
 
+		FillRangeForBallista(unit); 
         int item = 0;
 		int item_best_range = 0; 
         int might = 0;
@@ -86,7 +85,7 @@ void NuAiFillDangerMap(void)
         if (item == 0) {
 		continue; }
 		
-        if (!CouldUnitBeInRangeHeuristic(gActiveUnit, unit, item_best_range)) {
+        if (!CouldUnitBeInRangeHeuristic(actor, unit, item_best_range)) {
 			continue; 
 		} 
 

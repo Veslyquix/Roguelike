@@ -6,6 +6,7 @@ extern u8 * * gMapMovement2;
 extern u8 * * gMapMovement;
 extern u8 * * gMapUnit;
 extern u8 * * gMapTerrain;
+extern int GetBallistaItemAt(int x, int y); 
 int CouldUnitBeInRangeHeuristic(struct Unit* unit, struct Unit* other, int item);
 void FillMovementAndRangeMapForItem(struct Unit* unit, int item);
 extern struct AiState gAiState;
@@ -147,6 +148,22 @@ void FillMovementAndRangeMapForItem_PassableDoors(struct Unit* unit, u16 item) {
     return;
 }
 
+int IsUnitOnFieldAndNotAllied(struct Unit* unit)
+{ 
+    if (unit == NULL)
+        return false;
+	
+    if (unit->pCharacterData == NULL)
+        return false;
+	
+    if (unit->state & (US_HIDDEN | US_DEAD | US_NOT_DEPLOYED | US_BIT16)) { 
+		return false; } 
+	if ((gActiveUnitId >> 7) == (unit->index>>7)) { // AreAllegiancesAllied 
+		return false; 
+	} 
+	return true; 
+}
+
 int IsUnitOnField(struct Unit* unit) 
 { 
     if (unit == NULL)
@@ -262,9 +279,42 @@ int CanAnotherUnitMakeItSafeEnough(void) {
 	
 }
 
+void FillRangeForBallista(struct Unit* unit) { 
+    // if unit state is riding ballista, maybe? 
+	//if (unit->state & US_IN_BALLISTA) { 
+	if (((unit->pCharacterData->attributes) | (unit->pClassData->attributes)) & CA_BALLISTAE) {
+		int iy, ix; 
+		for (iy = gMapSize.y - 1; iy >= 0; --iy) 
+		{ 
+			u8* moveRow = gMapMovement[iy]; 
+			u8* unitRow = gMapUnit[iy]; 
+			u8* otherRow = gMapMovement2[iy]; 
+			for (ix = gMapSize.x - 1; ix >= 0; --ix) 
+			{ 
+				if (moveRow[ix] > 120) 
+					continue; 
+				if (unitRow[ix]) 
+					continue; 
+				if (otherRow[ix]) 
+					continue; 
+				int item = GetBallistaItemAt(ix, iy);
+				if (item)
+				{
+					MapIncInBoundedRange(ix, iy, GetItemMinRange(item), GetItemMaxRange(item));
+				}
+			} 
+		}
+			
+
+	}
+	//} 
+}
+
 void removeActiveAllegianceFromUnitMap(void) {
 	BmMapFill(gMapMovement2, 0); 
 	BmMapFill(gMapUnit, 0);
+	
+
 	//int ix, iy; 
 	//int activeAllegiance = (gActiveUnit->index)>>6; 
     //for (iy = gMapSize.y - 1; iy >= 0; iy--) {
