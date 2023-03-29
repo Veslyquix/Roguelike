@@ -147,20 +147,38 @@ void FillMovementAndRangeMapForItem_PassableDoors(struct Unit* unit, u16 item) {
     return;
 }
 
-void TryMoveTowardsLeader() { 
+int IsUnitOnField(struct Unit* unit) 
+{ 
+    if (unit == NULL)
+        return false;
+	
+    if (unit->pCharacterData == NULL)
+        return false;
+	
+    if (unit->state & (US_HIDDEN | US_DEAD | US_NOT_DEPLOYED | US_BIT16)) { 
+		return false; } 
+	return true; 
+}
+
+int TryMoveTowardsLeader(int dist) { // only do it if distance from them is greater than int dist 
 	struct Unit* target = 0; 
 	for (int i = 1; i <= 50; i++) { 
 		target = gUnitLookup[i]; 
+		if (IsUnitOnField(target)) { 
 		if ((target->pCharacterData->attributes | target->pClassData->attributes) & CA_LORD) { 
 			break; 
 		} 
+		} 
 	} 
 	if (target) { 
-		if (abs(gActiveUnit->xPos - target->xPos) + abs(gActiveUnit->yPos - target->yPos) > 9) 
-		AiTryMoveTowards(target->xPos, target->yPos, 0, 0x8, true); // if far from lord, move towards them 
+		if (abs(gActiveUnit->xPos - target->xPos) + abs(gActiveUnit->yPos - target->yPos) > dist) {
+			InitTargets(0,0);
+			AiTryMoveTowards(target->xPos, target->yPos, 0, 0x8, true); // if far from lord, move towards them 
+			return true; 
 		//AiTryMoveTowards(target->xPos, target->yPos, int decisionId, int safetyThreshold, int ignoreEnemies);
-
+		}
 	}
+	return false; 
 } 
 
 u32 WhatHPWillTargetHaveAfterAIQueueIsDone(int i, int xPos, int yPos, int startHP) { 
@@ -180,6 +198,8 @@ u32 WhatHPWillTargetHaveAfterAIQueueIsDone(int i, int xPos, int yPos, int startH
 			continue; // can't move twice 
 		if (unit->index == actorIndex)
 			continue; // can't act twice 
+		if (unit->curHP < (unit->curHP*2/3)) 
+			continue; // they will retreat 
 		
 
 		item = GetUnitEquippedWeapon(unit); 
@@ -488,18 +508,7 @@ void NuAiFillDangerMap_ApplyDanger(int danger_gain)
         }
     }
 }
-int IsUnitOnField(struct Unit* unit) 
-{ 
-    if (unit == NULL)
-        return false;
-	
-    if (unit->pCharacterData == NULL)
-        return false;
-	
-    if (unit->state & (US_HIDDEN | US_DEAD | US_NOT_DEPLOYED | US_BIT16)) { 
-		return false; } 
-	return true; 
-}
+
 
 int GetCurrDanger(void) { 
 
@@ -592,7 +601,7 @@ s8 NewAiFindSafestReachableLocation(struct Unit* unit, struct Vec2* out) {
 				bestDanger = tempDanger; 
 			} 
 			if (!(unit->index>>7)) { 
-			tempDanger -= (unit->pClassData->pTerrainAvoidLookup[terrainRow[ix]]/5); // every 5 avoid makes a tile 1 dmg less dangerous  
+			tempDanger -= (unit->pClassData->pTerrainAvoidLookup[terrainRow[ix]]/10); // every 5 avoid makes a tile 1 dmg less dangerous  
 			//tempDanger -= ((unit->pClassData->pTerrainDefenseLookup[terrainRow[ix]])>0); // any def also makes it 1 dmg less dangerous 
 			tempDanger -= (((unit->pClassData->pTerrainDefenseLookup[terrainRow[ix]])>1) + ((unit->pClassData->pTerrainDefenseLookup[terrainRow[ix]])>0)); // any def also makes it 1-2 dmg less dangerous 
 			} 
@@ -620,7 +629,8 @@ s8 NewAiFindSafestReachableLocation(struct Unit* unit, struct Vec2* out) {
 //! FE8U = 0x0803E718
 s8 NewAiTryHealSelf(void) { // same as decomp, but try elixir before vulnerary 
     int i;
-
+	if (!(gActiveUnit->index >> 7)) 
+		ActiveUnitEquipBestWepByRange(); // players / npcs only 
     for (i = 0; i < 5; i++) {
         u16 item = gActiveUnit->items[i];
 

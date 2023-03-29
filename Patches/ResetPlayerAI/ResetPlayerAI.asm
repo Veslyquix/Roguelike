@@ -253,6 +253,7 @@ ldr r0, [r0]
 blh GetUnitEquippedWepSlot 
 cmp r0, #0 
 bge TheyHaveWep 
+mov r0, #6 
 bl TryMoveTowardsLeader @ no wep so go towards leader when it is safe 
 
 mov r0, #1 @ if it's dangerous, just run away 
@@ -315,6 +316,9 @@ pop {r1}
 bx r1 
 .ltorg 
 
+.equ InitTargets, 0x804F8A4
+.equ gTargetPosition, 0x203DDE8 
+.equ gTargetArraySize, 0x203E0EC 
 .global CallAttack05_Promoted
 .type CallAttack05_Promoted, %function 
 CallAttack05_Promoted:
@@ -351,7 +355,7 @@ bgt NoAntiJeiganAI
 mov r0, #3 
 bl IsTargetCoordTooUnsafe 
 cmp r0, #0 
-bne JeiganAttack  
+bne NoAntiJeiganAI 
 @ it is so safe that we might as well not kill with our jeigan(s) 
 ldr r3, =Defender 
 ldr r0, [r3] 
@@ -382,7 +386,7 @@ asr r0, #1 @ danger map uses 1/2 values
 @ if the dmg we could take is more than r0, run away 
 bl IsTargetCoordTooUnsafeIfWeDefeatTarget
 cmp r0, #1 
-bne SkipRunToLord 
+bne JeiganAttack  
 
 
 @ldr r3, =Defender 
@@ -402,6 +406,9 @@ b JeiganAttack
 
 
 JeiganDontAttack:
+mov r0, #0 @ xx (vanilla does this too) 
+mov r1, #0 @ yy 
+blh InitTargets @ so we don't attack and do event simultaneously 
 ldr r0, =0x203AA94 
 mov r1, #0 @ no decision made 
 str r1, [r0]
@@ -413,12 +420,7 @@ str r1, [r0, #8]
 
 SkipRunToLord: @returns r0 as t/f that we made a decision 
 bl TryEventInRange
-ldr r0, =AiDecision 
-ldr r0, [r0] 
-cmp r0, #0 
-beq SkipActiveEquipBestWepByRange
 bl ActiveUnitEquipBestWepByRange
-SkipActiveEquipBestWepByRange: 
 
 ldr r2, =gCurrentUnit
 ldr r2, [r2] 
@@ -435,12 +437,27 @@ str r1, [r0, #0] @ AiData.decisionBool @ no decision, so it should do AI2 instea
 str r1, [r0, #4] @ 
 str r1, [r0, #8] @ 
 
+@ if no event, danger is not too high, move towards lord if > 8 tiles away 
+mov r0, #8 
+bl TryMoveTowardsLeader 
+b SkipMoveTowardsLord 
+
 SkipEventStuff: 
 JeiganAttack:
-ldr r0, =AiDecision 
-ldr r0, [r0] 
-cmp r0, #0 
-bne SkipMoveTowardsLord 
+@ldr r0, =AiDecision 
+@ldr r0, [r0] 
+@cmp r0, #0 
+@bne SkipMoveTowardsLord 
+ldr r2, =gCurrentUnit
+ldr r2, [r2] 
+ldrb r0, [r2, #0x13] @ current hp 
+sub r0, #1
+lsr r0, #2 
+bl IsTargetCoordTooUnsafe 
+cmp r0, #1  
+beq SkipMoveTowardsLord @ if danger is > half hp, kill stuff 
+
+mov r0, #8 
 bl TryMoveTowardsLeader
 SkipMoveTowardsLord: 
 mov r0, #1 
@@ -532,6 +549,9 @@ b JustAttack
 
 
 DoNotAttack: 
+mov r0, #0 @ xx 
+mov r1, #0 @ yy 
+blh InitTargets @ so we don't attack and do event simultaneously 
 ldr r0, =0x203AA94 
 mov r1, #0 @ no decision made 
 str r1, [r0]
@@ -542,12 +562,7 @@ str r1, [r0, #8]
 
 CheckForEvents: 
 bl TryEventInRange
-ldr r0, =AiDecision 
-ldr r0, [r0] 
-cmp r0, #0 
-beq SkipActiveEquipBestWepByRange2
 bl ActiveUnitEquipBestWepByRange
-SkipActiveEquipBestWepByRange2: 
 ldr r2, =gCurrentUnit
 ldr r2, [r2] 
 ldrb r0, [r2, #0x13] @ current hp 
@@ -565,6 +580,20 @@ str r1, [r0, #4] @
 str r1, [r0, #8] @ 
 @bl CallRunAway 
 JustAttack: 
+
+ldr r2, =gCurrentUnit
+ldr r2, [r2] 
+ldrb r0, [r2, #0x13] @ current hp 
+sub r0, #1
+lsr r0, #2 
+@ if the dmg we could take is more than r0, run away 
+bl IsTargetCoordTooUnsafe
+cmp r0, #1 
+beq SkipRunAway @ fight as usual 
+@ if no event, danger is not too high, move towards lord if > 8 tiles away 
+mov r0, #8 
+bl TryMoveTowardsLeader 
+
 @returns r0 as t/f that we made a decision 
 SkipRunAway: 
 
@@ -1118,9 +1147,6 @@ BreakLocationLoop:
 @mov r3, r9 
 @bl IsClosedDoorAdjacent 
 @ldr r0, =gTargetArraySize
-@.equ InitTargets, 0x804F8A4
-@.equ gTargetPosition, 0x203DDE8 
-@.equ gTargetArraySize, 0x203E0EC 
 @ldrb r0, [r0] 
 mov r0, r6 
 mov r1, r7 
