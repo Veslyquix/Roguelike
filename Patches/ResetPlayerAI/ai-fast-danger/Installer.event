@@ -9,6 +9,7 @@ PUSH
     ORG $03E320
 
     #include "src/ai-fast-danger.lyn.event"
+	MESSAGE CURRENTOFFSET 
 
     ASSERT $03E448 - CURRENTOFFSET
 

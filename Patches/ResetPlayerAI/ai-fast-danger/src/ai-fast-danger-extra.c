@@ -10,6 +10,9 @@ extern int GetBallistaItemAt(int x, int y);
 int CouldUnitBeInRangeHeuristic(struct Unit* unit, struct Unit* other, int item);
 void FillMovementAndRangeMapForItem(struct Unit* unit, int item);
 extern struct AiState gAiState;
+#define UNIT_MOV(aUnit) ((aUnit)->movBonus + UNIT_MOV_BASE(aUnit))
+#define UNIT_MOV_BASE(aUnit) ((aUnit)->pClassData->baseMov)
+
 struct AiState
 {
     /* 00 */ u8 units[116];
@@ -48,7 +51,26 @@ inline void SetWorkingBmMap(u8** map)
     gWorkingBmMap = map;
 }
 
+void NuAiFillDangerMap_ApplyDanger(int danger_gain)
+{
+    int ix, iy;
 
+    int map_size_x_m1 = gMapSize.x - 1;
+    int map_size_y_m1 = gMapSize.y - 1;
+
+    for (iy = map_size_y_m1; iy >= 0; --iy)
+    {
+        u8 * map_range_row = gMapRange[iy];
+        u8 * map_other_row = gMapMovement2[iy];
+
+        for (ix = map_size_x_m1; ix >= 0; --ix)
+        {
+            if (map_range_row[ix] == 0)
+                continue;
+            map_other_row[ix] += danger_gain;
+        }
+    }
+}
 int GetUnitEffSpdWithWep(struct Unit* unit, int item) { 
 	int weight = GetItemWeight(item);
 	int spd = unit->spd; 
@@ -67,20 +89,69 @@ int GetUnitEffSpd(struct Unit* unit) {
 	return GetUnitEffSpdWithWep(unit, item); 
 }
 
-int GetItemEffMight(int item, int unit_power, int def, int res, int spd, struct Unit* unit) { 
-
-	u32 atrb = GetItemAttributes(item); 
-	int battle_def = def; 
-	if (atrb & IA_MAGIC) { battle_def = res; }
-	int might = GetItemMight(item);
-	if (IsItemEffectiveAgainst(item, gActiveUnit)) { might += might*2; }
-	
-	might += unit_power; 
-	might -= battle_def; 
-	if (GetUnitEffSpdWithWep(unit, item)-4 >= spd) { might += might; } // doubles 
-	if (might<2) { might = 2; } 
-	return ((might+1)/2); // assume WTD  
+int GetHighestRange(int item, int currentMaxRange) { 
+	int result = currentMaxRange; 
+	int itemRange = GetItemMaxRange(item); 
+	if (itemRange > currentMaxRange) { 
+		return itemRange; 
+	} 
+	return result; 
 } 
+int GetLowestRange(int item, int currentMinRange) { 
+	int result = currentMinRange; 
+	int itemRange = GetItemMinRange(item); 
+	if (currentMinRange == 0) { 
+		currentMinRange = itemRange; 
+	} 
+	if (itemRange < currentMinRange) { 
+		return itemRange; 
+	} 
+	return result; 
+} 
+
+int GetMaxRangeIfItemExists(int item) { 
+	if (item) { 
+		return GetItemMaxRange(item); 
+	} 
+	return false; 
+} 
+int GetMinRangeIfItemExists(int item) { 
+	if (item) { 
+		return GetItemMinRange(item); 
+	} 
+	return false; 
+} 
+
+
+
+int GetItemEffMight(int item, int unit_power, int def, int res, int spd, struct Unit* unit) { 
+	if (item) { 
+		u32 atrb = GetItemAttributes(item); 
+		int battle_def = def; 
+		if (atrb & IA_MAGIC) { battle_def = res; }
+		int might = GetItemMight(item);
+		if (IsItemEffectiveAgainst(item, gActiveUnit)) { might += might*2; }
+		
+		might += unit_power; 
+		might -= battle_def; 
+		if (GetUnitEffSpdWithWep(unit, item)-4 >= spd) { might += might; } // doubles 
+		if (might<2) { might = 2; } 
+		return ((might+1)/2); // assume WTD  
+	} 
+	return false; 
+} 
+
+s8 Range_AiCouldReachByBirdsEyeDistance(struct Unit* unit, struct Unit* other, int maxRange) {
+	if (maxRange) { 
+    int distance = RECT_DISTANCE(unit->xPos, unit->yPos, other->xPos, other->yPos);
+    if (distance <= UNIT_MOV(unit) + UNIT_MOV(other) + maxRange) {
+        return 1;
+    }
+
+    return 0;
+	} 
+	return false; 
+}
 
 void AiSetMovCostTableWithPassableDoors(const s8* cost) {
     u16 i;
@@ -121,7 +192,7 @@ int WhichWepHasBetterRange(int item_tmp, int item) {
 	return item_tmp; 
 } 
 
-void FillMovementAndRangeMapForItem_PassableDoors(struct Unit* unit, u16 item) {
+void FillMovementAndRangeMapForItem_PassableDoors(struct Unit* unit, int minRange, int maxRange, int might) {
     int ix;
     int iy;
 	if (!(unit->ai3And4 & 0x2000)) { // for boss AI, they cannot move 
@@ -140,11 +211,11 @@ void FillMovementAndRangeMapForItem_PassableDoors(struct Unit* unit, u16 item) {
             if (moveRow[ix] > 120) {
                 continue;
             }
-
-            MapIncInBoundedRange(ix, iy, GetItemMinRange(item), GetItemMaxRange(item));
+            MapIncInBoundedRange(ix, iy, minRange, maxRange);
         }
     }
 
+	NuAiFillDangerMap_ApplyDanger(might);
     return;
 }
 
@@ -221,7 +292,7 @@ u32 WhatHPWillTargetHaveAfterAIQueueIsDone(int i, int xPos, int yPos, int startH
 
 		item = GetUnitEquippedWeapon(unit); 
 		if (!item) continue;       
-		if (!CouldUnitBeInRangeHeuristic(unit, target, item)) {
+		if (!CouldUnitBeInRangeHeuristic(unit, (struct Unit*)target, item)) {
 			continue; 
 		} 
 
@@ -279,11 +350,11 @@ int CanAnotherUnitMakeItSafeEnough(void) {
 	
 }
 
-void FillRangeForBallista(struct Unit* unit) { 
-    // if unit state is riding ballista, maybe? 
+int FillRangeForBallista(struct Unit* unit) { 
+    // if unit state is riding ballista, players can also move, but AI cannot 
 	/*
 	if (unit->state & US_IN_BALLISTA) { 
-		if (((unit->pCharacterData->attributes) | (unit->pClassData->attributes)) & CA_BALLISTAE) {
+	if (((unit->pCharacterData->attributes) | (unit->pClassData->attributes)) & CA_BALLISTAE) {
 		int iy, ix; 
 		for (iy = gMapSize.y - 1; iy >= 0; --iy) 
 		{ 
@@ -294,54 +365,65 @@ void FillRangeForBallista(struct Unit* unit) {
 			{ 
 				if (moveRow[ix] > 120) 
 					continue; 
-				if (unitRow[ix]) 
+				if ((unitRow[ix] != unit->index) && (unitRow[ix] != 0)) 
 					continue; 
-				if (otherRow[ix]) 
-					continue; 
+				//if (otherRow[ix]) 
+				//	continue; 
+				
 				int item = GetBallistaItemAt(ix, iy);
 				if (item)
 				{
+					struct Unit* actor = gActiveUnit; 
+					if (!CouldUnitBeInRangeHeuristic(actor, unit, item)) {
+						continue; 
+					}
+					//asm("mov r11, r11"); 
 					MapIncInBoundedRange(ix, iy, GetItemMinRange(item), GetItemMaxRange(item));
+					result = item; 
 				}
 			} 
 		}
-		}
-	}*/
+	}
+	}
+	*/ 
 			
+	int result = false; 
 
-	//if (unit->index == 0x0B) { 
 	if (((unit->pCharacterData->attributes) | (unit->pClassData->attributes)) & CA_BALLISTAE) {
 		int iy, ix; 
 		for (iy = gMapSize.y - 1; iy >= 0; --iy) 
 		{ 
 			u8* moveRow = gMapMovement[iy]; 
 			u8* unitRow = gMapUnit[iy]; 
-			u8* otherRow = gMapMovement2[iy]; 
+			//u8* otherRow = gMapMovement2[iy]; 
 			for (ix = gMapSize.x - 1; ix >= 0; --ix) 
 			{ 
-				//if (moveRow[ix] > 120) 
-				//	continue; 
-				//if ((unitRow[ix] != unit->index) && (unitRow[ix] != 0)) 
-				//	continue; 
+				if (moveRow[ix] > 120) 
+					continue; 
+				if ((unitRow[ix] != unit->index) && (unitRow[ix] != 0)) 
+					continue; 
 				//if (otherRow[ix]) 
-					//continue; 
+				//	continue; 
 				
 				int item = GetBallistaItemAt(ix, iy);
 				if (item)
 				{
-					asm("mov r11, r11"); 
+					struct Unit* actor = gActiveUnit; 
+					if (!CouldUnitBeInRangeHeuristic(actor, unit, item)) {
+						continue; 
+					}
+					//asm("mov r11, r11"); 
 					MapIncInBoundedRange(ix, iy, GetItemMinRange(item), GetItemMaxRange(item));
+					result = item; 
 				}
 			} 
 		}
-			
-
 	}
-	//}
+	return result; 
 	//} 
 }
 
-void removeActiveAllegianceFromUnitMap(void) {
+void InitDangerMap(void) {
 	BmMapFill(gMapMovement2, 0); 
 	BmMapFill(gMapUnit, 0);
 	
@@ -569,26 +651,7 @@ void ActiveUnitEquipBestWepByRange(void) {
     } 
 } 
 
-void NuAiFillDangerMap_ApplyDanger(int danger_gain)
-{
-    int ix, iy;
 
-    int map_size_x_m1 = gMapSize.x - 1;
-    int map_size_y_m1 = gMapSize.y - 1;
-
-    for (iy = map_size_y_m1; iy >= 0; --iy)
-    {
-        u8 * map_range_row = gMapRange[iy];
-        u8 * map_other_row = gMapMovement2[iy];
-
-        for (ix = map_size_x_m1; ix >= 0; --ix)
-        {
-            if (map_range_row[ix] == 0)
-                continue;
-            map_other_row[ix] += danger_gain;
-        }
-    }
-}
 
 
 int GetCurrDanger(void) { 
