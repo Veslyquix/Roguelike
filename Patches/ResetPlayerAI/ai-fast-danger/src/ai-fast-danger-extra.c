@@ -42,6 +42,10 @@ enum
 extern u8** gWorkingBmMap;
 extern u8 gWorkingTerrainMoveCosts[];
 
+
+
+
+
 // if no other action, try use vulnerary / elixir 
 // snag + visit simultaneously 
 // order / Seth moving towards Eirika before she moves 

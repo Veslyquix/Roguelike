@@ -1,0 +1,2 @@
+BuildAiUnitListFaction=$1000001
+NewCpOrderFunc_BeginDecide=$10000B9

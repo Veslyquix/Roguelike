@@ -5,7 +5,11 @@
 	#define callHackNew(offset) 		"BYTE $01 $4B $9E $46 $00 $F8 $01 $E0; POIN (offset|0x1)"
 #endif 
 
-#define ENABLE_100_GROWTH
+//#define ENABLE_100_GROWTH
+
+// CpOrder_BuildUnitList, 0x8039859: $39872 
+// 39BC4 (adds 1) - 2F24 ? 
+// CpDecide_Main 0x8039B01: 39B10 - if 0203AA78[0] == 0, exit
 
 PUSH 
 ORG $39722 
