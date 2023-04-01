@@ -4,6 +4,12 @@
 // 2EA00 -> bl 801A1F4 
 #include "AI_TowerDefense.lyn.event" 
 
+PUSH 
+//ORG $59AB2C 
+ORG $59AF84
+POIN NewPlayerPhase_HandleAutoEnd
+POP 
+
 // 153AC 
 
 // in Procs PlayerPhase - 801DBA5 PlayerPhase_HandleAutoEnd

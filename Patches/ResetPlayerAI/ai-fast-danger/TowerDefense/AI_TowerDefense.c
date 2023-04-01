@@ -47,6 +47,16 @@ extern void(*AiDecideMainFunc)(void);
 extern int GetUnitAiPriority(struct Unit* unit);
 extern void PidStatsSubFavval08(u8 pid);
 void RefreshFaction(int faction); 
+extern void PlayerPhase_HandleAutoEnd(Proc* proc); 
+extern void PhaseSwitchGfx(Proc* proc); 
+
+void NewPlayerPhase_HandleAutoEnd(Proc* proc) { 
+	RefreshFaction(0); 
+	PhaseSwitchGfx(proc); 
+	//SMS_UpdateFromGameData();
+	//RenderBmMap();
+	//PlayerPhase_HandleAutoEnd(proc); 
+} 
 
 int BuildAiUnitListFaction(u32 faction); 
 #define CONST_DATA const __attribute__((section(".data")))

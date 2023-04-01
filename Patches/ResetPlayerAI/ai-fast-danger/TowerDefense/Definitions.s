@@ -6,6 +6,9 @@ SET_FUNC SortAiUnitList, 0x8039a51
 SET_FUNC AiDecideMain, 0x8039CAD 
 SET_FUNC PidStatsSubFavval08, 0x80a48dd
 SET_FUNC GetUnitAiPriority, 0x8039939
+SET_FUNC PlayerPhase_HandleAutoEnd, 0x801DBA5
+SET_FUNC PhaseSwitchGfx, 0x801F2AD
+
 
 SET_DATA AiDecideMainFunc, 0x3004f10
 SET_DATA sUnitPriorityArray, 0x2020188
