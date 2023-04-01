@@ -1,7 +1,9 @@
+// 1DEF0 -> 24CEC 
 
 
+// 2EA00 -> bl 801A1F4 
 #include "AI_TowerDefense.lyn.event" 
 
+// 153AC 
 
-
-
+// in Procs PlayerPhase - 801DBA5 PlayerPhase_HandleAutoEnd

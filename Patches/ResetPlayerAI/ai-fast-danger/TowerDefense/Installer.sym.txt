@@ -1,2 +1,3 @@
 BuildAiUnitListFaction=$1000001
-NewCpOrderFunc_BeginDecide=$10000B9
+RefreshFaction=$10000B9
+NewCpOrderFunc_BeginDecide=$1000155

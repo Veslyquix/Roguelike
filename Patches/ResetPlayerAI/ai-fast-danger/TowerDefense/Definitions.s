@@ -4,9 +4,13 @@
 SET_FUNC BuildAiUnitList, 0x80399b1
 SET_FUNC SortAiUnitList, 0x8039a51
 SET_FUNC AiDecideMain, 0x8039CAD 
-SET_DATA AiDecideMainFunc, 0x3004f10
+SET_FUNC PidStatsSubFavval08, 0x80a48dd
 SET_FUNC GetUnitAiPriority, 0x8039939
+
+SET_DATA AiDecideMainFunc, 0x3004f10
 SET_DATA sUnitPriorityArray, 0x2020188
+
+
 
 // other stuff 
 SET_DATA gAiState, 0x203AA04

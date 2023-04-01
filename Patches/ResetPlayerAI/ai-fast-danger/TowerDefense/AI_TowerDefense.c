@@ -45,6 +45,8 @@ extern void SortAiUnitList(int count);
 void AiDecideMain(void);
 extern void(*AiDecideMainFunc)(void);
 extern int GetUnitAiPriority(struct Unit* unit);
+extern void PidStatsSubFavval08(u8 pid);
+void RefreshFaction(int faction); 
 
 int BuildAiUnitListFaction(u32 faction); 
 #define CONST_DATA const __attribute__((section(".data")))
@@ -53,7 +55,7 @@ void NewCpOrderFunc_BeginDecide(Proc* proc)
 {
     int unitAmt = BuildAiUnitList(); // for current phase 
 	if (unitAmt == 0) { 
-		u32 faction = (gChapterData.currentPhase>>6); // enemy phase 
+		//u32 faction = (gChapterData.currentPhase>>6); // enemy phase 
 		//if (faction == (gActiveUnit->index)>>6) { // enemy phase finished 
 			//RefreshFaction(0); // refresh players 
 			unitAmt = BuildAiUnitListFaction(0); // Players to act now 
@@ -73,6 +75,10 @@ void NewCpOrderFunc_BeginDecide(Proc* proc)
 
         ProcStartBlocking(gProc_CpDecide, proc);
     }
+	//else { 
+	//	asm("mov r11, r11"); // 0x801DF0A
+	//	RefreshFaction(0); 
+	//} 
 }
 
 
@@ -108,5 +114,35 @@ int BuildAiUnitListFaction(u32 faction)
     return aiNum;
 }
 
+#define UNIT_IS_VALID(aUnit) ((aUnit) && (aUnit)->pCharacterData)
+void RefreshFaction(int faction) {
+    int i;
+
+    if (faction == 0) { // blue 
+        int i;
+
+        for (i = 1; i < 0x40; ++i) {
+            struct Unit* unit = GetUnit(i);
+
+            if (!UNIT_IS_VALID(unit))
+                continue;
+
+            if (UNIT_CATTRIBUTES(unit) & CA_SUPPLY)
+                continue;
+
+            if (unit->state & (US_UNAVAILABLE | US_UNSELECTABLE))
+                continue;
+
+            PidStatsSubFavval08(unit->pCharacterData->number);
+        }
+    }
+
+    for (i = faction + 1; i < faction + 0x40; ++i) {
+        struct Unit* unit = GetUnit(i);
+
+        if (UNIT_IS_VALID(unit))
+            unit->state = unit->state &~ (US_UNSELECTABLE | US_HAS_MOVED | US_HAS_MOVED_AI);
+    }
+}
 
 
