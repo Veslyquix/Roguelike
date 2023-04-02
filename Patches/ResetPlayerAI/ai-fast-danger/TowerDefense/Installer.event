@@ -3,11 +3,17 @@
 
 // 2EA00 -> bl 801A1F4 
 #include "AI_TowerDefense.lyn.event" 
+#include "Ch0_Map.event" 
+#include "Ch0.event" 
+#include "_FE8EssentialFixes.event" 
 
 PUSH 
 //ORG $59AB2C 
 ORG $59AF84
 POIN NewPlayerPhase_HandleAutoEnd
+
+
+
 POP 
 
 // 153AC 

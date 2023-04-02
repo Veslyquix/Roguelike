@@ -58,20 +58,16 @@ void NewPlayerPhase_HandleAutoEnd(Proc* proc) {
 	//PlayerPhase_HandleAutoEnd(proc); 
 } 
 
-int BuildAiUnitListFaction(u32 faction); 
+int BuildAiUnitListAll(void); 
 #define CONST_DATA const __attribute__((section(".data")))
 u32* CONST_DATA sUnitPriorityArray = (void*) gGenericBuffer;
 void NewCpOrderFunc_BeginDecide(Proc* proc)
 {
-    int unitAmt = BuildAiUnitList(); // for current phase 
-	if (unitAmt == 0) { 
-		//u32 faction = (gChapterData.currentPhase>>6); // enemy phase 
-		//if (faction == (gActiveUnit->index)>>6) { // enemy phase finished 
-			//RefreshFaction(0); // refresh players 
-			unitAmt = BuildAiUnitListFaction(0); // Players to act now 
-			//asm("mov r11, r11"); 
-		//} 
-	
+	int unitAmt = 0; 
+	if (gChapterData.currentPhase>>7) { // on enemy phase only 
+		RefreshFaction(0); // refresh players 
+		RefreshFaction(1); // refresh NPCs  
+		unitAmt = BuildAiUnitListAll(); // for current phase 
 	} 
 
     if (unitAmt != 0)
@@ -92,16 +88,18 @@ void NewCpOrderFunc_BeginDecide(Proc* proc)
 }
 
 
-int BuildAiUnitListFaction(u32 faction)
+int BuildAiUnitListAll(void)
 {
     int i, aiNum = 0;
     u32* prioIt = sUnitPriorityArray;
 
-    int factionUnitCountLut[3] = { 62, 20, 50 }; // TODO: named constant for those
+    //int factionUnitCountLut[3] = { 62, 20, 50 }; // TODO: named constant for those
 
-    for (i = 0; i < factionUnitCountLut[faction >> 6]; ++i)
+    //for (i = 0; i < factionUnitCountLut[faction >> 6]; ++i)
+    for (i = 0; i < 0xC0; ++i)
     {
-        struct Unit* unit = GetUnit(faction + i + 1);
+        //struct Unit* unit = GetUnit(faction + i + 1);
+        struct Unit* unit = GetUnit(i + 1);
 
         if (!unit->pCharacterData)
             continue;
@@ -112,10 +110,11 @@ int BuildAiUnitListFaction(u32 faction)
         if (unit->statusIndex == UNIT_STATUS_BERSERK)
             continue;
 
-        if (unit->state & (US_HIDDEN | US_UNSELECTABLE | US_DEAD | US_RESCUED | US_HAS_MOVED_AI))
+        if (unit->state & (US_HIDDEN | US_DEAD | US_RESCUED | US_HAS_MOVED_AI)) // | US_UNSELECTABLE
             continue;
 
-        gAiState.units[aiNum] = faction + i + 1;
+        //gAiState.units[aiNum] = faction + i + 1;
+        gAiState.units[aiNum] = i + 1;
         *prioIt++ = GetUnitAiPriority(unit);
 
         aiNum++;
