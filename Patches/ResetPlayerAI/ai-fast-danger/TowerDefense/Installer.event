@@ -6,21 +6,15 @@
 #include "Ch0_Map.event" 
 #include "Ch0.event" 
 #include "_FE8EssentialFixes.event" 
-#include "HookButtonPress.lyn.event" 
+#include "TerrainCallEvent/Installer.event" 
+
 
 PUSH 
 //ORG $59AB2C 
 ORG $59AF84
-POIN NewPlayerPhase_HandleAutoEnd
-ORG $1CA30
-callHackNew(HookButtonPressA) 
+POIN NewPlayerPhase_HandleAutoEnd // in Procs PlayerPhase - 801DBA5 PlayerPhase_HandleAutoEnd
 
 POP 
 
-// in Procs PlayerPhase - 801DBA5 PlayerPhase_HandleAutoEnd
-ALIGN 4 
-DeployUnitEvent: 
-Text(0x9df)
-NoFade 
-ENDA 
+
 

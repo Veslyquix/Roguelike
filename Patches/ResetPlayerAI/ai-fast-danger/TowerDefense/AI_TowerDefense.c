@@ -49,22 +49,7 @@ extern void PidStatsSubFavval08(u8 pid);
 void RefreshFaction(int faction); 
 extern void PlayerPhase_HandleAutoEnd(Proc* proc); 
 extern void PhaseSwitchGfx(Proc* proc); 
-extern const void DeployUnitEvent; 
 
-int CanTileDeployUnits(Proc* proc) { 
-	int x = gGameState.cursorMapPos.x;
-	int y = gGameState.cursorMapPos.y;
-	if (gMapTerrain[y][x] == 0xA) { // Fort
-		CallMapEventEngine(&DeployUnitEvent, 3); 
-		
-		
-		ProcGoto(proc, 9); 
-		
-		
-		return (-1); // true 
-	} 
-	return false; 
-} 
 
 void NewPlayerPhase_HandleAutoEnd(Proc* proc) { 
 	RefreshFaction(0); 

@@ -12,7 +12,6 @@
 HookButtonPressA: 
 push {r5, lr} 
 ldrb r0, [r0] 
-mov r11, r11 
 blh GetUnit 
 mov r4, r0 
 blh GetUnitSelectionValueThing
@@ -20,7 +19,7 @@ mov r5, r0 @ something to return
 cmp r4, #0 
 bne GotoEnd 
 mov r0, r6 @ proc 
-bl CanTileDeployUnits 
+bl TerrainTryCallEvent
 mov r5, r0 
 GotoEnd: 
 mov r0, r5
