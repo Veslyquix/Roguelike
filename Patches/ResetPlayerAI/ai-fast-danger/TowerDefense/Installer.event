@@ -1,21 +1,26 @@
-// 1DEF0 -> 24CEC 
+#ifndef callHackNew 
+	#define callHackNew(offset) 		"BYTE $01 $4B $9E $46 $00 $F8 $01 $E0; POIN (offset|0x1)"
+#endif 
 
-
-// 2EA00 -> bl 801A1F4 
 #include "AI_TowerDefense.lyn.event" 
 #include "Ch0_Map.event" 
 #include "Ch0.event" 
 #include "_FE8EssentialFixes.event" 
+#include "HookButtonPress.lyn.event" 
 
 PUSH 
 //ORG $59AB2C 
 ORG $59AF84
 POIN NewPlayerPhase_HandleAutoEnd
-
-
+ORG $1CA30
+callHackNew(HookButtonPressA) 
 
 POP 
 
-// 153AC 
-
 // in Procs PlayerPhase - 801DBA5 PlayerPhase_HandleAutoEnd
+ALIGN 4 
+DeployUnitEvent: 
+Text(0x9df)
+NoFade 
+ENDA 
+
