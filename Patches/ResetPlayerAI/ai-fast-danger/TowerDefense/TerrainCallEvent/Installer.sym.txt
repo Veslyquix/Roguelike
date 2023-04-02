@@ -1,0 +1,4 @@
+HookButtonPressA=$1000001
+TerrainTryCallEvent=$1000031
+TerrainExecuteEventList=$10000FC
+SomeEvent=$100010C
