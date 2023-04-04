@@ -53,10 +53,15 @@ int TerrainTryCallEvent(Proc* proc, int value, struct Unit* unit) {
 						if (unit == 0) { 
 							if ((list.unitID) || (list.classID)) { 
 							continue; } } // there is no unit, but we want unit to be a specific unitID or classID 
-						if ((list.unitID == unitID) || (list.unitID == 0)) { 
+						if ((list.unitID == unitID) || (list.unitID == 0) || (list.unitID == 0xFF)) { 
 							if ((list.classID == classID) || (list.classID == 0)) { 
+								if (!(unit)) { // if no unit found there but we are looking for 0xFF, then don't find anything 
+									if (list.unitID == 0xFF) { 
+									continue; 
+									} 
+								} 
 								if (unit) { 
-									if (unit->index>>6) { // if not a player, do nothing 
+									if (!(unit->index>>6)) { // if player, do nothing 
 										continue; } 
 									unit->state = unit->state & ~(US_HIDDEN); 
 									SMS_UpdateFromGameData();

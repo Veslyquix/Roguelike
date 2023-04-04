@@ -22,17 +22,87 @@ TerrainExecuteEventList:
 // Padding (does nothing) 
 // CompletionFlag (0 = never complete)  
 // EventLabel 
-BYTE 0xFF 0 	0 0 1 0; SHORT 0xA; POIN SomeEvent; // In any chapter, pressing A on a ballista (0x1) will show the event if completion flag A is off. 
-BYTE 0xFF 0 	0 0x79 0 0; SHORT 0xA; POIN SomeEvent; // In any chapter, pressing A on a player tent (0x79) will show the event if completion flag A is off. 
-BYTE 0xFF 0xA 	0 0 0 0; SHORT 0x8; POIN SomeEvent; // In any chapter, pressing A on a fort (0xA) will show the event if completion flag 8 is off. 
+BYTE 0xFF 0 	0xC5 0 0 0; SHORT 0; POIN FadoEvent; // In any chapter, pressing A on a ballista (0x1) will show the event if completion flag A is off. 
+BYTE 0xFF 0 	0x6D 0 0 0; SHORT 0; POIN FadaEvent; // In any chapter, pressing A on a player tent (0x79) will show the event if completion flag A is off. 
+BYTE 0xFF 0 	0xCB 0 0 0; SHORT 0; POIN FadeEvent; // In any chapter, pressing A on a player tent (0x79) will show the event if completion flag A is off. 
+BYTE 0xFF 0 	0xC8 0 0 0; SHORT 0; POIN FaduEvent; // In any chapter, pressing A on a player tent (0x79) will show the event if completion flag A is off. 
+BYTE 0xFF 0 	0xC7 0 0 0; SHORT 0; POIN FadiEvent; // In any chapter, pressing A on a player tent (0x79) will show the event if completion flag A is off. 
+BYTE 0xFF 0 	0xFF 0 0 0; SHORT 0xA; POIN OtherEvent1; // In any chapter, pressing A on a player tent (0x79) will show the event if completion flag A is off. 
+BYTE 0xFF 0 	0xFF 0 0 0; SHORT 0xB; POIN OtherEvent2; // In any chapter, pressing A on a player tent (0x79) will show the event if completion flag A is off. 
+BYTE 0xFF 0 	0xFF 0 0 0; SHORT 0xC; POIN OtherEvent3; // In any chapter, pressing A on a player tent (0x79) will show the event if completion flag A is off. 
+BYTE 0xFF 0 	0xFF 0 0 0; SHORT 0xD; POIN OtherEvent4; // In any chapter, pressing A on a player tent (0x79) will show the event if completion flag A is off. 
+BYTE 0xFF 0 	0xFF 0 0 0; SHORT 0xE; POIN OtherEvent5; // In any chapter, pressing A on a player tent (0x79) will show the event if completion flag A is off. 
+BYTE 0xFF 0 	0xFF 0 0 0; SHORT 0xF; POIN OtherEvent6; // In any chapter, pressing A on a player tent (0x79) will show the event if completion flag A is off. 
+BYTE 0xFF 0 	0xFF 0 0 0; SHORT 0; POIN OtherEventFinal; // In any chapter, pressing A on a player tent (0x79) will show the event if completion flag A is off. 
+
+//BYTE 0xFF 0xA 	0 0 0 0; SHORT 0x8; POIN SomeEvent; // In any chapter, pressing A on a fort (0xA) will show the event if completion flag 8 is off. 
 WORD 0xFFFFFFFF 0xFFFFFFFF 0xFFFFFFFF // Terminator 
 
+// needs to occur only on enemy units if all 0s 
 
 
 ALIGN 4 
-SomeEvent: 
+FadoEvent: 
 Text(0x9df)
+NoFade 
+ENDA 
+ALIGN 4 
+FadaEvent: 
+Text(2)
+NoFade 
+ENDA 
+ALIGN 4 
+FadeEvent: 
+Text(3)
+NoFade 
+ENDA 
+ALIGN 4 
+FaduEvent: 
+Text(4)
+NoFade 
+ENDA 
+ALIGN 4 
+FadiEvent: 
+Text(5)
+NoFade 
+ENDA 
+
+ALIGN 4 
+OtherEvent1: 
+Text(6)
+NoFade 
+ENDA 
+ALIGN 4 
+OtherEvent2: 
+Text(7)
+NoFade 
+ENDA 
+ALIGN 4 
+OtherEvent3: 
+Text(8)
+NoFade 
+ENDA 
+ALIGN 4 
+OtherEvent4: 
+Text(9)
+NoFade 
+ENDA 
+ALIGN 4 
+OtherEvent5: 
+Text(10)
+NoFade 
+ENDA 
+ALIGN 4 
+OtherEvent6: 
+Text(11)
 NoFade 
 ENDA 
 
 
+
+
+ALIGN 4 
+OtherEventFinal: 
+Text(0x9de)
+NoFade 
+ENDA 
