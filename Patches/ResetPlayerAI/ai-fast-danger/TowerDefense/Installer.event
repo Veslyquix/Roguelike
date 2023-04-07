@@ -6,10 +6,19 @@
 #include "Ch0_Map.event" 
 #include "Ch0.event" 
 #include "_FE8EssentialFixes.event" 
-#include "TerrainCallEvent/Installer.event" 
+#include "TileCallEvent/Installer.event" 
+#include "ResetPlayerCoordHook.lyn.event" 
+
+
 
 
 PUSH 
+ORG $39F10 
+callHackNew(SavePlayerCoord)
+ORG $3A620 // in proc CpPerform LoopRoutine WaitAction 
+callHackNew(ResetPlayerCoord)
+
+
 //ORG $59AB2C 
 ORG $59AF84
 POIN NewPlayerPhase_HandleAutoEnd // in Procs PlayerPhase - 801DBA5 PlayerPhase_HandleAutoEnd
