@@ -26,4 +26,5 @@
 #include "RelicSelect/Installer.event" 
 
 
-
+#include "MovementCalcLoop/Installer.event" 
+#include "Draw/Installer.event" 
