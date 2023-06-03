@@ -5,6 +5,7 @@
 	#define callHackNew(offset) 		"BYTE $01 $4B $9E $46 $00 $F8 $01 $E0; POIN (offset|0x1)"
 #endif 
 
+//#define INFINITE_WEPS_VULNS
 //#define ENABLE_100_GROWTH
 
 // CpOrder_BuildUnitList, 0x8039859: $39872 
@@ -32,10 +33,12 @@ BYTE 1 1 1 0 1 1 4 2 // Default AI3 to be more cautious
 ORG $30DA6 
 BYTE $d0 $22 // Autocursor off 
 
+#ifdef INFINITE_WEPS_VULNS
 ORG $16B06
 SHORT $E003 // items always have the unbreakable bitflag 
 ORG $17574
 jumpToHack(GetItemAttributesWithUnbreakable)
+#endif 
 
 ORG $AD8 
 BYTE 0x09 0xF0 0x16 // Ensure Debug Menu does not show up 
@@ -127,8 +130,10 @@ jumpToHack(bootHackBodyFE8)
 ORG 0xC3C
 jumpToHack(resumeHackBodyFE8)
 
+
 ORG $83ECC 
 jumpToHack(ResetPlayerAI|1)
+ORG $83ECC 
 
 #ifdef ENABLE_100_GROWTH
 ORG $2A2D8 // this is right after check for lvl up 
@@ -137,8 +142,12 @@ callHackNew(OneHundredGrowth)
 
 ORG $D2F7C // overwrite vsprintf (debug print text) 
 ResetPlayerAI: // also gives a vuln to all players that don't have one 
+#ifdef INFINITE_WEPS_VULNS
 #include "ResetPlayerAI.lyn.event"
-
+#endif 
+#ifndef INFINITE_WEPS_VULNS 
+#include "ResetPlayerAI_no_inf.lyn.event" 
+#endif 
 
 ALIGN 4
 RNGBodyFE8:
